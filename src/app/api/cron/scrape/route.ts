@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/db";
 import { OrganizationId } from "@/types/trial";
 
-const ACTIVE_ORGS: OrganizationId[] = ["akc"];
+// NADAC and CKC are excluded — their sites require headless browser scraping
+const ACTIVE_ORGS: OrganizationId[] = ["akc", "usdaa", "cpe", "uki"];
 
 /**
  * Vercel cron job: enqueue scrape jobs for each active organization.

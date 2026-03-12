@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/db";
 import { processScraperChunk } from "@/lib/scrapers/processor";
 import { AkcScraper } from "@/lib/scrapers/akc";
+import { UsdaaScraper } from "@/lib/scrapers/usdaa";
+import { CpeScraper } from "@/lib/scrapers/cpe";
+import { NadacScraper } from "@/lib/scrapers/nadac";
+import { UkiScraper } from "@/lib/scrapers/uki";
+import { CkcScraper } from "@/lib/scrapers/ckc";
 import { OrganizationId } from "@/types/trial";
 import { BaseScraper } from "@/lib/scrapers/base";
 
@@ -114,12 +119,16 @@ function createScraper(orgId: OrganizationId): BaseScraper | null {
   switch (orgId) {
     case "akc":
       return new AkcScraper();
-    // Future scrapers:
-    // case "usdaa": return new UsdaaScraper();
-    // case "cpe": return new CpeScraper();
-    // case "nadac": return new NadacScraper();
-    // case "uki": return new UkiScraper();
-    // case "ckc": return new CkcScraper();
+    case "usdaa":
+      return new UsdaaScraper();
+    case "cpe":
+      return new CpeScraper();
+    case "nadac":
+      return new NadacScraper();
+    case "uki":
+      return new UkiScraper();
+    case "ckc":
+      return new CkcScraper();
     default:
       return null;
   }
