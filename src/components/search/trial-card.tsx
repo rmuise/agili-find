@@ -51,14 +51,26 @@ export function TrialCard({ trial }: TrialCardProps) {
             >
               {trial.organization_id.toUpperCase()}
             </span>
-            <h3 className="text-sm font-semibold text-gray-900 truncate">
+            <a
+              href={trial.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold text-gray-900 truncate hover:text-blue-600 hover:underline transition-colors"
+            >
               {trial.title}
-            </h3>
+            </a>
           </div>
 
           {/* Host club */}
           {trial.hosting_club && trial.hosting_club !== trial.title && (
-            <p className="text-xs text-gray-500 mb-2">{trial.hosting_club}</p>
+            <a
+              href={trial.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-gray-500 hover:text-blue-600 hover:underline transition-colors mb-2 block"
+            >
+              {trial.hosting_club}
+            </a>
           )}
 
           {/* Info rows */}
@@ -108,7 +120,7 @@ export function TrialCard({ trial }: TrialCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="flex-shrink-0 p-2 text-gray-400 hover:text-blue-600 transition-colors"
-          title="View on AKC"
+          title={`View on ${trial.organization_id.toUpperCase()}`}
         >
           <ExternalLink className="h-4 w-4" />
         </a>
