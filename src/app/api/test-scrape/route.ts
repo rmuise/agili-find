@@ -27,6 +27,8 @@ export async function GET(request: NextRequest) {
     request.nextUrl.searchParams.get("chunks") || "1",
     10
   );
+  // Allow passing an explicit cursor (e.g., region index for CKC)
+  const cursorParam = request.nextUrl.searchParams.get("cursor");
 
   const scraper = createScraper(orgId);
   if (!scraper) {
@@ -37,7 +39,7 @@ export async function GET(request: NextRequest) {
   }
 
   const allStats = [];
-  let cursor: unknown = undefined;
+  let cursor: unknown = cursorParam !== null ? parseInt(cursorParam, 10) : undefined;
 
   for (let i = 0; i < chunks; i++) {
     console.log(`\n--- [${orgId}] Processing chunk ${i + 1}/${chunks} ---`);
