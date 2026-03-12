@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/db";
 import { OrganizationId } from "@/types/trial";
 
-// NADAC and CKC are excluded — their sites require headless browser scraping
-const ACTIVE_ORGS: OrganizationId[] = ["akc", "usdaa", "cpe", "uki", "ckc"];
+// NADAC excluded — their trial calendar is broken (PHP MYSQL_ASSOC error), no public data
+// CKC excluded — requires Playwright (headless browser); scraped via separate GitHub Actions workflow
+const ACTIVE_ORGS: OrganizationId[] = ["akc", "usdaa", "cpe", "uki"];
 
 /**
  * Vercel cron job: enqueue scrape jobs for each active organization.

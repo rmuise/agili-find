@@ -30,6 +30,7 @@ export interface SearchFormValues {
   radius: string;
   orgs: OrganizationId[];
   startDate: string;
+  endDate: string;
   judge: string;
 }
 
@@ -45,6 +46,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
     new Set(ORGANIZATIONS.map((o) => o.id))
   );
   const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [judge, setJudge] = useState("");
 
   // Judge autocomplete state
@@ -151,6 +153,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
       radius,
       orgs: [...selectedOrgs],
       startDate,
+      endDate,
       judge,
     });
   };
@@ -158,7 +161,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-6 space-y-4">
       {/* Location + Radius Row */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
@@ -209,14 +212,31 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
 
       {/* Date Range + Judge + Search */}
       <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
-          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-          />
+        <div className="flex gap-2 flex-1 min-w-[200px]">
+          <div className="relative flex-1">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              placeholder="From"
+              title="Start date"
+              className="w-full pl-10 pr-2 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+            />
+          </div>
+          <span className="self-center text-gray-400 text-sm flex-shrink-0">to</span>
+          <div className="relative flex-1">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              min={startDate || undefined}
+              placeholder="To"
+              title="End date"
+              className="w-full pl-10 pr-2 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+            />
+          </div>
         </div>
 
         {/* Judge Autocomplete */}

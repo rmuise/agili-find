@@ -14,10 +14,12 @@ export default function Home() {
   const [resultCount, setResultCount] = useState(0);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [searchCenter, setSearchCenter] = useState<{ lat: number; lng: number } | undefined>();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSearch = useCallback(async (values: SearchFormValues) => {
     setIsLoading(true);
     setHasSearched(true);
+    setErrorMessage(null);
 
     try {
       const params = new URLSearchParams();
@@ -34,6 +36,13 @@ export default function Home() {
           }
         } else {
           setSearchCenter(undefined);
+          setErrorMessage(
+            `Could not find location "${values.location}". Try a different city, state, or zip code.`
+          );
+          setTrials([]);
+          setResultCount(0);
+          setIsLoading(false);
+          return;
         }
       }
 
@@ -45,6 +54,9 @@ export default function Home() {
       // Date filter
       if (values.startDate) {
         params.set("startDate", values.startDate);
+      }
+      if (values.endDate) {
+        params.set("endDate", values.endDate);
       }
 
       // Judge filter
@@ -59,6 +71,7 @@ export default function Home() {
 
       if (data.error) {
         console.error("Search error:", data.error);
+        setErrorMessage("Something went wrong with your search. Please try again.");
         setTrials([]);
         setResultCount(0);
       } else {
@@ -67,6 +80,7 @@ export default function Home() {
       }
     } catch (err) {
       console.error("Search failed:", err);
+      setErrorMessage("Unable to reach the server. Please check your connection and try again.");
       setTrials([]);
       setResultCount(0);
     } finally {
@@ -78,7 +92,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">AF</span>
@@ -92,15 +106,15 @@ export default function Home() {
       </header>
 
       {/* Hero / Search Section */}
-      <div className="bg-white border-b border-gray-200 py-8">
+      <div className="bg-white border-b border-gray-200 py-6 sm:py-8">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               Find Your Next Agility Trial
             </h2>
-            <p className="text-gray-600">
-              Search upcoming trials from AKC, USDAA, CPE, NADAC, UKI, and CKC
-              in one place.
+            <p className="text-gray-600 text-sm sm:text-base">
+              Search upcoming trials from AKC, USDAA, CPE, UKI, and CKC in one
+              place.
             </p>
           </div>
 
@@ -109,18 +123,34 @@ export default function Home() {
       </div>
 
       {/* Results Area */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+        {/* Error Banner */}
+        {errorMessage && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+            <span className="text-red-500 text-lg flex-shrink-0">⚠</span>
+            <div>
+              <p className="text-sm text-red-800">{errorMessage}</p>
+            </div>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="ml-auto text-red-400 hover:text-red-600 flex-shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* View Toggle + Count */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-4">
+          <p className="text-sm sm:text-base text-gray-600 min-w-0">
             {hasSearched
               ? `${resultCount} trial${resultCount !== 1 ? "s" : ""} found`
               : "Enter a location to search for upcoming trials"}
           </p>
-          <div className="flex gap-1 bg-gray-200 rounded-lg p-1">
+          <div className="flex gap-1 bg-gray-200 rounded-lg p-1 flex-shrink-0">
             <button
               onClick={() => setViewMode("list")}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === "list"
                   ? "bg-white shadow-sm text-gray-900"
                   : "text-gray-600 hover:text-gray-900"
@@ -130,7 +160,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setViewMode("map")}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === "map"
                   ? "bg-white shadow-sm text-gray-900"
                   : "text-gray-600 hover:text-gray-900"

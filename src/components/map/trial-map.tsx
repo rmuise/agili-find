@@ -207,7 +207,7 @@ export function TrialMapInner({ trials, center }: TrialMapProps) {
   return (
     <div
       ref={mapRef}
-      className="w-full h-[500px] rounded-xl border border-gray-200 overflow-hidden"
+      className="w-full h-[350px] sm:h-[450px] md:h-[500px] rounded-xl border border-gray-200 overflow-hidden"
       style={{ zIndex: 0 }}
     />
   );

@@ -4,14 +4,20 @@ import { ScrapePageResult } from "@/types/scraper";
 /**
  * NADAC (North American Dog Agility Council) scraper.
  *
- * NADAC's trial calendar is managed through their Retool-based portal
- * (nadac.retool.com) and doesn't expose a publicly scrapeable event listing.
- * The /play/ page on nadac.com loads content dynamically via JavaScript
- * which requires a headless browser to scrape.
+ * Status: NOT SCRAPEABLE (as of March 2026)
  *
- * This is a placeholder scraper that logs a warning.
- * TODO: Implement using Puppeteer/Playwright when headless browser support
- * is available, or find an alternative data source.
+ * NADAC's trial calendar system at /trial_sec/Calendar_list.php is currently
+ * broken — their PHP code uses deprecated MYSQL_ASSOC constants that were
+ * removed in PHP 7.0+, causing fatal errors on every page load.
+ *
+ * Their alternative portal at nadac.retool.com requires authentication
+ * and doesn't expose any public API endpoints.
+ *
+ * The /play/ page is a WordPress shell that links to the broken PHP calendar
+ * and authenticated Retool apps — no publicly accessible trial data exists.
+ *
+ * This scraper returns empty results until NADAC fixes their calendar
+ * or provides an alternative public data source.
  */
 export class NadacScraper extends BaseScraper {
   constructor() {
@@ -23,12 +29,11 @@ export class NadacScraper extends BaseScraper {
 
   async scrape(): Promise<ScrapePageResult> {
     console.warn(
-      "[nadac] NADAC scraper is not yet implemented. " +
-        "NADAC events are managed through their Retool portal and " +
-        "don't expose a publicly scrapeable listing."
+      "[nadac] NADAC trial calendar is currently broken (PHP MYSQL_ASSOC error). " +
+        "No public data source available. Returning empty results."
     );
 
-    // Return empty result — no trials scraped
+    // Return empty result — NADAC has no scrapeable public calendar
     return this.buildResult([]);
   }
 }
