@@ -10,6 +10,10 @@ import {
   Filter,
   ArrowLeft,
   ExternalLink,
+  Share2,
+  CalendarPlus,
+  Check,
+  Copy,
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
@@ -47,6 +51,8 @@ export default function SchedulePage() {
 
   const [savedTrials, setSavedTrials] = useState<SavedTrial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [copied, setCopied] = useState<"link" | "ical" | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("upcoming");
 
@@ -71,7 +77,31 @@ export default function SchedulePage() {
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
+
+    // Also fetch share token
+    fetch("/api/profile/share-token")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.shareToken) setShareToken(data.shareToken);
+      })
+      .catch(console.error);
   }, [user]);
+
+  const shareUrl =
+    typeof window !== "undefined" && shareToken
+      ? `${window.location.origin}/s/${shareToken}`
+      : null;
+
+  const icalUrl =
+    typeof window !== "undefined" && shareToken
+      ? `${window.location.origin}/api/ical/${shareToken}`
+      : null;
+
+  const copyToClipboard = async (text: string, type: "link" | "ical") => {
+    await navigator.clipboard.writeText(text);
+    setCopied(type);
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   // Filter and sort trials
   const filteredTrials = useMemo(() => {
@@ -175,6 +205,34 @@ export default function SchedulePage() {
           <p className="text-sm text-gray-500 mt-1">
             {savedTrials.length} saved trial{savedTrials.length !== 1 ? "s" : ""}
           </p>
+
+          {/* Share + iCal buttons */}
+          {shareToken && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              <button
+                onClick={() => shareUrl && copyToClipboard(shareUrl, "link")}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                {copied === "link" ? (
+                  <Check className="h-3.5 w-3.5 text-green-600" />
+                ) : (
+                  <Share2 className="h-3.5 w-3.5" />
+                )}
+                {copied === "link" ? "Copied!" : "Share schedule"}
+              </button>
+              <button
+                onClick={() => icalUrl && copyToClipboard(icalUrl, "ical")}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                {copied === "ical" ? (
+                  <Check className="h-3.5 w-3.5 text-green-600" />
+                ) : (
+                  <CalendarPlus className="h-3.5 w-3.5" />
+                )}
+                {copied === "ical" ? "Copied!" : "Copy iCal URL"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Filters */}
