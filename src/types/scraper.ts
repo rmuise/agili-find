@@ -7,6 +7,7 @@ export interface ScrapedTrial {
   hosting_club: string | null;
   start_date: string; // ISO date
   end_date: string; // ISO date
+  entry_open_date: string | null;
   entry_close_date: string | null;
   classes: string[];
   judges: string[];
@@ -17,9 +18,19 @@ export interface ScrapedTrial {
     address_raw: string;
     city: string;
     state: string;
+    postal_code: string | null;
     country: string;
+    lat: number | null;
+    lng: number | null;
   };
   raw_data: Record<string, unknown>;
+}
+
+export interface ScrapePageResult {
+  trials: ScrapedTrial[];
+  hasMore: boolean;
+  cursor?: unknown;
+  scrapedAt: string;
 }
 
 export interface ScrapeJob {
@@ -32,7 +43,7 @@ export interface ScrapeJob {
   error_message: string | null;
 }
 
-export interface ScrapeResult {
+export interface ScrapeRunStats {
   organization_id: OrganizationId;
   trials_found: number;
   trials_added: number;

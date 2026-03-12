@@ -1,23 +1,79 @@
-import { Search, MapPin, Calendar, Filter } from "lucide-react";
+"use client";
 
-const ORGANIZATIONS = [
-  { id: "akc", name: "AKC", color: "bg-blue-500" },
-  { id: "usdaa", name: "USDAA", color: "bg-red-500" },
-  { id: "cpe", name: "CPE", color: "bg-green-500" },
-  { id: "nadac", name: "NADAC", color: "bg-purple-500" },
-  { id: "uki", name: "UKI", color: "bg-orange-500" },
-  { id: "ckc", name: "CKC", color: "bg-pink-500" },
-];
-
-const RADIUS_OPTIONS = [
-  { value: "25", label: "25 mi" },
-  { value: "50", label: "50 mi" },
-  { value: "100", label: "100 mi" },
-  { value: "200", label: "200 mi" },
-  { value: "any", label: "Any" },
-];
+import { useState, useCallback } from "react";
+import { SearchForm, type SearchFormValues } from "@/components/search/search-form";
+import { ResultsList } from "@/components/search/results-list";
+import { TrialMap } from "@/components/map";
+import { geocodeLocation } from "@/lib/geocoding/client";
+import type { TrialResult } from "@/types/search";
 
 export default function Home() {
+  const [trials, setTrials] = useState<TrialResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [resultCount, setResultCount] = useState(0);
+  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [searchCenter, setSearchCenter] = useState<{ lat: number; lng: number } | undefined>();
+
+  const handleSearch = useCallback(async (values: SearchFormValues) => {
+    setIsLoading(true);
+    setHasSearched(true);
+
+    try {
+      const params = new URLSearchParams();
+
+      // Geocode location if provided
+      if (values.location.trim()) {
+        const geo = await geocodeLocation(values.location);
+        if (geo) {
+          params.set("lat", String(geo.lat));
+          params.set("lng", String(geo.lng));
+          setSearchCenter({ lat: geo.lat, lng: geo.lng });
+          if (values.radius !== "any") {
+            params.set("radius", values.radius);
+          }
+        } else {
+          setSearchCenter(undefined);
+        }
+      }
+
+      // Org filter
+      if (values.orgs.length > 0 && values.orgs.length < 6) {
+        params.set("orgs", values.orgs.join(","));
+      }
+
+      // Date filter
+      if (values.startDate) {
+        params.set("startDate", values.startDate);
+      }
+
+      // Judge filter
+      if (values.judge.trim()) {
+        params.set("judge", values.judge.trim());
+      }
+
+      params.set("limit", "100");
+
+      const response = await fetch(`/api/trials?${params.toString()}`);
+      const data = await response.json();
+
+      if (data.error) {
+        console.error("Search error:", data.error);
+        setTrials([]);
+        setResultCount(0);
+      } else {
+        setTrials(data.trials);
+        setResultCount(data.trials.length);
+      }
+    } catch (err) {
+      console.error("Search failed:", err);
+      setTrials([]);
+      setResultCount(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -48,103 +104,58 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Search Form */}
-          <div className="bg-gray-50 rounded-xl p-6 space-y-4">
-            {/* Location + Radius Row */}
-            <div className="flex gap-3">
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="City, state, or zip code..."
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-              </div>
-              <select className="px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-                {RADIUS_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Organization Filters */}
-            <div className="flex flex-wrap gap-2">
-              {ORGANIZATIONS.map((org) => (
-                <label
-                  key={org.id}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer hover:border-blue-400 transition-colors"
-                >
-                  <input
-                    type="checkbox"
-                    defaultChecked
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span
-                    className={`w-2 h-2 rounded-full ${org.color}`}
-                  ></span>
-                  <span className="text-sm font-medium text-gray-700">
-                    {org.name}
-                  </span>
-                </label>
-              ))}
-            </div>
-
-            {/* Date Range + Judge + Search */}
-            <div className="flex gap-3 flex-wrap">
-              <div className="relative flex-1 min-w-[200px]">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="date"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-              </div>
-              <div className="relative flex-1 min-w-[200px]">
-                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Judge name..."
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                />
-              </div>
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2">
-                <Search className="h-4 w-4" />
-                Search
-              </button>
-            </div>
-          </div>
+          <SearchForm onSearch={handleSearch} isLoading={isLoading} />
         </div>
       </div>
 
       {/* Results Area */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* View Toggle */}
+        {/* View Toggle + Count */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600">
-            Enter a location to search for upcoming trials
+            {hasSearched
+              ? `${resultCount} trial${resultCount !== 1 ? "s" : ""} found`
+              : "Enter a location to search for upcoming trials"}
           </p>
           <div className="flex gap-1 bg-gray-200 rounded-lg p-1">
-            <button className="px-4 py-2 text-sm font-medium rounded-md bg-white shadow-sm">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                viewMode === "list"
+                  ? "bg-white shadow-sm text-gray-900"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
               List
             </button>
-            <button className="px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900">
+            <button
+              onClick={() => setViewMode("map")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                viewMode === "map"
+                  ? "bg-white shadow-sm text-gray-900"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
               Map
             </button>
           </div>
         </div>
 
-        {/* Empty State */}
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-          <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Search for agility trials
-          </h3>
-          <p className="text-gray-500 max-w-md mx-auto">
-            Enter your location and set your search radius to find upcoming dog
-            agility trials near you across all major organizations.
-          </p>
-        </div>
+        {viewMode === "list" ? (
+          <ResultsList
+            trials={trials}
+            isLoading={isLoading}
+            hasSearched={hasSearched}
+          />
+        ) : hasSearched && trials.length > 0 ? (
+          <TrialMap trials={trials} center={searchCenter} />
+        ) : (
+          <ResultsList
+            trials={[]}
+            isLoading={isLoading}
+            hasSearched={hasSearched}
+          />
+        )}
       </div>
     </div>
   );
