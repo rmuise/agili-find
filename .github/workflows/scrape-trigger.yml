@@ -1,15 +1,15 @@
 name: Process Scrape Queue
 
 on:
-  # Run every 5 minutes to process queued scrape jobs
   schedule:
-    - cron: '*/5 * * * *'
-  # Allow manual trigger
-  workflow_dispatch:
+    # Run every 5 minutes to process one queued scrape job
+    - cron: "*/5 * * * *"
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
   process-queue:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - name: Process one scrape job
         run: |
@@ -24,6 +24,6 @@ jobs:
           echo "Response: $body"
 
           if [ "$http_code" -ge 500 ]; then
-            echo "Server error"
+            echo "::error::Server error processing scrape queue"
             exit 1
           fi
