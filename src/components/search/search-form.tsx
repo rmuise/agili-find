@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Search, MapPin, Calendar, Filter, Loader2 } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { Search, MapPin, Calendar, Filter, Loader2, X } from "lucide-react";
 import type { OrganizationId } from "@/types/trial";
 
 const ORGANIZATIONS: Array<{
@@ -47,6 +47,90 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const [startDate, setStartDate] = useState("");
   const [judge, setJudge] = useState("");
 
+  // Judge autocomplete state
+  const [allJudges, setAllJudges] = useState<string[]>([]);
+  const [filteredJudges, setFilteredJudges] = useState<string[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [highlightIndex, setHighlightIndex] = useState(-1);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch all judges on mount
+  useEffect(() => {
+    fetch("/api/judges")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.judges) {
+          setAllJudges(data.judges);
+        }
+      })
+      .catch((err) => console.error("Failed to load judges:", err));
+  }, []);
+
+  // Filter judges as user types
+  useEffect(() => {
+    if (!judge.trim()) {
+      setFilteredJudges([]);
+      return;
+    }
+    const query = judge.toLowerCase();
+    const matches = allJudges.filter((j) =>
+      j.toLowerCase().includes(query)
+    );
+    setFilteredJudges(matches.slice(0, 20)); // Cap at 20 suggestions
+    setHighlightIndex(-1);
+  }, [judge, allJudges]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const selectJudge = useCallback((name: string) => {
+    setJudge(name);
+    setShowDropdown(false);
+    setFilteredJudges([]);
+  }, []);
+
+  const clearJudge = useCallback(() => {
+    setJudge("");
+    setShowDropdown(false);
+    setFilteredJudges([]);
+    inputRef.current?.focus();
+  }, []);
+
+  const handleJudgeKeyDown = (e: React.KeyboardEvent) => {
+    if (!showDropdown || filteredJudges.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightIndex((prev) =>
+        prev < filteredJudges.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredJudges.length - 1
+      );
+    } else if (e.key === "Enter" && highlightIndex >= 0) {
+      e.preventDefault();
+      selectJudge(filteredJudges[highlightIndex]);
+    } else if (e.key === "Escape") {
+      setShowDropdown(false);
+    }
+  };
+
   const toggleOrg = useCallback((orgId: OrganizationId) => {
     setSelectedOrgs((prev) => {
       const next = new Set(prev);
@@ -61,6 +145,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowDropdown(false);
     onSearch({
       location,
       radius,
@@ -133,16 +218,75 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
             className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           />
         </div>
+
+        {/* Judge Autocomplete */}
         <div className="relative flex-1 min-w-[200px]">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
+            ref={inputRef}
             type="text"
             value={judge}
-            onChange={(e) => setJudge(e.target.value)}
-            placeholder="Judge name..."
-            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            onChange={(e) => {
+              setJudge(e.target.value);
+              setShowDropdown(true);
+            }}
+            onFocus={() => {
+              if (judge.trim()) setShowDropdown(true);
+            }}
+            onKeyDown={handleJudgeKeyDown}
+            placeholder={`Judge name (${allJudges.length} available)...`}
+            className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            autoComplete="off"
           />
+          {judge && (
+            <button
+              type="button"
+              onClick={clearJudge}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+
+          {/* Dropdown */}
+          {showDropdown && filteredJudges.length > 0 && (
+            <div
+              ref={dropdownRef}
+              className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+            >
+              {filteredJudges.map((name, i) => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => selectJudge(name)}
+                  className={`w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors ${
+                    i === highlightIndex
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-700"
+                  }`}
+                >
+                  <HighlightMatch text={name} query={judge} />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* No results message */}
+          {showDropdown &&
+            judge.trim().length > 0 &&
+            filteredJudges.length === 0 &&
+            allJudges.length > 0 && (
+              <div
+                ref={dropdownRef}
+                className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg"
+              >
+                <div className="px-4 py-3 text-sm text-gray-500">
+                  No judges matching &ldquo;{judge}&rdquo;
+                </div>
+              </div>
+            )}
         </div>
+
         <button
           type="submit"
           disabled={isLoading}
@@ -157,5 +301,26 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         </button>
       </div>
     </form>
+  );
+}
+
+/** Highlights the matching portion of the judge name */
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>;
+
+  const lowerText = text.toLowerCase();
+  const lowerQuery = query.toLowerCase().trim();
+  const idx = lowerText.indexOf(lowerQuery);
+
+  if (idx === -1) return <>{text}</>;
+
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span className="font-semibold text-blue-600">
+        {text.slice(idx, idx + lowerQuery.length)}
+      </span>
+      {text.slice(idx + lowerQuery.length)}
+    </>
   );
 }
