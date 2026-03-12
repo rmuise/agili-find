@@ -5,6 +5,7 @@ import { SearchForm, type SearchFormValues } from "@/components/search/search-fo
 import { ResultsList } from "@/components/search/results-list";
 import { TrialMap } from "@/components/map";
 import { UserMenu } from "@/components/auth/user-menu";
+import { NavLinks } from "@/components/nav/nav-links";
 import { geocodeLocation } from "@/lib/geocoding/client";
 import type { TrialResult } from "@/types/search";
 
@@ -100,7 +101,10 @@ export default function Home() {
             </div>
             <h1 className="text-xl font-bold text-gray-900">AgiliFind</h1>
           </div>
-          <UserMenu />
+          <div className="flex items-center gap-3">
+            <NavLinks />
+            <UserMenu />
+          </div>
         </div>
       </header>
 
