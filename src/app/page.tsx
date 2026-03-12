@@ -8,9 +8,11 @@ import { UserMenu } from "@/components/auth/user-menu";
 import { NavLinks } from "@/components/nav/nav-links";
 import { geocodeLocation } from "@/lib/geocoding/client";
 import type { TrialResult } from "@/types/search";
+import type { SeminarResult } from "@/components/search/seminar-card";
 
 export default function Home() {
   const [trials, setTrials] = useState<TrialResult[]>([]);
+  const [seminars, setSeminars] = useState<SeminarResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [resultCount, setResultCount] = useState(0);
@@ -25,6 +27,7 @@ export default function Home() {
 
     try {
       const params = new URLSearchParams();
+      const seminarParams = new URLSearchParams();
 
       // Geocode location if provided
       if (values.location.trim()) {
@@ -32,9 +35,12 @@ export default function Home() {
         if (geo) {
           params.set("lat", String(geo.lat));
           params.set("lng", String(geo.lng));
+          seminarParams.set("lat", String(geo.lat));
+          seminarParams.set("lng", String(geo.lng));
           setSearchCenter({ lat: geo.lat, lng: geo.lng });
           if (values.radius !== "any") {
             params.set("radius", values.radius);
+            seminarParams.set("radius", values.radius);
           }
         } else {
           setSearchCenter(undefined);
@@ -42,13 +48,14 @@ export default function Home() {
             `Could not find location "${values.location}". Try a different city, state, or zip code.`
           );
           setTrials([]);
+          setSeminars([]);
           setResultCount(0);
           setIsLoading(false);
           return;
         }
       }
 
-      // Org filter
+      // Org filter (trials only)
       if (values.orgs.length > 0 && values.orgs.length < 7) {
         params.set("orgs", values.orgs.join(","));
       }
@@ -56,44 +63,65 @@ export default function Home() {
       // Date filter
       if (values.startDate) {
         params.set("startDate", values.startDate);
+        seminarParams.set("startDate", values.startDate);
       }
       if (values.endDate) {
         params.set("endDate", values.endDate);
+        seminarParams.set("endDate", values.endDate);
       }
 
-      // Judge filter
+      // Judge filter (trials only)
       if (values.judge.trim()) {
         params.set("judge", values.judge.trim());
       }
 
-      // Class filter
+      // Class filter (trials only)
       if (values.classes.length > 0) {
         params.set("classes", values.classes.join(","));
       }
 
       params.set("limit", "100");
 
-      const response = await fetch(`/api/trials?${params.toString()}`);
-      const data = await response.json();
+      const [trialsRes, seminarsRes] = await Promise.all([
+        fetch(`/api/trials?${params.toString()}`),
+        fetch(`/api/seminars?${seminarParams.toString()}`),
+      ]);
 
-      if (data.error) {
-        console.error("Search error:", data.error);
-        setErrorMessage("Something went wrong with your search. Please try again.");
-        setTrials([]);
-        setResultCount(0);
-      } else {
-        setTrials(data.trials);
-        setResultCount(data.trials.length);
+      const [trialsData, seminarsData] = await Promise.all([
+        trialsRes.json(),
+        seminarsRes.json(),
+      ]);
+
+      const fetchedTrials = trialsData.error ? [] : trialsData.trials || [];
+      const fetchedSeminars = seminarsData.error ? [] : seminarsData.seminars || [];
+
+      if (trialsData.error) {
+        console.error("Trials search error:", trialsData.error);
       }
+      if (seminarsData.error) {
+        console.error("Seminars search error:", seminarsData.error);
+      }
+
+      if (trialsData.error && seminarsData.error) {
+        setErrorMessage("Something went wrong with your search. Please try again.");
+      }
+
+      setTrials(fetchedTrials);
+      setSeminars(fetchedSeminars);
+      setResultCount(fetchedTrials.length + fetchedSeminars.length);
     } catch (err) {
       console.error("Search failed:", err);
       setErrorMessage("Unable to reach the server. Please check your connection and try again.");
       setTrials([]);
+      setSeminars([]);
       setResultCount(0);
     } finally {
       setIsLoading(false);
     }
   }, []);
+
+  const trialCount = trials.length;
+  const seminarCount = seminars.length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,7 +149,7 @@ export default function Home() {
               Find Your Next Agility Trial
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
-              Search upcoming trials from AKC, USDAA, CPE, UKI, CKC, and AAC in
+              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, and AAC in
               one place.
             </p>
           </div>
@@ -135,7 +163,7 @@ export default function Home() {
         {/* Error Banner */}
         {errorMessage && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-            <span className="text-red-500 text-lg flex-shrink-0">⚠</span>
+            <span className="text-red-500 text-lg flex-shrink-0">{"\u26A0"}</span>
             <div>
               <p className="text-sm text-red-800">{errorMessage}</p>
             </div>
@@ -143,7 +171,7 @@ export default function Home() {
               onClick={() => setErrorMessage(null)}
               className="ml-auto text-red-400 hover:text-red-600 flex-shrink-0"
             >
-              ✕
+              {"\u2715"}
             </button>
           </div>
         )}
@@ -152,7 +180,13 @@ export default function Home() {
         <div className="flex items-center justify-between mb-4 sm:mb-6 gap-4">
           <p className="text-sm sm:text-base text-gray-600 min-w-0">
             {hasSearched
-              ? `${resultCount} trial${resultCount !== 1 ? "s" : ""} found`
+              ? resultCount === 0
+                ? "No results found"
+                : `${resultCount} result${resultCount !== 1 ? "s" : ""} found${
+                    trialCount > 0 && seminarCount > 0
+                      ? ` (${trialCount} trial${trialCount !== 1 ? "s" : ""}, ${seminarCount} seminar${seminarCount !== 1 ? "s" : ""})`
+                      : ""
+                  }`
               : "Enter a location to search for upcoming trials"}
           </p>
           <div className="flex gap-1 bg-gray-200 rounded-lg p-1 flex-shrink-0">
@@ -182,6 +216,7 @@ export default function Home() {
         {viewMode === "list" ? (
           <ResultsList
             trials={trials}
+            seminars={seminars}
             isLoading={isLoading}
             hasSearched={hasSearched}
           />
