@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { SearchForm, type SearchFormValues } from "@/components/search/search-form";
 import { ResultsList } from "@/components/search/results-list";
 import { TrialMap } from "@/components/map";
+import { UserMenu } from "@/components/auth/user-menu";
 import { geocodeLocation } from "@/lib/geocoding/client";
 import type { TrialResult } from "@/types/search";
 
@@ -99,9 +100,7 @@ export default function Home() {
             </div>
             <h1 className="text-xl font-bold text-gray-900">AgiliFind</h1>
           </div>
-          <p className="text-sm text-gray-500 hidden sm:block">
-            Search agility trials across all organizations
-          </p>
+          <UserMenu />
         </div>
       </header>
 

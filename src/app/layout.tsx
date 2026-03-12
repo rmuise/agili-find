@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AuthProvider } from "@/lib/supabase/auth-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AgiliFind — Dog Agility Trial Search",
   description:
-    "Search upcoming dog agility trials across AKC, USDAA, CPE, NADAC, UKI, and CKC in one place.",
+    "Search upcoming dog agility trials across AKC, USDAA, CPE, NADAC, UKI, CKC, and AAC in one place.",
 };
 
 export default function RootLayout({
@@ -28,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

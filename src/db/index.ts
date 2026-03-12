@@ -1,12 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Server-side client with service role key for admin operations (scrapers, etc.)
+/**
+ * Server-side client with service role key for admin operations (scrapers, cron, etc.).
+ * Re-exported for backward compatibility with existing consumers.
+ */
 export function createServerClient() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  return createClient(supabaseUrl, serviceRoleKey);
+  return createAdminClient();
 }
