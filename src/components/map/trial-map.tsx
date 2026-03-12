@@ -19,6 +19,7 @@ const ORG_COLORS: Record<string, string> = {
   nadac: "#a855f7",
   uki: "#f97316",
   ckc: "#ec4899",
+  aac: "#14b8a6",
 };
 
 export function TrialMapInner({ trials, center }: TrialMapProps) {

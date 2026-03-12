@@ -13,7 +13,8 @@ INSERT INTO organizations (id, name, website_url) VALUES
   ('cpe', 'Canine Performance Events', 'https://www.k9cpe.com'),
   ('nadac', 'North American Dog Agility Council', 'https://www.nadac.com'),
   ('uki', 'UK Agility International', 'https://ukagilityinternational.com'),
-  ('ckc', 'Canadian Kennel Club', 'https://www.ckc.ca')
+  ('ckc', 'Canadian Kennel Club', 'https://www.ckc.ca'),
+  ('aac', 'Agility Association of Canada', 'https://www.aac.ca')
 ON CONFLICT (id) DO NOTHING;
 
 -- Venues table with PostGIS geography column

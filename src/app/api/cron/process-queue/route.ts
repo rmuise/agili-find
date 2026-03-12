@@ -7,6 +7,7 @@ import { CpeScraper } from "@/lib/scrapers/cpe";
 import { NadacScraper } from "@/lib/scrapers/nadac";
 import { UkiScraper } from "@/lib/scrapers/uki";
 import { CkcScraper } from "@/lib/scrapers/ckc";
+import { AacScraper } from "@/lib/scrapers/aac";
 import { OrganizationId } from "@/types/trial";
 import { BaseScraper } from "@/lib/scrapers/base";
 
@@ -129,6 +130,8 @@ function createScraper(orgId: OrganizationId): BaseScraper | null {
       return new UkiScraper();
     case "ckc":
       return new CkcScraper();
+    case "aac":
+      return new AacScraper();
     default:
       return null;
   }

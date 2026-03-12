@@ -5,6 +5,7 @@ import { CpeScraper } from "@/lib/scrapers/cpe";
 import { NadacScraper } from "@/lib/scrapers/nadac";
 import { UkiScraper } from "@/lib/scrapers/uki";
 import { CkcScraper } from "@/lib/scrapers/ckc";
+import { AacScraper } from "@/lib/scrapers/aac";
 import { processScraperChunk } from "@/lib/scrapers/processor";
 import { BaseScraper } from "@/lib/scrapers/base";
 import { OrganizationId } from "@/types/trial";
@@ -13,7 +14,7 @@ import { OrganizationId } from "@/types/trial";
  * Test endpoint to run scrapers manually.
  * GET /api/test-scrape?org=akc&chunks=1
  *
- * Supported orgs: akc, usdaa, cpe, nadac, uki, ckc
+ * Supported orgs: akc, usdaa, cpe, nadac, uki, ckc, aac
  * Protected by CRON_SECRET for safety.
  */
 export async function GET(request: NextRequest) {
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
   const scraper = createScraper(orgId);
   if (!scraper) {
     return NextResponse.json(
-      { error: `Unknown org: ${orgId}. Use: akc, usdaa, cpe, nadac, uki, ckc` },
+      { error: `Unknown org: ${orgId}. Use: akc, usdaa, cpe, nadac, uki, ckc, aac` },
       { status: 400 }
     );
   }
@@ -78,6 +79,8 @@ function createScraper(orgId: OrganizationId): BaseScraper | null {
       return new UkiScraper();
     case "ckc":
       return new CkcScraper();
+    case "aac":
+      return new AacScraper();
     default:
       return null;
   }

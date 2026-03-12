@@ -11,6 +11,7 @@ const ORG_COLORS: Record<string, string> = {
   nadac: "bg-purple-500",
   uki: "bg-orange-500",
   ckc: "bg-pink-500",
+  aac: "bg-teal-500",
 };
 
 interface TrialCardProps {

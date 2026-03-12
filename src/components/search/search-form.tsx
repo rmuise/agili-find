@@ -15,6 +15,7 @@ const ORGANIZATIONS: Array<{
   { id: "nadac", name: "NADAC", color: "bg-purple-500" },
   { id: "uki", name: "UKI", color: "bg-orange-500" },
   { id: "ckc", name: "CKC", color: "bg-pink-500" },
+  { id: "aac", name: "AAC", color: "bg-teal-500" },
 ];
 
 const RADIUS_OPTIONS = [

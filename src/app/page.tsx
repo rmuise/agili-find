@@ -47,7 +47,7 @@ export default function Home() {
       }
 
       // Org filter
-      if (values.orgs.length > 0 && values.orgs.length < 6) {
+      if (values.orgs.length > 0 && values.orgs.length < 7) {
         params.set("orgs", values.orgs.join(","));
       }
 
@@ -113,8 +113,8 @@ export default function Home() {
               Find Your Next Agility Trial
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
-              Search upcoming trials from AKC, USDAA, CPE, UKI, and CKC in one
-              place.
+              Search upcoming trials from AKC, USDAA, CPE, UKI, CKC, and AAC in
+              one place.
             </p>
           </div>
 
