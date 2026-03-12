@@ -1,0 +1,32 @@
+name: Scrape CKC (CanuckDogs)
+
+on:
+  schedule:
+    # Run daily at 5am UTC (after the main scrape queue starts at 4am)
+    - cron: "0 5 * * *"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape-ckc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run CKC scraper (all 5 regions)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npx tsx scripts/scrape-ckc.ts
