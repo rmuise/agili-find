@@ -37,6 +37,10 @@ export async function GET(request: NextRequest) {
     : null;
 
   const judge = params.get("judge") || null;
+  const classesParam = params.get("classes");
+  const classFilter: string[] | null = classesParam
+    ? classesParam.split(",").filter(Boolean)
+    : null;
   const startDate = params.get("startDate") || null;
   const endDate = params.get("endDate") || null;
 
@@ -53,7 +57,7 @@ export async function GET(request: NextRequest) {
       radius_meters: hasLocation ? radiusMeters : 999999999, // effectively no limit
       org_filter: orgFilter,
       judge_filter: judge,
-      class_filter: null,
+      class_filter: classFilter,
       date_start: startDate,
       date_end: endDate,
       result_limit: limit,

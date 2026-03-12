@@ -66,6 +66,11 @@ export default function Home() {
         params.set("judge", values.judge.trim());
       }
 
+      // Class filter
+      if (values.classes.length > 0) {
+        params.set("classes", values.classes.join(","));
+      }
+
       params.set("limit", "100");
 
       const response = await fetch(`/api/trials?${params.toString()}`);

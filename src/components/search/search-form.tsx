@@ -33,6 +33,7 @@ export interface SearchFormValues {
   startDate: string;
   endDate: string;
   judge: string;
+  classes: string[];
 }
 
 interface SearchFormProps {
@@ -49,6 +50,13 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [judge, setJudge] = useState("");
+  const [classFilter, setClassFilter] = useState("");
+  const [allClasses, setAllClasses] = useState<string[]>([]);
+  const [filteredClasses, setFilteredClasses] = useState<string[]>([]);
+  const [selectedClasses, setSelectedClasses] = useState<Set<string>>(new Set());
+  const [showClassDropdown, setShowClassDropdown] = useState(false);
+  const classDropdownRef = useRef<HTMLDivElement>(null);
+  const classInputRef = useRef<HTMLInputElement>(null);
 
   // Judge autocomplete state
   const [allJudges, setAllJudges] = useState<string[]>([]);
@@ -68,6 +76,60 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         }
       })
       .catch((err) => console.error("Failed to load judges:", err));
+  }, []);
+
+  // Fetch all classes on mount
+  useEffect(() => {
+    fetch("/api/classes")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.classes) {
+          setAllClasses(data.classes);
+        }
+      })
+      .catch((err) => console.error("Failed to load classes:", err));
+  }, []);
+
+  // Filter classes as user types
+  useEffect(() => {
+    if (!classFilter.trim()) {
+      setFilteredClasses(allClasses.filter((c) => !selectedClasses.has(c)).slice(0, 20));
+      return;
+    }
+    const query = classFilter.toLowerCase();
+    const matches = allClasses
+      .filter((c) => c.toLowerCase().includes(query) && !selectedClasses.has(c))
+      .slice(0, 20);
+    setFilteredClasses(matches);
+  }, [classFilter, allClasses, selectedClasses]);
+
+  // Close class dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        classDropdownRef.current &&
+        !classDropdownRef.current.contains(e.target as Node) &&
+        classInputRef.current &&
+        !classInputRef.current.contains(e.target as Node)
+      ) {
+        setShowClassDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleClass = useCallback((cls: string) => {
+    setSelectedClasses((prev) => {
+      const next = new Set(prev);
+      if (next.has(cls)) {
+        next.delete(cls);
+      } else {
+        next.add(cls);
+      }
+      return next;
+    });
+    setClassFilter("");
   }, []);
 
   // Filter judges as user types
@@ -149,6 +211,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShowDropdown(false);
+    setShowClassDropdown(false);
     onSearch({
       location,
       radius,
@@ -156,6 +219,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
       startDate,
       endDate,
       judge,
+      classes: [...selectedClasses],
     });
   };
 
@@ -210,6 +274,79 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
           </label>
         ))}
       </div>
+
+      {/* Class Filter */}
+      {allClasses.length > 0 && (
+        <div>
+          {/* Selected classes as chips */}
+          {selectedClasses.size > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {[...selectedClasses].map((cls) => (
+                <span
+                  key={cls}
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded-md text-xs font-medium text-blue-700"
+                >
+                  {cls}
+                  <button
+                    type="button"
+                    onClick={() => toggleClass(cls)}
+                    className="text-blue-400 hover:text-blue-600"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+              <button
+                type="button"
+                onClick={() => setSelectedClasses(new Set())}
+                className="text-xs text-gray-500 hover:text-gray-700 px-1"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+
+          {/* Class search input */}
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              ref={classInputRef}
+              type="text"
+              value={classFilter}
+              onChange={(e) => {
+                setClassFilter(e.target.value);
+                setShowClassDropdown(true);
+              }}
+              onFocus={() => setShowClassDropdown(true)}
+              placeholder={`Filter by class (${allClasses.length} available)...`}
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              autoComplete="off"
+            />
+
+            {/* Class dropdown */}
+            {showClassDropdown && filteredClasses.length > 0 && (
+              <div
+                ref={classDropdownRef}
+                className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+              >
+                {filteredClasses.map((cls) => (
+                  <button
+                    key={cls}
+                    type="button"
+                    onClick={() => {
+                      toggleClass(cls);
+                      setShowClassDropdown(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors"
+                  >
+                    {cls}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Date Range + Judge + Search */}
       <div className="flex gap-3 flex-wrap">
