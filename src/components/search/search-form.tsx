@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { Search, MapPin, Calendar, Filter, Loader2, X } from "lucide-react";
 import type { OrganizationId } from "@/types/trial";
+import { CLASS_DATA, type ClassInfo } from "@/lib/class-data";
 
 const ORGANIZATIONS: Array<{
   id: OrganizationId;
@@ -18,6 +19,14 @@ const ORGANIZATIONS: Array<{
   { id: "aac", name: "AAC", color: "bg-teal-500" },
   { id: "tdaa", name: "TDAA", color: "bg-amber-500" },
 ];
+
+const ORG_NAMES: Record<string, string> = Object.fromEntries(
+  ORGANIZATIONS.map((o) => [o.id, o.name])
+);
+
+const ORG_COLORS: Record<string, string> = Object.fromEntries(
+  ORGANIZATIONS.map((o) => [o.id, o.color])
+);
 
 const RADIUS_OPTIONS = [
   { value: "25", label: "25 mi" },
@@ -42,6 +51,14 @@ interface SearchFormProps {
   isLoading: boolean;
 }
 
+interface GroupedClass {
+  orgId: string;
+  orgName: string;
+  info: ClassInfo;
+  /** composite key for deduplication: "orgId:className" */
+  key: string;
+}
+
 export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const [location, setLocation] = useState("");
   const [radius, setRadius] = useState("100");
@@ -52,8 +69,6 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const [endDate, setEndDate] = useState("");
   const [judge, setJudge] = useState("");
   const [classFilter, setClassFilter] = useState("");
-  const [allClasses, setAllClasses] = useState<string[]>([]);
-  const [filteredClasses, setFilteredClasses] = useState<string[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<Set<string>>(new Set());
   const [showClassDropdown, setShowClassDropdown] = useState(false);
   const classDropdownRef = useRef<HTMLDivElement>(null);
@@ -67,6 +82,48 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Build org-linked class list based on selected orgs
+  const availableClasses: GroupedClass[] = useMemo(() => {
+    const result: GroupedClass[] = [];
+    for (const orgId of selectedOrgs) {
+      const classes = CLASS_DATA[orgId];
+      if (!classes) continue;
+      for (const info of classes) {
+        result.push({
+          orgId,
+          orgName: ORG_NAMES[orgId] || orgId.toUpperCase(),
+          info,
+          key: `${orgId}:${info.name}`,
+        });
+      }
+    }
+    return result;
+  }, [selectedOrgs]);
+
+  // Filtered classes for dropdown (based on text filter + not already selected)
+  const filteredClasses = useMemo(() => {
+    const query = classFilter.toLowerCase().trim();
+    return availableClasses.filter((c) => {
+      if (selectedClasses.has(c.info.name)) return false;
+      if (!query) return true;
+      return (
+        c.info.name.toLowerCase().includes(query) ||
+        c.orgName.toLowerCase().includes(query) ||
+        c.info.category.toLowerCase().includes(query)
+      );
+    });
+  }, [classFilter, availableClasses, selectedClasses]);
+
+  // Group filtered classes by org for display
+  const groupedFilteredClasses = useMemo(() => {
+    const groups: Record<string, GroupedClass[]> = {};
+    for (const cls of filteredClasses) {
+      if (!groups[cls.orgId]) groups[cls.orgId] = [];
+      groups[cls.orgId].push(cls);
+    }
+    return Object.entries(groups);
+  }, [filteredClasses]);
+
   // Fetch all judges on mount
   useEffect(() => {
     fetch("/api/judges")
@@ -78,31 +135,6 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
       })
       .catch((err) => console.error("Failed to load judges:", err));
   }, []);
-
-  // Fetch all classes on mount
-  useEffect(() => {
-    fetch("/api/classes")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.classes) {
-          setAllClasses(data.classes);
-        }
-      })
-      .catch((err) => console.error("Failed to load classes:", err));
-  }, []);
-
-  // Filter classes as user types
-  useEffect(() => {
-    if (!classFilter.trim()) {
-      setFilteredClasses(allClasses.filter((c) => !selectedClasses.has(c)).slice(0, 20));
-      return;
-    }
-    const query = classFilter.toLowerCase();
-    const matches = allClasses
-      .filter((c) => c.toLowerCase().includes(query) && !selectedClasses.has(c))
-      .slice(0, 20);
-    setFilteredClasses(matches);
-  }, [classFilter, allClasses, selectedClasses]);
 
   // Close class dropdown on outside click
   useEffect(() => {
@@ -143,7 +175,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
     const matches = allJudges.filter((j) =>
       j.toLowerCase().includes(query)
     );
-    setFilteredJudges(matches.slice(0, 20)); // Cap at 20 suggestions
+    setFilteredJudges(matches.slice(0, 20));
     setHighlightIndex(-1);
   }, [judge, allJudges]);
 
@@ -209,6 +241,19 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
     });
   }, []);
 
+  // Clear class selections that are no longer available when orgs change
+  useEffect(() => {
+    const availableNames = new Set(availableClasses.map((c) => c.info.name));
+    setSelectedClasses((prev) => {
+      const next = new Set<string>();
+      for (const cls of prev) {
+        if (availableNames.has(cls)) next.add(cls);
+      }
+      if (next.size !== prev.size) return next;
+      return prev;
+    });
+  }, [availableClasses]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShowDropdown(false);
@@ -223,6 +268,10 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
       classes: [...selectedClasses],
     });
   };
+
+  const totalClasses = availableClasses.filter(
+    (c) => !selectedClasses.has(c.info.name)
+  ).length;
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-6 space-y-4">
@@ -276,78 +325,100 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         ))}
       </div>
 
-      {/* Class Filter */}
-      {allClasses.length > 0 && (
-        <div>
-          {/* Selected classes as chips */}
-          {selectedClasses.size > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              {[...selectedClasses].map((cls) => (
-                <span
-                  key={cls}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded-md text-xs font-medium text-blue-700"
-                >
-                  {cls}
-                  <button
-                    type="button"
-                    onClick={() => toggleClass(cls)}
-                    className="text-blue-400 hover:text-blue-600"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-              <button
-                type="button"
-                onClick={() => setSelectedClasses(new Set())}
-                className="text-xs text-gray-500 hover:text-gray-700 px-1"
+      {/* Class Filter — org-grouped */}
+      <div>
+        {/* Selected classes as chips */}
+        {selectedClasses.size > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {[...selectedClasses].map((cls) => (
+              <span
+                key={cls}
+                className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 border border-blue-200 rounded-md text-xs font-medium text-blue-700"
               >
-                Clear all
-              </button>
+                {cls}
+                <button
+                  type="button"
+                  onClick={() => toggleClass(cls)}
+                  className="text-blue-400 hover:text-blue-600"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+            <button
+              type="button"
+              onClick={() => setSelectedClasses(new Set())}
+              className="text-xs text-gray-500 hover:text-gray-700 px-1"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
+
+        {/* Class search input */}
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            ref={classInputRef}
+            type="text"
+            value={classFilter}
+            onChange={(e) => {
+              setClassFilter(e.target.value);
+              setShowClassDropdown(true);
+            }}
+            onFocus={() => setShowClassDropdown(true)}
+            placeholder={`Filter by class/run type (${totalClasses} available)...`}
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+            autoComplete="off"
+          />
+
+          {/* Class dropdown — grouped by org */}
+          {showClassDropdown && groupedFilteredClasses.length > 0 && (
+            <div
+              ref={classDropdownRef}
+              className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto"
+            >
+              {groupedFilteredClasses.map(([orgId, classes]) => (
+                <div key={orgId}>
+                  {/* Org header */}
+                  <div className="px-3 py-1.5 bg-gray-50 border-b border-gray-100 flex items-center gap-1.5 sticky top-0">
+                    <span
+                      className={`w-2 h-2 rounded-full ${ORG_COLORS[orgId] || "bg-gray-400"}`}
+                    />
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                      {ORG_NAMES[orgId] || orgId.toUpperCase()}
+                    </span>
+                  </div>
+                  {/* Classes under this org */}
+                  {classes.map((cls) => (
+                    <button
+                      key={cls.key}
+                      type="button"
+                      onClick={() => {
+                        toggleClass(cls.info.name);
+                        setShowClassDropdown(false);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-blue-50 transition-colors group"
+                    >
+                      <span className="text-sm font-medium text-gray-700 group-hover:text-blue-700">
+                        {cls.info.name}
+                      </span>
+                      <span className="text-xs text-gray-400 ml-2">
+                        {cls.info.category}
+                      </span>
+                      {cls.info.description && (
+                        <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">
+                          {cls.info.description}
+                        </p>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              ))}
             </div>
           )}
-
-          {/* Class search input */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              ref={classInputRef}
-              type="text"
-              value={classFilter}
-              onChange={(e) => {
-                setClassFilter(e.target.value);
-                setShowClassDropdown(true);
-              }}
-              onFocus={() => setShowClassDropdown(true)}
-              placeholder={`Filter by class (${allClasses.length} available)...`}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-              autoComplete="off"
-            />
-
-            {/* Class dropdown */}
-            {showClassDropdown && filteredClasses.length > 0 && (
-              <div
-                ref={classDropdownRef}
-                className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
-              >
-                {filteredClasses.map((cls) => (
-                  <button
-                    key={cls}
-                    type="button"
-                    onClick={() => {
-                      toggleClass(cls);
-                      setShowClassDropdown(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 transition-colors"
-                  >
-                    {cls}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
-      )}
+      </div>
 
       {/* Date Range + Judge + Search */}
       <div className="flex gap-3 flex-wrap">
