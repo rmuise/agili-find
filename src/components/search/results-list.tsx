@@ -20,12 +20,12 @@ export function ResultsList({ trials, seminars = [], isLoading, hasSearched }: R
 
   if (!hasSearched) {
     return (
-      <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-        <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+      <div className="text-center py-16 bg-[var(--surface-2)] rounded-[14px] border border-[var(--border)]">
+        <Search className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
           Search for agility trials
         </h3>
-        <p className="text-gray-500 max-w-md mx-auto">
+        <p className="text-[var(--muted-text)] max-w-md mx-auto">
           Enter your location and set your search radius to find upcoming dog
           agility trials and seminars near you.
         </p>
@@ -37,12 +37,12 @@ export function ResultsList({ trials, seminars = [], isLoading, hasSearched }: R
 
   if (totalCount === 0) {
     return (
-      <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-        <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+      <div className="text-center py-16 bg-[var(--surface-2)] rounded-[14px] border border-[var(--border)]">
+        <Search className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
           No results found
         </h3>
-        <p className="text-gray-500 max-w-md mx-auto">
+        <p className="text-[var(--muted-text)] max-w-md mx-auto">
           Try expanding your search radius or adjusting your filters to find
           more trials and seminars.
         </p>

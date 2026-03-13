@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin, Calendar, User, ExternalLink, BookOpen, DollarSign } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { formatTrialDateRange } from "@/lib/utils";
 
 export interface SeminarResult {
   id: string;
@@ -26,27 +26,16 @@ interface SeminarCardProps {
 }
 
 export function SeminarCard({ seminar }: SeminarCardProps) {
-  const formatDateRange = () => {
-    const start = parseISO(seminar.start_date);
-    const end = parseISO(seminar.end_date);
-    if (seminar.start_date === seminar.end_date) {
-      return format(start, "EEE, MMM d, yyyy");
-    }
-    if (start.getMonth() === end.getMonth()) {
-      return `${format(start, "EEE, MMM d")} – ${format(end, "d, yyyy")}`;
-    }
-    return `${format(start, "MMM d")} – ${format(end, "MMM d, yyyy")}`;
-  };
 
   const linkUrl = seminar.contact_url || (seminar.contact_email ? `mailto:${seminar.contact_email}` : null);
 
   return (
-    <div className="bg-white rounded-lg border border-indigo-100 p-4 hover:shadow-md transition-shadow">
+    <div className="bg-[var(--surface-2)] rounded-[14px] border border-[rgba(127,119,221,0.2)] p-4 hover:bg-[rgba(127,119,221,0.03)] hover:border-[rgba(127,119,221,0.35)] transition-all">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           {/* Title row */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold text-white bg-indigo-500">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-[rgba(127,119,221,0.14)] text-[#afa9ec]">
               <BookOpen className="h-3 w-3" />
               SEMINAR
             </span>
@@ -55,12 +44,12 @@ export function SeminarCard({ seminar }: SeminarCardProps) {
                 href={linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-semibold text-gray-900 truncate hover:text-indigo-600 hover:underline transition-colors"
+                className="text-sm font-semibold text-[var(--cream)] truncate hover:text-[#afa9ec] hover:underline transition-colors"
               >
                 {seminar.title}
               </a>
             ) : (
-              <span className="text-sm font-semibold text-gray-900 truncate">
+              <span className="text-sm font-semibold text-[var(--cream)] truncate">
                 {seminar.title}
               </span>
             )}
@@ -68,38 +57,38 @@ export function SeminarCard({ seminar }: SeminarCardProps) {
 
           {/* Description */}
           {seminar.description && (
-            <p className="text-xs text-gray-500 mb-2 line-clamp-2">
+            <p className="text-xs text-[var(--muted-text)] mb-2 line-clamp-2">
               {seminar.description}
             </p>
           )}
 
           {/* Info rows */}
           <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-sm text-gray-700">
-              <Calendar className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
-              <span>{formatDateRange()}</span>
+            <div className="flex items-center gap-1.5 text-sm text-[var(--muted-text)]">
+              <Calendar className="h-3.5 w-3.5 text-[var(--muted-2)] flex-shrink-0" />
+              <span>{formatTrialDateRange(seminar.start_date, seminar.end_date)}</span>
             </div>
 
-            <div className="flex items-center gap-1.5 text-sm text-gray-700">
-              <MapPin className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 text-sm text-[var(--muted-text)]">
+              <MapPin className="h-3.5 w-3.5 text-[var(--muted-2)] flex-shrink-0" />
               <span>
                 {seminar.venue_name} — {seminar.city}, {seminar.state}
               </span>
               {seminar.distance_miles !== null && (
-                <span className="ml-1 text-xs text-gray-500">
+                <span className="ml-1 text-xs text-[var(--muted-2)]">
                   ({seminar.distance_miles} mi)
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-sm text-gray-700">
-                <User className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
+              <div className="flex items-center gap-1.5 text-sm text-[var(--muted-text)]">
+                <User className="h-3.5 w-3.5 text-[var(--muted-2)] flex-shrink-0" />
                 <span>{seminar.instructor}</span>
               </div>
               {seminar.price && (
-                <div className="flex items-center gap-1 text-sm text-gray-600">
-                  <DollarSign className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" />
+                <div className="flex items-center gap-1 text-sm text-[var(--muted-text)]">
+                  <DollarSign className="h-3.5 w-3.5 text-[var(--muted-2)] flex-shrink-0" />
                   <span>{seminar.price}</span>
                 </div>
               )}
@@ -113,7 +102,7 @@ export function SeminarCard({ seminar }: SeminarCardProps) {
             href={linkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-shrink-0 p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+            className="flex-shrink-0 p-2 text-[var(--muted-2)] hover:text-[#afa9ec] transition-colors"
             title="View details"
           >
             <ExternalLink className="h-4 w-4" />

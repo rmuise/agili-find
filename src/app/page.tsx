@@ -124,15 +124,14 @@ export default function Home() {
   const seminarCount = seminars.length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--black)]">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+      <header className="glass sticky top-0 z-50 border-b border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">AgiliFind</h1>
+            <h1 className="font-display text-xl tracking-wide text-[var(--cream)]">
+              Agili<span className="text-[var(--agili-accent)]">Find</span>
+            </h1>
           </div>
           <div className="flex items-center gap-3">
             <NavLinks />
@@ -141,35 +140,31 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero / Search Section */}
-      <div className="bg-white border-b border-gray-200 py-6 sm:py-8">
+      {/* Hero / Search */}
+      <div className="border-b border-[var(--border)] py-8 sm:py-12">
         <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Find Your Next Agility Trial
+          <div className="text-center mb-6">
+            <h2 className="font-display text-4xl sm:text-5xl tracking-wide text-[var(--cream)] mb-3">
+              Find Your Next <span className="text-[var(--agili-accent)]">Run</span>
             </h2>
-            <p className="text-gray-600 text-sm sm:text-base">
-              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, AAC, and
-              TDAA in one place.
+            <p className="text-[var(--muted-text)] text-sm sm:text-base">
+              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, AAC, and TDAA in one place.
             </p>
           </div>
-
           <SearchForm onSearch={handleSearch} isLoading={isLoading} />
         </div>
       </div>
 
-      {/* Results Area */}
+      {/* Results */}
       <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
         {/* Error Banner */}
         {errorMessage && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-            <span className="text-red-500 text-lg flex-shrink-0">{"\u26A0"}</span>
-            <div>
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
+          <div className="mb-4 p-4 bg-[rgba(240,149,149,0.08)] border border-[rgba(240,149,149,0.2)] rounded-[14px] flex items-start gap-3">
+            <span className="text-[#f09595] text-lg flex-shrink-0">{"\u26A0"}</span>
+            <p className="text-sm text-[#f09595]">{errorMessage}</p>
             <button
               onClick={() => setErrorMessage(null)}
-              className="ml-auto text-red-400 hover:text-red-600 flex-shrink-0"
+              className="ml-auto text-[var(--muted-text)] hover:text-[var(--cream)] flex-shrink-0"
             >
               {"\u2715"}
             </button>
@@ -178,7 +173,7 @@ export default function Home() {
 
         {/* View Toggle + Count */}
         <div className="flex items-center justify-between mb-4 sm:mb-6 gap-4">
-          <p className="text-sm sm:text-base text-gray-600 min-w-0">
+          <p className="text-sm sm:text-base text-[var(--muted-text)] min-w-0">
             {hasSearched
               ? resultCount === 0
                 ? "No results found"
@@ -189,13 +184,13 @@ export default function Home() {
                   }`
               : "Enter a location to search for upcoming trials"}
           </p>
-          <div className="flex gap-1 bg-gray-200 rounded-lg p-1 flex-shrink-0">
+          <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-1 flex-shrink-0">
             <button
               onClick={() => setViewMode("list")}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === "list"
-                  ? "bg-white shadow-sm text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-[var(--agili-accent)] text-black"
+                  : "text-[var(--muted-text)] hover:text-[var(--cream)]"
               }`}
             >
               List
@@ -204,8 +199,8 @@ export default function Home() {
               onClick={() => setViewMode("map")}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === "map"
-                  ? "bg-white shadow-sm text-gray-900"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-[var(--agili-accent)] text-black"
+                  : "text-[var(--muted-text)] hover:text-[var(--cream)]"
               }`}
             >
               Map

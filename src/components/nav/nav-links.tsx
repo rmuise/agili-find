@@ -16,19 +16,19 @@ export function NavLinks() {
         <>
           <Link
             href="/schedule"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 rounded-md hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-[var(--muted-text)] hover:text-[var(--cream)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
           >
             <Calendar className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">My Schedule</span>
             {savedCount > 0 && (
-              <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+              <span className="bg-[rgba(232,255,71,0.12)] text-[var(--agili-accent)] text-xs font-semibold px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
                 {savedCount}
               </span>
             )}
           </Link>
           <Link
             href="/seminars/my"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 rounded-md hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-[var(--muted-text)] hover:text-[var(--cream)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
           >
             <BookOpen className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">My Seminars</span>
@@ -37,7 +37,7 @@ export function NavLinks() {
       )}
       <Link
         href="/training-spaces"
-        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-gray-600 hover:text-emerald-600 rounded-md hover:bg-gray-50 transition-colors"
+        className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-[var(--muted-text)] hover:text-[var(--cpe)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
       >
         <Building className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Training</span>
