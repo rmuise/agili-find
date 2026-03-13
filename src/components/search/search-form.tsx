@@ -275,32 +275,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-50 rounded-xl p-6 space-y-4">
-      {/* Location + Radius Row */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 relative">
-          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="City, state, or zip code..."
-            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-          />
-        </div>
-        <select
-          value={radius}
-          onChange={(e) => setRadius(e.target.value)}
-          className="px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-        >
-          {RADIUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Organization Filters */}
+      {/* 1. Organization Filters */}
       <div className="flex flex-wrap gap-2">
         {ORGANIZATIONS.map((org) => (
           <label
@@ -325,7 +300,60 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         ))}
       </div>
 
-      {/* Class Filter — org-grouped */}
+      {/* 2. Date Range */}
+      <div className="flex gap-2 sm:max-w-md">
+        <div className="relative flex-1">
+          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            placeholder="From"
+            title="Start date"
+            className="w-full pl-10 pr-2 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+          />
+        </div>
+        <span className="self-center text-gray-400 text-sm flex-shrink-0">to</span>
+        <div className="relative flex-1">
+          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            min={startDate || undefined}
+            placeholder="To"
+            title="End date"
+            className="w-full pl-10 pr-2 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+          />
+        </div>
+      </div>
+
+      {/* 3. Location + Radius (City) */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex-1 relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="City, state, or zip code..."
+            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          />
+        </div>
+        <select
+          value={radius}
+          onChange={(e) => setRadius(e.target.value)}
+          className="px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+        >
+          {RADIUS_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* 4. Class/Run Filter — org-grouped */}
       <div>
         {/* Selected classes as chips */}
         {selectedClasses.size > 0 && (
@@ -420,35 +448,8 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         </div>
       </div>
 
-      {/* Date Range + Judge + Search */}
+      {/* 5. Judge + Search */}
       <div className="flex gap-3 flex-wrap">
-        <div className="flex gap-2 flex-1 min-w-0 sm:min-w-[200px]">
-          <div className="relative flex-1">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              placeholder="From"
-              title="Start date"
-              className="w-full pl-10 pr-2 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-            />
-          </div>
-          <span className="self-center text-gray-400 text-sm flex-shrink-0">to</span>
-          <div className="relative flex-1">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              min={startDate || undefined}
-              placeholder="To"
-              title="End date"
-              className="w-full pl-10 pr-2 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
-            />
-          </div>
-        </div>
-
         {/* Judge Autocomplete */}
         <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
