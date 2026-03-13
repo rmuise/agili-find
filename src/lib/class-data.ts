@@ -72,6 +72,10 @@ export const CLASS_DATA: Record<string, ClassInfo[]> = {
     { name: "Team Relay", category: "Game Class", description: "Multi-dog team event, 2+ dog teams" },
     { name: "International Biathlon", category: "Specialty Class", description: "Combined Agility round, open to all levels" },
   ],
+  isc: [
+    { name: "ISC Standard", category: "Main Class", description: "FCI-style standard agility course with European course design" },
+    { name: "ISC Jumping", category: "Main Class", description: "FCI-style jumping course, no contacts, speed-focused" },
+  ],
 };
 
 /**

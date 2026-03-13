@@ -107,6 +107,7 @@
   --ckc: #afa9ec;
   --aac: #14b8a6;
   --tdaa: #d97706;
+  --isc: #e8a838;
 }
 
 html {
@@ -163,6 +164,11 @@ html {
   background: rgba(217, 119, 6, 0.12);
   color: var(--tdaa);
   border: 0.5px solid rgba(217, 119, 6, 0.2);
+}
+.chip-isc {
+  background: rgba(232, 168, 56, 0.12);
+  color: var(--isc);
+  border: 0.5px solid rgba(232, 168, 56, 0.2);
 }
 
 /* Status badge variants */

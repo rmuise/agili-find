@@ -148,7 +148,7 @@ export default function Home() {
               Find Your Next <span className="text-[var(--agili-accent)]">Run</span>
             </h2>
             <p className="text-[var(--muted-text)] text-sm sm:text-base">
-              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, AAC, and TDAA in one place.
+              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, AAC, TDAA, and ISC in one place.
             </p>
           </div>
           <SearchForm onSearch={handleSearch} isLoading={isLoading} />

@@ -8,6 +8,7 @@ export const ORGANIZATIONS = [
   { id: "ckc", name: "CKC", color: "bg-pink-500" },
   { id: "aac", name: "AAC", color: "bg-teal-500" },
   { id: "tdaa", name: "TDAA", color: "bg-amber-500" },
+  { id: "isc", name: "ISC", color: "bg-yellow-600" },
 ] as const;
 
 /** Tailwind background color classes by organization ID */
@@ -30,6 +31,7 @@ export const ORG_HEX_COLORS: Record<string, string> = {
   ckc: "#afa9ec",
   aac: "#14b8a6",
   tdaa: "#d97706",
+  isc: "#e8a838",
 };
 
 export const STATUS_LABELS: Record<
