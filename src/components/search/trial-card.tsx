@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, Fragment } from "react";
 import Link from "next/link";
 import { MapPin, Calendar, User, ExternalLink, Bookmark, Eye } from "lucide-react";
+import { slugify } from "@/lib/utils";
 import type { TrialResult } from "@/types/search";
 import { format, parseISO } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
@@ -114,7 +115,18 @@ export function TrialCard({ trial }: TrialCardProps) {
                 <div className="flex items-center gap-1.5 text-sm text-[var(--muted-text)]">
                   <User className="h-3.5 w-3.5 text-[var(--muted-2)] flex-shrink-0" />
                   <span className="truncate">
-                    {trial.judges.join(", ")}
+                    {trial.judges.map((name, i) => (
+                      <Fragment key={name}>
+                        {i > 0 && ", "}
+                        <Link
+                          href={`/judges/${slugify(name)}`}
+                          className="hover:text-[var(--agili-accent)] hover:underline transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {name}
+                        </Link>
+                      </Fragment>
+                    ))}
                   </span>
                 </div>
               )}

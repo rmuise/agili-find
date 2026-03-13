@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -11,6 +11,7 @@ import {
   ArrowLeft,
   Bookmark,
 } from "lucide-react";
+import { slugify } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useSavedTrials } from "@/lib/hooks/saved-trials-context";
@@ -165,7 +166,19 @@ export default function TrialDetailPage() {
             {trial.judges.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-gray-700">
                 <User className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                <span>{trial.judges.join(", ")}</span>
+                <span>
+                  {trial.judges.map((name, i) => (
+                    <Fragment key={name}>
+                      {i > 0 && ", "}
+                      <Link
+                        href={`/judges/${slugify(name)}`}
+                        className="hover:text-blue-600 hover:underline transition-colors"
+                      >
+                        {name}
+                      </Link>
+                    </Fragment>
+                  ))}
+                </span>
               </div>
             )}
           </div>

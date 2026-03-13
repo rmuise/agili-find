@@ -2,16 +2,39 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@/db";
 
 /**
- * GET /api/judges — Return all unique judge names from the database
+ * GET /api/judges — Return all judge names with slugs.
  *
- * Returns a sorted, deduplicated list of judge names across all trials.
- * Results are cached for 1 hour since judges don't change frequently.
+ * First tries the judges table. Falls back to deduplicating from trials
+ * for any names not yet in the judges table.
+ * Results are cached for 1 hour.
  */
 export async function GET() {
   const supabase = createServerClient();
 
   try {
-    // Query all non-empty judges arrays
+    // Try the judges table first
+    const { data: judgeRows, error: judgeError } = await supabase
+      .from("judges")
+      .select("name, slug")
+      .order("name");
+
+    if (!judgeError && judgeRows && judgeRows.length > 0) {
+      return NextResponse.json(
+        {
+          judges: judgeRows.map((j) => j.name),
+          slugs: Object.fromEntries(judgeRows.map((j) => [j.name, j.slug])),
+          total: judgeRows.length,
+        },
+        {
+          headers: {
+            "Cache-Control":
+              "public, s-maxage=3600, stale-while-revalidate=7200",
+          },
+        }
+      );
+    }
+
+    // Fallback: deduplicate from trials (pre-migration compatibility)
     const { data, error } = await supabase
       .from("trials")
       .select("judges")
@@ -25,7 +48,6 @@ export async function GET() {
       );
     }
 
-    // Flatten and deduplicate judge names
     const judgeSet = new Set<string>();
     for (const row of data || []) {
       const judges = row.judges as string[] | null;
@@ -47,7 +69,8 @@ export async function GET() {
       { judges, total: judges.length },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+          "Cache-Control":
+            "public, s-maxage=3600, stale-while-revalidate=7200",
         },
       }
     );
