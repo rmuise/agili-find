@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { apiError } from "@/lib/api-error";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
 
   const { trial_id, rating, comment, results } = await request.json();
 
   if (!trial_id) {
-    return NextResponse.json({ error: "trial_id is required" }, { status: 400 });
+    return apiError("trial_id is required", 400);
   }
 
   if (rating && (rating < 1 || rating > 5)) {
-    return NextResponse.json({ error: "Rating must be 1-5" }, { status: 400 });
+    return apiError("Rating must be 1-5", 400);
   }
 
   const { data, error } = await supabase
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return apiError("Failed to save review", 500, error.message);
   }
 
   return NextResponse.json({ review: data });
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
   const trialId = searchParams.get("trial_id");
 
   if (!trialId) {
-    return NextResponse.json({ error: "trial_id required" }, { status: 400 });
+    return apiError("trial_id required", 400);
   }
 
   const { data: reviews } = await supabase

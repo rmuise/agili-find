@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/db";
 import { createClient } from "@/lib/supabase/server";
+import { apiError } from "@/lib/api-error";
+import { haversineDistance } from "@/lib/geo";
 
 /**
  * GET /api/training-spaces — List approved training spaces, with optional geo filters
@@ -29,22 +31,14 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return apiError("Operation failed", 500, error.message);
   }
 
   let spaces = (data || []).map((s: Record<string, unknown>) => {
     let distance_miles: number | null = null;
     if (hasLocation && s.lat && s.lng) {
-      const R = 3959;
-      const dLat = ((Number(s.lat) - lat) * Math.PI) / 180;
-      const dLng = ((Number(s.lng) - lng) * Math.PI) / 180;
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos((lat * Math.PI) / 180) *
-          Math.cos((Number(s.lat) * Math.PI) / 180) *
-          Math.sin(dLng / 2) ** 2;
       distance_miles =
-        Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * 10) / 10;
+        Math.round(haversineDistance(lat, lng, Number(s.lat), Number(s.lng)) * 10) / 10;
     }
     return {
       id: s.id,
@@ -93,7 +87,7 @@ export async function POST(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return apiError("Unauthorized", 401);
   }
 
   const body = await request.json();
@@ -118,10 +112,7 @@ export async function POST(request: NextRequest) {
   } = body;
 
   if (!name?.trim() || !city?.trim() || !state?.trim()) {
-    return NextResponse.json(
-      { error: "Missing required fields: name, city, state" },
-      { status: 400 }
-    );
+    return apiError("Missing required fields: name, city, state", 400);
   }
 
   const insertData: Record<string, unknown> = {
@@ -156,7 +147,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return apiError("Operation failed", 500, error.message);
   }
 
   return NextResponse.json({ space: data }, { status: 201 });

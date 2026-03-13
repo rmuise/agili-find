@@ -10,22 +10,11 @@ import {
   CalendarPlus,
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
-
-const ORG_COLORS: Record<string, string> = {
-  akc: "bg-blue-500",
-  usdaa: "bg-red-500",
-  cpe: "bg-green-500",
-  nadac: "bg-purple-500",
-  uki: "bg-orange-500",
-  ckc: "bg-pink-500",
-  aac: "bg-teal-500",
-};
-
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  interested: { label: "Interested", color: "text-blue-700 bg-blue-50" },
-  registered: { label: "Registered", color: "text-green-700 bg-green-50" },
-  attending: { label: "Attending", color: "text-purple-700 bg-purple-50" },
-};
+import { PageHeader } from "@/components/layout/page-header";
+import { OrgBadge } from "@/components/ui/org-badge";
+import { LoadingState } from "@/components/ui/loading-state";
+import { STATUS_LABELS } from "@/lib/constants";
+import { formatTrialDateRange } from "@/lib/utils";
 
 interface PublicTrial {
   id: string;
@@ -102,14 +91,6 @@ export default function PublicSchedulePage() {
     return groups;
   };
 
-  const formatDateRange = (startDate: string, endDate: string) => {
-    const start = parseISO(startDate);
-    const end = parseISO(endDate);
-    if (startDate === endDate) return format(start, "EEE, MMM d, yyyy");
-    if (start.getMonth() === end.getMonth())
-      return `${format(start, "EEE, MMM d")} – ${format(end, "d, yyyy")}`;
-    return `${format(start, "MMM d")} – ${format(end, "MMM d, yyyy")}`;
-  };
 
   const icalUrl =
     typeof window !== "undefined"
@@ -117,11 +98,7 @@ export default function PublicSchedulePage() {
       : "";
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading schedule...</div>
-      </div>
-    );
+    return <LoadingState message="Loading schedule..." />;
   }
 
   if (notFound) {
@@ -150,23 +127,7 @@ export default function PublicSchedulePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">AgiliFind</span>
-          </Link>
-          <Link
-            href="/"
-            className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            Search trials
-          </Link>
-        </div>
-      </header>
+      <PageHeader maxWidth="5xl" backLabel="Search trials" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         {/* Title */}
@@ -216,7 +177,6 @@ export default function PublicSchedulePage() {
                         <TrialRow
                           key={trial.id}
                           trial={trial}
-                          formatDateRange={formatDateRange}
                         />
                       ))}
                     </div>
@@ -241,7 +201,6 @@ export default function PublicSchedulePage() {
                         <TrialRow
                           key={trial.id}
                           trial={trial}
-                          formatDateRange={formatDateRange}
                           isPast
                         />
                       ))}
@@ -259,14 +218,11 @@ export default function PublicSchedulePage() {
 
 function TrialRow({
   trial,
-  formatDateRange,
   isPast = false,
 }: {
   trial: PublicTrial;
-  formatDateRange: (s: string, e: string) => string;
   isPast?: boolean;
 }) {
-  const orgColor = ORG_COLORS[trial.organization_id] || "bg-gray-500";
   const statusInfo = STATUS_LABELS[trial.status];
 
   return (
@@ -278,11 +234,7 @@ function TrialRow({
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold text-white ${orgColor}`}
-            >
-              {trial.organization_id.toUpperCase()}
-            </span>
+            <OrgBadge orgId={trial.organization_id} />
             <a
               href={trial.source_url}
               target="_blank"
@@ -295,7 +247,7 @@ function TrialRow({
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
             <span className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5 text-gray-400" />
-              {formatDateRange(trial.start_date, trial.end_date)}
+              {formatTrialDateRange(trial.start_date, trial.end_date)}
             </span>
             <span className="flex items-center gap-1">
               <MapPin className="h-3.5 w-3.5 text-gray-400" />
@@ -306,7 +258,7 @@ function TrialRow({
         <div className="flex items-center gap-2 flex-shrink-0">
           {statusInfo && (
             <span
-              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${statusInfo.color}`}
+              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${statusInfo.bg} ${statusInfo.color}`}
             >
               {statusInfo.label}
             </span>

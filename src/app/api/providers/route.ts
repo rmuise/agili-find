@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireProvider, isErrorResponse } from "@/lib/auth/provider-auth";
-
-const VALID_TYPES = ["club", "presenter", "facility", "body_worker", "vendor", "photographer"] as const;
+import { VALID_PROVIDER_TYPES } from "@/lib/constants";
+import { apiError } from "@/lib/api-error";
 
 const REQUIRED_FIELDS_BY_TYPE: Record<string, string[]> = {
   club: ["business_name", "contact_name", "email", "location_city", "location_province"],
@@ -24,21 +24,15 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { provider_type } = body;
 
-  if (!provider_type || !VALID_TYPES.includes(provider_type)) {
-    return NextResponse.json(
-      { error: `provider_type must be one of: ${VALID_TYPES.join(", ")}` },
-      { status: 400 }
-    );
+  if (!provider_type || !VALID_PROVIDER_TYPES.includes(provider_type)) {
+    return apiError(`provider_type must be one of: ${VALID_PROVIDER_TYPES.join(", ")}`, 400);
   }
 
   // Validate required fields for this provider type
   const required = REQUIRED_FIELDS_BY_TYPE[provider_type] || [];
   const missing = required.filter((f) => !body[f]);
   if (missing.length > 0) {
-    return NextResponse.json(
-      { error: `Missing required fields for ${provider_type}: ${missing.join(", ")}` },
-      { status: 400 }
-    );
+    return apiError(`Missing required fields for ${provider_type}: ${missing.join(", ")}`, 400);
   }
 
   const admin = createAdminClient();
@@ -80,10 +74,7 @@ export async function POST(request: Request) {
 
   if (error) {
     console.error("Error creating provider:", error);
-    return NextResponse.json(
-      { error: "Failed to create provider", details: error.message },
-      { status: 500 }
-    );
+    return apiError("Failed to create provider", 500, error.message);
   }
 
   // Upgrade user role to provider if not already
@@ -125,13 +116,13 @@ export async function GET(request: Request) {
       .eq("trial_id", trialId);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return apiError("Failed to fetch providers", 500, error.message);
     }
 
     let providers = (data || [])
       .filter((row) => row.srv_providers)
       .map((row) => ({
-        ...(row.srv_providers as Record<string, unknown>),
+        ...(row.srv_providers as object),
         is_attending: row.is_attending,
       }));
 
@@ -167,7 +158,7 @@ export async function GET(request: Request) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return apiError("Failed to fetch providers", 500, error.message);
   }
 
   return NextResponse.json({ providers: data || [] });

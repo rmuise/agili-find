@@ -3,7 +3,6 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft,
   MapPin,
   Dog,
   Calendar,
@@ -11,6 +10,8 @@ import {
   UserPlus,
   UserMinus,
 } from "lucide-react";
+import { PageHeader } from "@/components/layout/page-header";
+import { LoadingState } from "@/components/ui/loading-state";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useToast } from "@/components/ui/toast";
 
@@ -105,11 +106,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading profile...</div>
-      </div>
-    );
+    return <LoadingState message="Loading profile..." />;
   }
 
   if (!profile) {
@@ -129,23 +126,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-3xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">AgiliFind</span>
-          </Link>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back
-          </Link>
-        </div>
-      </header>
+      <PageHeader backLabel="Back" />
 
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8">
         {/* Profile Header */}

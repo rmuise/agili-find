@@ -1,16 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-async function isAdmin(userId: string): Promise<boolean> {
-  const supabase = createAdminClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", userId)
-    .single();
-  return data?.role === "admin";
-}
+import { isAdmin } from "@/lib/auth/provider-auth";
 
 // GET: Fetch items pending moderation
 export async function GET() {

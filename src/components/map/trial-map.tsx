@@ -16,15 +16,7 @@ interface TrialMapProps {
   center?: { lat: number; lng: number };
 }
 
-const ORG_COLORS: Record<string, string> = {
-  akc: "#3b82f6",
-  usdaa: "#ef4444",
-  cpe: "#22c55e",
-  nadac: "#a855f7",
-  uki: "#f97316",
-  ckc: "#ec4899",
-  aac: "#14b8a6",
-};
+import { ORG_HEX_COLORS } from "@/lib/constants";
 
 export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], center }: TrialMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -92,7 +84,7 @@ export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], cent
       // Add markers for each venue group
       venueGroups.forEach(({ lat, lng, trials: vTrials }) => {
         const orgId = vTrials[0].organization_id;
-        const color = ORG_COLORS[orgId] || "#6b7280";
+        const color = ORG_HEX_COLORS[orgId] || "#6b7280";
 
         // Create circle marker
         const marker = L.circleMarker([lat, lng], {
@@ -165,7 +157,7 @@ export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], cent
       // Trial markers
       venueGroups.forEach(({ lat, lng, trials: vTrials }) => {
         const orgId = vTrials[0].organization_id;
-        const color = ORG_COLORS[orgId] || "#6b7280";
+        const color = ORG_HEX_COLORS[orgId] || "#6b7280";
 
         const marker = L.circleMarker([lat, lng], {
           radius: Math.min(6 + vTrials.length * 2, 16),

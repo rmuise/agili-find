@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft,
   AlertTriangle,
   Calendar,
   MapPin,
@@ -13,6 +12,9 @@ import {
   ChevronRight,
   ExternalLink,
 } from "lucide-react";
+import { PageHeader } from "@/components/layout/page-header";
+import { LoadingState } from "@/components/ui/loading-state";
+import { STATUS_LABELS } from "@/lib/constants";
 import { useAuth } from "@/lib/supabase/auth-context";
 
 interface SavedTrial {
@@ -45,21 +47,15 @@ interface TravelSegment {
   gapDays: number;
 }
 
-function haversineDistance(
+import { haversineDistance as _haversine } from "@/lib/geo";
+
+function haversineDistanceRounded(
   lat1: number,
   lng1: number,
   lat2: number,
   lng2: number
 ): number {
-  const R = 3959;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) ** 2;
-  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  return Math.round(_haversine(lat1, lng1, lat2, lng2));
 }
 
 function datesOverlap(
@@ -90,11 +86,6 @@ function formatDateRange(start: string, end: string) {
   return `${formatDate(start)} - ${formatDate(end)}`;
 }
 
-const statusColors: Record<string, string> = {
-  interested: "bg-yellow-100 text-yellow-700",
-  registered: "bg-blue-100 text-blue-700",
-  attending: "bg-green-100 text-green-700",
-};
 
 export default function ScheduleBuilderPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -164,7 +155,7 @@ export default function ScheduleBuilderPage() {
         new Date(from.end_date).getTime();
       const gapDays = Math.floor(gapMs / (1000 * 60 * 60 * 24));
 
-      const dist = haversineDistance(from.lat, from.lng, to.lat, to.lng);
+      const dist = haversineDistanceRounded(from.lat, from.lng, to.lat, to.lng);
       if (dist > 0) {
         segments.push({
           from,
@@ -226,34 +217,12 @@ export default function ScheduleBuilderPage() {
   const totalMiles = travelSegments.reduce((sum, s) => sum + s.distanceMiles, 0);
 
   if (authLoading || (!user && !authLoading)) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">AgiliFind</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/schedule"
-              className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              My Schedule
-            </Link>
-          </div>
-        </div>
-      </header>
+      <PageHeader maxWidth="4xl" backHref="/schedule" backLabel="My Schedule" />
 
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <div className="mb-6">
@@ -408,10 +377,12 @@ export default function ScheduleBuilderPage() {
                                     </span>
                                     <span
                                       className={`text-xs font-medium px-1.5 py-0.5 rounded capitalize ${
-                                        statusColors[trial.saved_status] || "bg-gray-100 text-gray-600"
+                                        STATUS_LABELS[trial.saved_status]
+                                          ? `${STATUS_LABELS[trial.saved_status].bg} ${STATUS_LABELS[trial.saved_status].color}`
+                                          : "bg-gray-100 text-gray-600"
                                       }`}
                                     >
-                                      {trial.saved_status}
+                                      {STATUS_LABELS[trial.saved_status]?.label || trial.saved_status}
                                     </span>
                                     {hasConflict && (
                                       <span className="inline-flex items-center gap-0.5 text-xs text-red-600 font-medium">

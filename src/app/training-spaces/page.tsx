@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Dumbbell, Plus, Search, Loader2 } from "lucide-react";
+import { Dumbbell, Plus, Search, Loader2 } from "lucide-react";
+import { PageHeader } from "@/components/layout/page-header";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { geocodeLocation } from "@/lib/geocoding/client";
 import { TrainingSpaceCard, type TrainingSpaceResult } from "@/components/search/training-space-card";
@@ -51,34 +52,7 @@ export default function TrainingSpacesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">AgiliFind</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Back
-            </Link>
-            {user && (
-              <Link
-                href="/training-spaces/submit"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
+      <PageHeader maxWidth="4xl" backLabel="Back" />
 
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <div className="text-center mb-6">
@@ -89,6 +63,15 @@ export default function TrainingSpacesPage() {
           <p className="text-gray-600 text-sm">
             Find agility training facilities near you.
           </p>
+          {user && (
+            <Link
+              href="/training-spaces/submit"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add a training space
+            </Link>
+          )}
         </div>
 
         {/* Search Form */}

@@ -80,6 +80,19 @@ export async function requireProviderOwner(
   return { user: result.user, providerId: provider.id };
 }
 
+/**
+ * Check if a user has the admin role.
+ */
+export async function isAdmin(userId: string): Promise<boolean> {
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .single();
+  return data?.role === "admin";
+}
+
 export function isErrorResponse(
   result: AuthResult | { user: User; providerId: string } | NextResponse
 ): result is NextResponse {

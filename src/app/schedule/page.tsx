@@ -8,18 +8,23 @@ import {
   MapPin,
   Bookmark,
   Filter,
-  ArrowLeft,
   ExternalLink,
   Share2,
   CalendarPlus,
   Check,
-  Copy,
   Wrench,
+  Eye,
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useSavedTrials } from "@/lib/hooks/saved-trials-context";
+import { PageHeader } from "@/components/layout/page-header";
+import { OrgBadge } from "@/components/ui/org-badge";
+import { LoadingState } from "@/components/ui/loading-state";
+import { STATUS_LABELS } from "@/lib/constants";
+import { formatTrialDateRange } from "@/lib/utils";
 import type { TrialResult } from "@/types/search";
+import { MyTrialsPlanningCard } from "@/components/services/my-trials-planning-card";
 
 type StatusFilter = "all" | "interested" | "registered" | "attending";
 type TimeFilter = "upcoming" | "past" | "all";
@@ -29,22 +34,6 @@ interface SavedTrial extends TrialResult {
   saved_at: string;
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  interested: { label: "Interested", color: "text-blue-700", bg: "bg-blue-50 border-blue-200" },
-  registered: { label: "Registered", color: "text-green-700", bg: "bg-green-50 border-green-200" },
-  attending: { label: "Attending", color: "text-purple-700", bg: "bg-purple-50 border-purple-200" },
-};
-
-const ORG_COLORS: Record<string, string> = {
-  akc: "bg-blue-500",
-  usdaa: "bg-red-500",
-  cpe: "bg-green-500",
-  nadac: "bg-purple-500",
-  uki: "bg-orange-500",
-  ckc: "bg-pink-500",
-  aac: "bg-teal-500",
-  tdaa: "bg-amber-500",
-};
 
 export default function SchedulePage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -154,48 +143,14 @@ export default function SchedulePage() {
     setSavedTrials((prev) => prev.filter((t) => t.id !== trialId));
   };
 
-  const formatDateRange = (startDate: string, endDate: string) => {
-    const start = parseISO(startDate);
-    const end = parseISO(endDate);
-    if (startDate === endDate) {
-      return format(start, "EEE, MMM d, yyyy");
-    }
-    if (start.getMonth() === end.getMonth()) {
-      return `${format(start, "EEE, MMM d")} – ${format(end, "d, yyyy")}`;
-    }
-    return `${format(start, "MMM d")} – ${format(end, "MMM d, yyyy")}`;
-  };
 
   if (authLoading || (!user && !authLoading)) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AF</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">AgiliFind</span>
-            </Link>
-          </div>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Search
-          </Link>
-        </div>
-      </header>
+      <PageHeader maxWidth="5xl" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         {/* Title */}
@@ -339,8 +294,6 @@ export default function SchedulePage() {
                 </h2>
                 <div className="space-y-2">
                   {trials.map((trial) => {
-                    const orgColor =
-                      ORG_COLORS[trial.organization_id] || "bg-gray-500";
                     const statusInfo = STATUS_LABELS[trial.saved_status];
                     const past = isPast(parseISO(trial.end_date));
 
@@ -355,11 +308,7 @@ export default function SchedulePage() {
                           <div className="flex-1 min-w-0">
                             {/* Title */}
                             <div className="flex items-center gap-2 mb-1.5">
-                              <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold text-white ${orgColor}`}
-                              >
-                                {trial.organization_id.toUpperCase()}
-                              </span>
+                              <OrgBadge orgId={trial.organization_id} />
                               <a
                                 href={trial.source_url}
                                 target="_blank"
@@ -379,7 +328,7 @@ export default function SchedulePage() {
                             <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3.5 w-3.5 text-gray-400" />
-                                {formatDateRange(trial.start_date, trial.end_date)}
+                                {formatTrialDateRange(trial.start_date, trial.end_date)}
                               </span>
                               <span className="flex items-center gap-1">
                                 <MapPin className="h-3.5 w-3.5 text-gray-400" />
@@ -416,6 +365,15 @@ export default function SchedulePage() {
                               <ExternalLink className="h-4 w-4" />
                             </a>
 
+                            {/* View details */}
+                            <Link
+                              href={`/trials/${trial.id}`}
+                              className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                              title="View trial details"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Link>
+
                             {/* Remove */}
                             <button
                               onClick={() => handleUnsave(trial.id)}
@@ -429,6 +387,16 @@ export default function SchedulePage() {
                             </button>
                           </div>
                         </div>
+
+                        {/* Planning card — only for "attending" trials */}
+                        {trial.saved_status === "attending" && (
+                          <MyTrialsPlanningCard
+                            trialId={trial.id}
+                            trialTitle={trial.title}
+                            trialLat={trial.lat}
+                            trialLng={trial.lng}
+                          />
+                        )}
                       </div>
                     );
                   })}

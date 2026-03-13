@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft,
   Shield,
   BookOpen,
   Dumbbell,
@@ -12,9 +11,13 @@ import {
   X,
   Clock,
   MapPin,
+  BadgeCheck,
+  Store,
 } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useToast } from "@/components/ui/toast";
+import { PageHeader } from "@/components/layout/page-header";
+import { LoadingState } from "@/components/ui/loading-state";
 
 interface ModItem {
   id: string;
@@ -29,6 +32,18 @@ interface ModItem {
   profiles?: { display_name: string } | null;
 }
 
+interface UnverifiedProvider {
+  id: string;
+  business_name: string;
+  provider_type: string;
+  contact_name: string;
+  email: string;
+  location_city: string | null;
+  location_province: string | null;
+  is_verified: boolean;
+  created_at: string;
+}
+
 type Tab = "all" | "pending" | "approved" | "rejected";
 
 export default function AdminPage() {
@@ -38,6 +53,8 @@ export default function AdminPage() {
 
   const [seminars, setSeminars] = useState<ModItem[]>([]);
   const [trainingSpaces, setTrainingSpaces] = useState<ModItem[]>([]);
+  const [unverifiedProviders, setUnverifiedProviders] = useState<UnverifiedProvider[]>([]);
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("pending");
   const [error, setError] = useState<string | null>(null);
@@ -50,18 +67,26 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch("/api/admin/moderate")
-      .then((res) => {
+
+    Promise.all([
+      fetch("/api/admin/moderate").then((res) => {
         if (res.status === 403) {
           setError("You do not have admin access.");
           return null;
         }
         return res.json();
-      })
-      .then((data) => {
-        if (data) {
-          setSeminars(data.seminars || []);
-          setTrainingSpaces(data.trainingSpaces || []);
+      }),
+      fetch("/api/providers").then((res) => res.json()),
+    ])
+      .then(([modData, provData]) => {
+        if (modData) {
+          setSeminars(modData.seminars || []);
+          setTrainingSpaces(modData.trainingSpaces || []);
+        }
+        if (provData?.providers) {
+          setUnverifiedProviders(
+            provData.providers.filter((p: UnverifiedProvider) => !p.is_verified)
+          );
         }
       })
       .catch(console.error)
@@ -95,6 +120,20 @@ export default function AdminPage() {
     }
   };
 
+  const handleVerifyProvider = async (providerId: string) => {
+    setVerifyingId(providerId);
+    const res = await fetch(`/api/providers/${providerId}/verify`, {
+      method: "PATCH",
+    });
+    if (res.ok) {
+      toast("Provider verified", "success");
+      setUnverifiedProviders((prev) => prev.filter((p) => p.id !== providerId));
+    } else {
+      toast("Failed to verify provider", "error");
+    }
+    setVerifyingId(null);
+  };
+
   const filterByTab = (items: ModItem[]) => {
     if (tab === "all") return items;
     return items.filter((i) => i.status === tab);
@@ -104,14 +143,11 @@ export default function AdminPage() {
   const filteredSpaces = filterByTab(trainingSpaces);
   const pendingCount =
     seminars.filter((s) => s.status === "pending").length +
-    trainingSpaces.filter((s) => s.status === "pending").length;
+    trainingSpaces.filter((s) => s.status === "pending").length +
+    unverifiedProviders.length;
 
   if (authLoading || !user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
@@ -130,23 +166,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">AgiliFind</span>
-          </Link>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back
-          </Link>
-        </div>
-      </header>
+      <PageHeader maxWidth="5xl" backLabel="Back" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         <div className="mb-6">
@@ -314,7 +334,60 @@ export default function AdminPage() {
               </div>
             )}
 
-            {filteredSeminars.length === 0 && filteredSpaces.length === 0 && (
+            {/* Unverified Providers */}
+            {tab === "pending" && unverifiedProviders.length > 0 && (
+              <div>
+                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                  <Store className="h-3.5 w-3.5" />
+                  Unverified Providers ({unverifiedProviders.length})
+                </h2>
+                <div className="space-y-2">
+                  {unverifiedProviders.map((prov) => (
+                    <div
+                      key={prov.id}
+                      className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="text-sm font-medium text-gray-900">
+                            {prov.business_name}
+                          </span>
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 capitalize">
+                            {prov.provider_type.replace("_", " ")}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-x-3 text-xs text-gray-500">
+                          <span>{prov.contact_name}</span>
+                          <span>{prov.email}</span>
+                          {prov.location_city && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {prov.location_city}
+                              {prov.location_province
+                                ? `, ${prov.location_province}`
+                                : ""}
+                            </span>
+                          )}
+                          <span>
+                            {new Date(prov.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleVerifyProvider(prov.id)}
+                        disabled={verifyingId === prov.id}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 disabled:opacity-50 transition-colors"
+                      >
+                        <BadgeCheck className="h-3.5 w-3.5" />
+                        {verifyingId === prov.id ? "Verifying..." : "Verify"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {filteredSeminars.length === 0 && filteredSpaces.length === 0 && (tab !== "pending" || unverifiedProviders.length === 0) && (
               <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
                 <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
