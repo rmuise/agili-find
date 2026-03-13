@@ -14,6 +14,7 @@ import {
   CalendarPlus,
   Check,
   Copy,
+  Wrench,
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
@@ -231,6 +232,13 @@ export default function SchedulePage() {
                 )}
                 {copied === "ical" ? "Copied!" : "Copy iCal URL"}
               </button>
+              <Link
+                href="/schedule/builder"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                <Wrench className="h-3.5 w-3.5" />
+                Schedule Builder
+              </Link>
             </div>
           )}
         </div>

@@ -1,0 +1,486 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  AlertTriangle,
+  Calendar,
+  MapPin,
+  Car,
+  ChevronDown,
+  ChevronRight,
+  ExternalLink,
+} from "lucide-react";
+import { useAuth } from "@/lib/supabase/auth-context";
+
+interface SavedTrial {
+  id: string;
+  title: string;
+  hosting_club: string | null;
+  organization_name: string;
+  start_date: string;
+  end_date: string;
+  venue_name: string;
+  city: string;
+  state: string;
+  lat: number;
+  lng: number;
+  source_url: string;
+  saved_status: string;
+  classes: string[];
+}
+
+interface Conflict {
+  trialA: SavedTrial;
+  trialB: SavedTrial;
+  overlapDays: number;
+}
+
+interface TravelSegment {
+  from: SavedTrial;
+  to: SavedTrial;
+  distanceMiles: number;
+  gapDays: number;
+}
+
+function haversineDistance(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+): number {
+  const R = 3959;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
+function datesOverlap(
+  aStart: string,
+  aEnd: string,
+  bStart: string,
+  bEnd: string
+): number {
+  const a0 = new Date(aStart).getTime();
+  const a1 = new Date(aEnd).getTime();
+  const b0 = new Date(bStart).getTime();
+  const b1 = new Date(bEnd).getTime();
+  const overlapStart = Math.max(a0, b0);
+  const overlapEnd = Math.min(a1, b1);
+  if (overlapStart > overlapEnd) return 0;
+  return Math.floor((overlapEnd - overlapStart) / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function formatDate(d: string) {
+  return new Date(d + "T00:00:00").toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatDateRange(start: string, end: string) {
+  if (start === end) return formatDate(start);
+  return `${formatDate(start)} - ${formatDate(end)}`;
+}
+
+const statusColors: Record<string, string> = {
+  interested: "bg-yellow-100 text-yellow-700",
+  registered: "bg-blue-100 text-blue-700",
+  attending: "bg-green-100 text-green-700",
+};
+
+export default function ScheduleBuilderPage() {
+  const { user, isLoading: authLoading } = useAuth();
+  const router = useRouter();
+  const [trials, setTrials] = useState<SavedTrial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/login");
+      return;
+    }
+    if (user) {
+      fetch("/api/saved-trials/full")
+        .then((r) => r.json())
+        .then((data) => {
+          setTrials(data.savedTrials || []);
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
+    }
+  }, [user, authLoading, router]);
+
+  // Only upcoming trials
+  const upcomingTrials = useMemo(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return trials
+      .filter((t) => t.end_date >= today)
+      .sort(
+        (a, b) =>
+          new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+      );
+  }, [trials]);
+
+  // Detect conflicts
+  const conflicts = useMemo(() => {
+    const result: Conflict[] = [];
+    for (let i = 0; i < upcomingTrials.length; i++) {
+      for (let j = i + 1; j < upcomingTrials.length; j++) {
+        const a = upcomingTrials[i];
+        const b = upcomingTrials[j];
+        const overlap = datesOverlap(
+          a.start_date,
+          a.end_date,
+          b.start_date,
+          b.end_date
+        );
+        if (overlap > 0) {
+          result.push({ trialA: a, trialB: b, overlapDays: overlap });
+        }
+      }
+    }
+    return result;
+  }, [upcomingTrials]);
+
+  // Travel segments between consecutive trials
+  const travelSegments = useMemo(() => {
+    const segments: TravelSegment[] = [];
+    for (let i = 0; i < upcomingTrials.length - 1; i++) {
+      const from = upcomingTrials[i];
+      const to = upcomingTrials[i + 1];
+      if (!from.lat || !from.lng || !to.lat || !to.lng) continue;
+
+      const gapMs =
+        new Date(to.start_date).getTime() -
+        new Date(from.end_date).getTime();
+      const gapDays = Math.floor(gapMs / (1000 * 60 * 60 * 24));
+
+      const dist = haversineDistance(from.lat, from.lng, to.lat, to.lng);
+      if (dist > 0) {
+        segments.push({
+          from,
+          to,
+          distanceMiles: dist,
+          gapDays,
+        });
+      }
+    }
+    return segments;
+  }, [upcomingTrials]);
+
+  // Group by month
+  const monthGroups = useMemo(() => {
+    const groups: Record<string, SavedTrial[]> = {};
+    for (const trial of upcomingTrials) {
+      const d = new Date(trial.start_date + "T00:00:00");
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(trial);
+    }
+    return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+  }, [upcomingTrials]);
+
+  // Auto-expand all months on load
+  useEffect(() => {
+    if (monthGroups.length > 0 && expandedMonths.size === 0) {
+      setExpandedMonths(new Set(monthGroups.map(([key]) => key)));
+    }
+  }, [monthGroups, expandedMonths.size]);
+
+  const toggleMonth = (key: string) => {
+    setExpandedMonths((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const conflictSet = useMemo(() => {
+    const ids = new Set<string>();
+    for (const c of conflicts) {
+      ids.add(c.trialA.id);
+      ids.add(c.trialB.id);
+    }
+    return ids;
+  }, [conflicts]);
+
+  // Travel map: from trial id -> segment
+  const travelMap = useMemo(() => {
+    const map = new Map<string, TravelSegment>();
+    for (const seg of travelSegments) {
+      map.set(seg.from.id, seg);
+    }
+    return map;
+  }, [travelSegments]);
+
+  const totalMiles = travelSegments.reduce((sum, s) => sum + s.distanceMiles, 0);
+
+  if (authLoading || (!user && !authLoading)) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-pulse text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">AF</span>
+            </div>
+            <span className="text-xl font-bold text-gray-900">AgiliFind</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/schedule"
+              className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              My Schedule
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-blue-600" />
+            Schedule Builder
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Plan your season with conflict detection and travel estimates.
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading your schedule...</p>
+          </div>
+        ) : upcomingTrials.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
+            <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No upcoming trials saved
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Save some trials to start planning your season.
+            </p>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            >
+              Search for trials
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+                <p className="text-2xl font-bold text-gray-900">{upcomingTrials.length}</p>
+                <p className="text-xs text-gray-500">Upcoming Trials</p>
+              </div>
+              <div className={`rounded-lg border p-4 text-center ${conflicts.length > 0 ? "bg-red-50 border-red-200" : "bg-white border-gray-200"}`}>
+                <p className={`text-2xl font-bold ${conflicts.length > 0 ? "text-red-600" : "text-gray-900"}`}>
+                  {conflicts.length}
+                </p>
+                <p className="text-xs text-gray-500">Conflicts</p>
+              </div>
+              <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+                <p className="text-2xl font-bold text-gray-900">
+                  {totalMiles.toLocaleString()}
+                </p>
+                <p className="text-xs text-gray-500">Total Miles</p>
+              </div>
+              <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+                <p className="text-2xl font-bold text-gray-900">
+                  {monthGroups.length}
+                </p>
+                <p className="text-xs text-gray-500">Active Months</p>
+              </div>
+            </div>
+
+            {/* Conflicts Alert */}
+            {conflicts.length > 0 && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                  <h3 className="font-semibold text-red-800">
+                    {conflicts.length} Date Conflict{conflicts.length !== 1 ? "s" : ""}
+                  </h3>
+                </div>
+                <div className="space-y-2">
+                  {conflicts.map((c, i) => (
+                    <div key={i} className="text-sm text-red-700">
+                      <span className="font-medium">{c.trialA.title}</span>
+                      {" overlaps with "}
+                      <span className="font-medium">{c.trialB.title}</span>
+                      {" by "}
+                      {c.overlapDays} day{c.overlapDays !== 1 ? "s" : ""}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Timeline */}
+            <div className="space-y-4">
+              {monthGroups.map(([monthKey, monthTrials]) => {
+                const d = new Date(monthKey + "-01T00:00:00");
+                const monthLabel = d.toLocaleDateString("en-US", {
+                  month: "long",
+                  year: "numeric",
+                });
+                const isExpanded = expandedMonths.has(monthKey);
+
+                return (
+                  <div key={monthKey} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <button
+                      onClick={() => toggleMonth(monthKey)}
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        {isExpanded ? (
+                          <ChevronDown className="h-4 w-4 text-gray-400" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
+                        )}
+                        <span className="font-semibold text-gray-900">
+                          {monthLabel}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          {monthTrials.length} trial{monthTrials.length !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="border-t border-gray-100">
+                        {monthTrials.map((trial, idx) => {
+                          const hasConflict = conflictSet.has(trial.id);
+                          const segment = travelMap.get(trial.id);
+
+                          return (
+                            <div key={trial.id}>
+                              <div
+                                className={`px-4 py-3 flex items-start gap-3 ${
+                                  hasConflict ? "bg-red-50" : idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                }`}
+                              >
+                                {/* Date column */}
+                                <div className="w-24 flex-shrink-0 text-right">
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {formatDateRange(trial.start_date, trial.end_date)}
+                                  </p>
+                                </div>
+
+                                {/* Timeline dot */}
+                                <div className="flex flex-col items-center flex-shrink-0 pt-1.5">
+                                  <div
+                                    className={`w-3 h-3 rounded-full border-2 ${
+                                      hasConflict
+                                        ? "border-red-500 bg-red-200"
+                                        : "border-blue-500 bg-blue-200"
+                                    }`}
+                                  />
+                                </div>
+
+                                {/* Trial info */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
+                                      {trial.organization_name}
+                                    </span>
+                                    <span
+                                      className={`text-xs font-medium px-1.5 py-0.5 rounded capitalize ${
+                                        statusColors[trial.saved_status] || "bg-gray-100 text-gray-600"
+                                      }`}
+                                    >
+                                      {trial.saved_status}
+                                    </span>
+                                    {hasConflict && (
+                                      <span className="inline-flex items-center gap-0.5 text-xs text-red-600 font-medium">
+                                        <AlertTriangle className="h-3 w-3" />
+                                        Conflict
+                                      </span>
+                                    )}
+                                  </div>
+                                  <h4 className="text-sm font-medium text-gray-900 mt-1">
+                                    {trial.source_url ? (
+                                      <a
+                                        href={trial.source_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:text-blue-600 inline-flex items-center gap-1"
+                                      >
+                                        {trial.title}
+                                        <ExternalLink className="h-3 w-3 text-gray-400" />
+                                      </a>
+                                    ) : (
+                                      trial.title
+                                    )}
+                                  </h4>
+                                  {trial.hosting_club && (
+                                    <p className="text-xs text-gray-500">
+                                      {trial.hosting_club}
+                                    </p>
+                                  )}
+                                  <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                    <MapPin className="h-3 w-3" />
+                                    {trial.venue_name}, {trial.city}, {trial.state}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Travel segment */}
+                              {segment && (
+                                <div className="px-4 py-2 flex items-center gap-3 bg-blue-50 border-t border-b border-blue-100">
+                                  <div className="w-24 flex-shrink-0" />
+                                  <div className="flex items-center flex-shrink-0">
+                                    <div className="w-[1px] h-4 bg-blue-300 ml-[5px]" />
+                                  </div>
+                                  <div className="flex items-center gap-2 text-xs text-blue-700">
+                                    <Car className="h-3.5 w-3.5" />
+                                    <span className="font-medium">
+                                      ~{segment.distanceMiles} mi drive
+                                    </span>
+                                    <span className="text-blue-500">
+                                      {segment.gapDays <= 0
+                                        ? "(same day / overlapping)"
+                                        : segment.gapDays === 1
+                                        ? "(1 day gap)"
+                                        : `(${segment.gapDays} day gap)`}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
