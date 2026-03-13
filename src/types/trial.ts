@@ -1,4 +1,4 @@
-export type OrganizationId = "akc" | "usdaa" | "cpe" | "nadac" | "uki" | "ckc" | "aac";
+export type OrganizationId = "akc" | "usdaa" | "cpe" | "nadac" | "uki" | "ckc" | "aac" | "tdaa";
 
 export interface Organization {
   id: OrganizationId;

@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import type { TrialResult } from "@/types/search";
 import { TrialCard } from "./trial-card";
 import { SeminarCard, type SeminarResult } from "./seminar-card";
+import { ResultsListSkeleton } from "@/components/ui/skeleton";
 
 interface ResultsListProps {
   trials: TrialResult[];
@@ -14,12 +15,7 @@ interface ResultsListProps {
 
 export function ResultsList({ trials, seminars = [], isLoading, hasSearched }: ResultsListProps) {
   if (isLoading) {
-    return (
-      <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4" />
-        <p className="text-gray-600">Searching...</p>
-      </div>
-    );
+    return <ResultsListSkeleton count={6} />;
   }
 
   if (!hasSearched) {

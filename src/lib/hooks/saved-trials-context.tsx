@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import { useAuth } from "@/lib/supabase/auth-context";
+import { useToast } from "@/components/ui/toast";
 
 interface SavedTrialsContextValue {
   savedMap: Map<string, string>; // trialId → status
@@ -28,6 +29,7 @@ export function SavedTrialsProvider({
   children: React.ReactNode;
 }) {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [savedMap, setSavedMap] = useState<Map<string, string>>(new Map());
   const [isLoading, setIsLoading] = useState(false);
 
@@ -78,12 +80,14 @@ export function SavedTrialsProvider({
           method: "DELETE",
         });
         if (!res.ok) {
-          // Revert on failure
           setSavedMap((prev) => {
             const next = new Map(prev);
             next.set(trialId, "interested");
             return next;
           });
+          toast("Failed to remove trial", "error");
+        } else {
+          toast("Trial removed from schedule", "info");
         }
       } else {
         // Optimistic save
@@ -99,16 +103,18 @@ export function SavedTrialsProvider({
           body: JSON.stringify({ status: "interested" }),
         });
         if (!res.ok) {
-          // Revert on failure
           setSavedMap((prev) => {
             const next = new Map(prev);
             next.delete(trialId);
             return next;
           });
+          toast("Failed to save trial", "error");
+        } else {
+          toast("Trial saved to schedule", "success");
         }
       }
     },
-    [savedMap]
+    [savedMap, toast]
   );
 
   const updateStatus = useCallback(

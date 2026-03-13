@@ -56,7 +56,7 @@ export default function Home() {
       }
 
       // Org filter (trials only)
-      if (values.orgs.length > 0 && values.orgs.length < 7) {
+      if (values.orgs.length > 0 && values.orgs.length < 8) {
         params.set("orgs", values.orgs.join(","));
       }
 
@@ -149,8 +149,8 @@ export default function Home() {
               Find Your Next Agility Trial
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
-              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, and AAC in
-              one place.
+              Search upcoming trials and seminars from AKC, USDAA, CPE, UKI, CKC, AAC, and
+              TDAA in one place.
             </p>
           </div>
 
@@ -220,8 +220,8 @@ export default function Home() {
             isLoading={isLoading}
             hasSearched={hasSearched}
           />
-        ) : hasSearched && trials.length > 0 ? (
-          <TrialMap trials={trials} center={searchCenter} />
+        ) : hasSearched && (trials.length > 0 || seminars.length > 0) ? (
+          <TrialMap trials={trials} seminars={seminars} center={searchCenter} />
         ) : (
           <ResultsList
             trials={[]}

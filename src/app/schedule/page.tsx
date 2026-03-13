@@ -43,6 +43,7 @@ const ORG_COLORS: Record<string, string> = {
   uki: "bg-orange-500",
   ckc: "bg-pink-500",
   aac: "bg-teal-500",
+  tdaa: "bg-amber-500",
 };
 
 export default function SchedulePage() {

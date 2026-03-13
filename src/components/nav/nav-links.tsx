@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Calendar, BookOpen, Dumbbell } from "lucide-react";
+import { Calendar, BookOpen, Building } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useSavedTrials } from "@/lib/hooks/saved-trials-context";
 
@@ -39,7 +39,7 @@ export function NavLinks() {
         href="/training-spaces"
         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium text-gray-600 hover:text-emerald-600 rounded-md hover:bg-gray-50 transition-colors"
       >
-        <Dumbbell className="h-3.5 w-3.5" />
+        <Building className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Training</span>
       </Link>
     </div>

@@ -16,6 +16,7 @@ const ORG_COLORS: Record<string, string> = {
   uki: "bg-orange-500",
   ckc: "bg-pink-500",
   aac: "bg-teal-500",
+  tdaa: "bg-amber-500",
 };
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {

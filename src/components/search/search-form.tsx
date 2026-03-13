@@ -16,6 +16,7 @@ const ORGANIZATIONS: Array<{
   { id: "uki", name: "UKI", color: "bg-orange-500" },
   { id: "ckc", name: "CKC", color: "bg-pink-500" },
   { id: "aac", name: "AAC", color: "bg-teal-500" },
+  { id: "tdaa", name: "TDAA", color: "bg-amber-500" },
 ];
 
 const RADIUS_OPTIONS = [
@@ -350,7 +351,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
 
       {/* Date Range + Judge + Search */}
       <div className="flex gap-3 flex-wrap">
-        <div className="flex gap-2 flex-1 min-w-[200px]">
+        <div className="flex gap-2 flex-1 min-w-0 sm:min-w-[200px]">
           <div className="relative flex-1">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -378,7 +379,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
         </div>
 
         {/* Judge Autocomplete */}
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
           <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             ref={inputRef}

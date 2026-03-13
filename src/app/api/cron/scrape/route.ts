@@ -4,7 +4,7 @@ import { OrganizationId } from "@/types/trial";
 
 // NADAC excluded — their trial calendar is broken (PHP MYSQL_ASSOC error), no public data
 // CKC excluded — requires Playwright (headless browser); scraped via separate GitHub Actions workflow
-const ACTIVE_ORGS: OrganizationId[] = ["akc", "usdaa", "cpe", "uki", "aac"];
+const ACTIVE_ORGS: OrganizationId[] = ["akc", "usdaa", "cpe", "uki", "aac", "tdaa"];
 
 /**
  * Vercel cron job: enqueue scrape jobs for each active organization.

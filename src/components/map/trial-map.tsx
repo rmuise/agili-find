@@ -3,12 +3,16 @@
 import { useEffect, useRef, useMemo } from "react";
 import type L from "leaflet";
 import type { TrialResult } from "@/types/search";
+import type { SeminarResult } from "@/components/search/seminar-card";
+import type { TrainingSpaceResult } from "@/components/search/training-space-card";
 
 // Leaflet CSS is imported via a link tag in the component
 // to avoid SSR issues with the CSS import
 
 interface TrialMapProps {
   trials: TrialResult[];
+  seminars?: SeminarResult[];
+  trainingSpaces?: TrainingSpaceResult[];
   center?: { lat: number; lng: number };
 }
 
@@ -22,7 +26,7 @@ const ORG_COLORS: Record<string, string> = {
   aac: "#14b8a6",
 };
 
-export function TrialMapInner({ trials, center }: TrialMapProps) {
+export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], center }: TrialMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.LayerGroup | null>(null);
@@ -149,14 +153,16 @@ export function TrialMapInner({ trials, center }: TrialMapProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update markers when trials change (without recreating the map)
+  // Update markers when data changes (without recreating the map)
   useEffect(() => {
     if (!mapInstanceRef.current || !markersRef.current) return;
 
     import("leaflet").then((L) => {
       const map = mapInstanceRef.current!;
       markersRef.current!.clearLayers();
+      const allCoords: L.LatLngExpression[] = [];
 
+      // Trial markers
       venueGroups.forEach(({ lat, lng, trials: vTrials }) => {
         const orgId = vTrials[0].organization_id;
         const color = ORG_COLORS[orgId] || "#6b7280";
@@ -191,19 +197,68 @@ export function TrialMapInner({ trials, center }: TrialMapProps) {
         );
 
         markersRef.current!.addLayer(marker);
+        allCoords.push([lat, lng]);
       });
 
-      if (venueGroups.size > 0) {
-        const allCoords: L.LatLngExpression[] = [];
-        venueGroups.forEach(({ lat, lng }) => {
-          allCoords.push([lat, lng]);
+      // Seminar markers (purple diamonds)
+      for (const sem of seminars) {
+        if (!sem.distance_miles && sem.distance_miles !== 0) continue;
+        // Seminars from the API include lat/lng in the response if they have location
+        const semData = sem as SeminarResult & { lat?: number; lng?: number };
+        if (!semData.lat || !semData.lng) continue;
+
+        const marker = L.circleMarker([semData.lat, semData.lng], {
+          radius: 8,
+          fillColor: "#8b5cf6",
+          color: "#fff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.8,
         });
-        if (allCoords.length > 1) {
-          map.fitBounds(L.latLngBounds(allCoords), { padding: [40, 40] });
-        }
+
+        marker.bindPopup(
+          `<div style="max-width:250px;">
+            <div style="color:#8b5cf6;font-weight:600;font-size:11px;margin-bottom:2px;">SEMINAR</div>
+            <strong>${sem.title}</strong><br/>
+            <span style="color:#666;font-size:12px;">${sem.instructor} &middot; ${sem.start_date}</span>
+          </div>`
+        );
+
+        markersRef.current!.addLayer(marker);
+        allCoords.push([semData.lat, semData.lng]);
+      }
+
+      // Training space markers (green squares)
+      for (const space of trainingSpaces) {
+        const spaceData = space as TrainingSpaceResult & { lat?: number; lng?: number };
+        if (!spaceData.lat || !spaceData.lng) continue;
+
+        const marker = L.circleMarker([spaceData.lat, spaceData.lng], {
+          radius: 7,
+          fillColor: "#10b981",
+          color: "#fff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.8,
+        });
+
+        marker.bindPopup(
+          `<div style="max-width:250px;">
+            <div style="color:#10b981;font-weight:600;font-size:11px;margin-bottom:2px;">TRAINING SPACE</div>
+            <strong>${space.name}</strong><br/>
+            <span style="color:#666;font-size:12px;">${space.city}, ${space.state}${space.indoor ? " &middot; Indoor" : ""}</span>
+          </div>`
+        );
+
+        markersRef.current!.addLayer(marker);
+        allCoords.push([spaceData.lat, spaceData.lng]);
+      }
+
+      if (allCoords.length > 1) {
+        map.fitBounds(L.latLngBounds(allCoords), { padding: [40, 40] });
       }
     });
-  }, [venueGroups]);
+  }, [venueGroups, seminars, trainingSpaces]);
 
   return (
     <div
