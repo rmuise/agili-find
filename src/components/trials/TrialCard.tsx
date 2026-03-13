@@ -53,7 +53,7 @@ export function TrialCard({ trial, isSaved = false }: TrialCardProps) {
             <h3 className="text-[0.95rem] font-medium text-cream leading-snug">
               {name}
             </h3>
-            <OrgChip org={org} />
+            <OrgChip orgId={org} />
           </div>
 
           <div className="flex items-center gap-2 text-[0.78rem] text-[var(--muted)] flex-wrap mb-[0.5rem]">

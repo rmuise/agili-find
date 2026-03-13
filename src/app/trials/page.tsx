@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { FilterSidebar } from '@/components/trials/FilterSidebar';
@@ -13,6 +13,14 @@ import type { SearchFilters, SortOption } from '@/lib/types';
 const RESULTS_PER_PAGE = 10;
 
 export default function TrialsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[var(--black)]" />}>
+      <TrialsPageContent />
+    </Suspense>
+  );
+}
+
+function TrialsPageContent() {
   const searchParams = useSearchParams();
   const initialLocation = searchParams?.get('location') || 'Ottawa, ON';
 
