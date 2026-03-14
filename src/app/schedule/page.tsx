@@ -160,8 +160,14 @@ export default function SchedulePage() {
             <Calendar className="h-6 w-6 text-[var(--accent)]" />
             My Schedule
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
-            {savedTrials.length} saved trial{savedTrials.length !== 1 ? "s" : ""}
+          <p className="text-sm text-[var(--muted-text)] mt-1">
+            {filteredTrials.length !== savedTrials.length ? (
+              <>
+                {filteredTrials.length} of {savedTrials.length} trial{savedTrials.length !== 1 ? "s" : ""} shown
+              </>
+            ) : (
+              <>{savedTrials.length} saved trial{savedTrials.length !== 1 ? "s" : ""}</>
+            )}
           </p>
 
           {/* Share + iCal buttons */}
@@ -169,7 +175,7 @@ export default function SchedulePage() {
             <div className="flex flex-wrap gap-2 mt-3">
               <button
                 onClick={() => shareUrl && copyToClipboard(shareUrl, "link")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--muted)] bg-[var(--surface)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--cream)] bg-[var(--surface)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
               >
                 {copied === "link" ? (
                   <Check className="h-3.5 w-3.5 text-green-600" />
@@ -180,7 +186,7 @@ export default function SchedulePage() {
               </button>
               <button
                 onClick={() => icalUrl && copyToClipboard(icalUrl, "ical")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--muted)] bg-[var(--surface)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--cream)] bg-[var(--surface)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
               >
                 {copied === "ical" ? (
                   <Check className="h-3.5 w-3.5 text-green-600" />
@@ -214,7 +220,7 @@ export default function SchedulePage() {
                     className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                       statusFilter === s
                         ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
-                        : "text-[var(--muted)] hover:text-[var(--cream)]"
+                        : "text-[var(--muted-text)] hover:text-[var(--cream)]"
                     }`}
                   >
                     {s === "all" ? "All" : STATUS_LABELS[s]?.label}
@@ -233,7 +239,7 @@ export default function SchedulePage() {
                 className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                   timeFilter === t
                     ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
-                    : "text-[var(--muted)] hover:text-[var(--cream)]"
+                    : "text-[var(--muted-text)] hover:text-[var(--cream)]"
                 }`}
               >
                 {t === "all" ? "All Time" : t === "upcoming" ? "Upcoming" : "Past"}
@@ -278,10 +284,17 @@ export default function SchedulePage() {
             ) : (
               <>
                 <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
-                  No matching trials
+                  No trials match these filters
                 </h3>
-                <p className="text-sm text-[var(--muted)]">
-                  Try changing your filters to see more results.
+                <p className="text-sm text-[var(--muted-text)] mb-4">
+                  You have {savedTrials.length} saved trial{savedTrials.length !== 1 ? "s" : ""} — try switching to{" "}
+                  <button
+                    onClick={() => { setTimeFilter("all"); setStatusFilter("all"); }}
+                    className="text-[var(--agili-accent)] hover:underline"
+                  >
+                    All Time / All
+                  </button>{" "}
+                  to see them.
                 </p>
               </>
             )}
