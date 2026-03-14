@@ -1,27 +1,47 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from "@/db";
+import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * POST /api/judges/:slug/course-maps — Upload a course map image for a judge.
- * Accepts multipart form data with: file, caption?, class_name?
+ * POST /api/judges/:slug/course-maps
+ *
+ * Upload a course map image for a judge. Authenticated users only.
+ * All uploads default to is_approved = false — an admin must approve
+ * before the map appears publicly on the judge's profile.
+ *
+ * Accepts multipart form data:
+ *   file         — image file (required, image/*, max 10 MB)
+ *   course_type  — string, e.g. "Standard", "Jumpers" (optional)
+ *   source_label — human-readable source, e.g. "AKC Regionals 2024" (optional)
+ *   caption      — free-text caption (optional)
+ *   trial_id     — UUID of associated trial (optional)
+ *
+ * FUTURE HOOK:
+ *   PATCH /api/admin/course-maps/:id/approve  →  sets is_approved = true
+ *   A future admin UI will list rows WHERE is_approved = false for moderation.
+ *   Do not build this now — this comment marks the integration point.
  */
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const supabase = createServerClient();
 
-  // Check auth
+  // Use the server (user-scoped) client to check auth via cookies
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Find the judge
-  const { data: judge, error: judgeError } = await supabase
+  // Admin client for storage upload + DB insert (bypasses RLS for these operations)
+  const admin = createAdminClient();
+
+  // Find the judge by slug
+  const { data: judge, error: judgeError } = await admin
     .from("judges")
     .select("id")
     .eq("slug", slug)
@@ -33,14 +53,16 @@ export async function POST(
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
+  const courseType = (formData.get("course_type") as string) || null;
+  const sourceLabel = (formData.get("source_label") as string) || null;
   const caption = (formData.get("caption") as string) || null;
-  const className = (formData.get("class_name") as string) || null;
+  const trialId = (formData.get("trial_id") as string) || null;
 
   if (!file) {
     return NextResponse.json({ error: "File is required" }, { status: 400 });
   }
 
-  // Validate file type
+  // Validate file type — images only for now (PDF support can be added via admin tooling)
   if (!file.type.startsWith("image/")) {
     return NextResponse.json(
       { error: "Only image files are allowed" },
@@ -48,19 +70,20 @@ export async function POST(
     );
   }
 
-  // Validate file size (5MB max)
-  if (file.size > 5 * 1024 * 1024) {
+  // Validate file size — 10 MB max (spec requirement)
+  const MAX_SIZE = 10 * 1024 * 1024;
+  if (file.size > MAX_SIZE) {
     return NextResponse.json(
-      { error: "File must be under 5MB" },
+      { error: "File must be under 10 MB" },
       { status: 400 }
     );
   }
 
-  // Upload to Supabase Storage
-  const ext = file.name.split(".").pop() || "jpg";
-  const filePath = `course-maps/${judge.id}/${Date.now()}.${ext}`;
+  // Upload to Supabase Storage bucket "judge-assets"
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const filePath = `course-maps/${judge.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await admin.storage
     .from("judge-assets")
     .upload(filePath, file, {
       contentType: file.type,
@@ -68,38 +91,46 @@ export async function POST(
     });
 
   if (uploadError) {
-    console.error("Upload error:", uploadError);
+    console.error("[course-maps] Storage upload error:", uploadError);
     return NextResponse.json(
       { error: "Failed to upload file" },
       { status: 500 }
     );
   }
 
-  // Get public URL
+  // Get public URL for storage (bucket is configured as public in judge-assets)
   const {
     data: { publicUrl },
-  } = supabase.storage.from("judge-assets").getPublicUrl(filePath);
+  } = admin.storage.from("judge-assets").getPublicUrl(filePath);
 
-  // Insert metadata
-  const { data: courseMap, error: insertError } = await supabase
+  // Insert metadata — is_approved defaults to false; admin must approve before display
+  const { error: insertError } = await admin
     .from("judge_course_maps")
     .insert({
       judge_id: judge.id,
+      trial_id: trialId || null,
       image_url: publicUrl,
       caption,
-      class_name: className,
+      class_name: courseType,
+      source_label: sourceLabel,
       uploaded_by: user.id,
-    })
-    .select()
-    .single();
+      is_approved: false,
+    });
 
   if (insertError) {
-    console.error("Insert error:", insertError);
+    console.error("[course-maps] DB insert error:", insertError);
     return NextResponse.json(
       { error: "Failed to save course map" },
       { status: 500 }
     );
   }
 
-  return NextResponse.json(courseMap, { status: 201 });
+  return NextResponse.json(
+    {
+      message:
+        "Thank you! Your course map has been submitted for review and will appear once approved.",
+      pending: true,
+    },
+    { status: 201 }
+  );
 }

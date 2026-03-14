@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@/db";
 
 /**
- * GET /api/judges/:slug — Fetch a judge profile by slug,
- * along with recent trials and course maps.
+ * GET /api/judges/:slug — Fetch a judge profile by slug.
+ *
+ * Returns:
+ *   - judge: full judge record (canonical name, variants, bio, orgs, etc.)
+ *   - trials: upcoming trials where this judge is listed (start_date >= today, ASC)
+ *   - courseMaps: approved course maps only (is_approved = true)
  */
 export async function GET(
   _request: Request,
@@ -28,7 +32,11 @@ export async function GET(
     return NextResponse.json({ error: "Judge not found" }, { status: 404 });
   }
 
-  // Fetch recent trials where this judge is listed
+  // All known names for this judge (canonical + variants) — used for trial matching
+  const knownNames: string[] = [judge.name, ...(judge.name_variants ?? [])];
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Fetch upcoming trials only (start_date >= today), sorted ASC
   const { data: trials } = await supabase
     .from("trials")
     .select(
@@ -49,11 +57,12 @@ export async function GET(
       )
     `
     )
-    .contains("judges", [judge.name])
-    .order("start_date", { ascending: false })
-    .limit(20);
+    .overlaps("judges", knownNames)
+    .gte("start_date", today)
+    .order("start_date", { ascending: true })
+    .limit(50);
 
-  // Fetch course maps
+  // Fetch approved course maps only — pending uploads are never shown to the public
   const { data: courseMaps } = await supabase
     .from("judge_course_maps")
     .select(
@@ -62,6 +71,8 @@ export async function GET(
       image_url,
       caption,
       class_name,
+      source_label,
+      is_approved,
       created_at,
       trials (
         id,
@@ -72,11 +83,12 @@ export async function GET(
     `
     )
     .eq("judge_id", judge.id)
+    .eq("is_approved", true)
     .order("created_at", { ascending: false })
-    .limit(30);
+    .limit(50);
 
   // Shape trial results
-  const recentTrials = (trials || []).map((t) => {
+  const upcomingTrials = (trials || []).map((t) => {
     const venue = t.venues as unknown as {
       name: string;
       city: string;
@@ -100,7 +112,7 @@ export async function GET(
 
   return NextResponse.json({
     judge,
-    trials: recentTrials,
+    trials: upcomingTrials,
     courseMaps: courseMaps || [],
   });
 }
