@@ -197,6 +197,15 @@ input[type='range']::-webkit-slider-thumb:active {
   transform: scale(1.2);
 }
 
+/* ── Date input calendar icon ── */
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.6);
+  cursor: pointer;
+}
+input[type='date']::-webkit-calendar-picker-indicator:hover {
+  filter: invert(1) opacity(1);
+}
+
 /* ── Frosted glass ── */
 .glass {
   background: var(--glass-bg);
