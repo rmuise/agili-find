@@ -221,37 +221,37 @@ export default function ScheduleBuilderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader maxWidth="4xl" backHref="/schedule" backLabel="My Schedule" />
 
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Calendar className="h-6 w-6 text-blue-600" />
+          <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-[var(--accent)]" />
             Schedule Builder
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             Plan your season with conflict detection and travel estimates.
           </p>
         </div>
 
         {isLoading ? (
           <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4" />
-            <p className="text-gray-600">Loading your schedule...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)] mx-auto mb-4" />
+            <p className="text-[var(--muted)]">Loading your schedule...</p>
           </div>
         ) : upcomingTrials.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+            <Calendar className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No upcoming trials saved
             </h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-[var(--muted)] mb-4">
               Save some trials to start planning your season.
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
             >
               Search for trials
             </Link>
@@ -260,27 +260,27 @@ export default function ScheduleBuilderPage() {
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">{upcomingTrials.length}</p>
-                <p className="text-xs text-gray-500">Upcoming Trials</p>
+              <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
+                <p className="text-2xl font-bold text-[var(--cream)]">{upcomingTrials.length}</p>
+                <p className="text-xs text-[var(--muted)]">Upcoming Trials</p>
               </div>
-              <div className={`rounded-lg border p-4 text-center ${conflicts.length > 0 ? "bg-red-50 border-red-200" : "bg-white border-gray-200"}`}>
-                <p className={`text-2xl font-bold ${conflicts.length > 0 ? "text-red-600" : "text-gray-900"}`}>
+              <div className={`rounded-lg border p-4 text-center ${conflicts.length > 0 ? "bg-red-50 border-red-200" : "bg-[var(--surface)] border-[var(--border)]"}`}>
+                <p className={`text-2xl font-bold ${conflicts.length > 0 ? "text-red-600" : "text-[var(--cream)]"}`}>
                   {conflicts.length}
                 </p>
-                <p className="text-xs text-gray-500">Conflicts</p>
+                <p className="text-xs text-[var(--muted)]">Conflicts</p>
               </div>
-              <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
+                <p className="text-2xl font-bold text-[var(--cream)]">
                   {totalMiles.toLocaleString()}
                 </p>
-                <p className="text-xs text-gray-500">Total Miles</p>
+                <p className="text-xs text-[var(--muted)]">Total Miles</p>
               </div>
-              <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
+                <p className="text-2xl font-bold text-[var(--cream)]">
                   {monthGroups.length}
                 </p>
-                <p className="text-xs text-gray-500">Active Months</p>
+                <p className="text-xs text-[var(--muted)]">Active Months</p>
               </div>
             </div>
 
@@ -318,28 +318,28 @@ export default function ScheduleBuilderPage() {
                 const isExpanded = expandedMonths.has(monthKey);
 
                 return (
-                  <div key={monthKey} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                  <div key={monthKey} className="bg-[var(--surface)] rounded-lg border border-[var(--border)] overflow-hidden">
                     <button
                       onClick={() => toggleMonth(monthKey)}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-[var(--surface-2)] transition-colors"
                     >
                       <div className="flex items-center gap-2">
                         {isExpanded ? (
-                          <ChevronDown className="h-4 w-4 text-gray-400" />
+                          <ChevronDown className="h-4 w-4 text-[var(--muted)]" />
                         ) : (
-                          <ChevronRight className="h-4 w-4 text-gray-400" />
+                          <ChevronRight className="h-4 w-4 text-[var(--muted)]" />
                         )}
-                        <span className="font-semibold text-gray-900">
+                        <span className="font-semibold text-[var(--cream)]">
                           {monthLabel}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-[var(--muted-2)]">
                           {monthTrials.length} trial{monthTrials.length !== 1 ? "s" : ""}
                         </span>
                       </div>
                     </button>
 
                     {isExpanded && (
-                      <div className="border-t border-gray-100">
+                      <div className="border-t border-[var(--border)]">
                         {monthTrials.map((trial, idx) => {
                           const hasConflict = conflictSet.has(trial.id);
                           const segment = travelMap.get(trial.id);
@@ -348,12 +348,12 @@ export default function ScheduleBuilderPage() {
                             <div key={trial.id}>
                               <div
                                 className={`px-4 py-3 flex items-start gap-3 ${
-                                  hasConflict ? "bg-red-50" : idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                  hasConflict ? "bg-red-50" : idx % 2 === 0 ? "bg-[var(--surface)]" : "bg-[var(--surface-2)]"
                                 }`}
                               >
                                 {/* Date column */}
                                 <div className="w-24 flex-shrink-0 text-right">
-                                  <p className="text-sm font-medium text-gray-900">
+                                  <p className="text-sm font-medium text-[var(--cream)]">
                                     {formatDateRange(trial.start_date, trial.end_date)}
                                   </p>
                                 </div>
@@ -364,7 +364,7 @@ export default function ScheduleBuilderPage() {
                                     className={`w-3 h-3 rounded-full border-2 ${
                                       hasConflict
                                         ? "border-red-500 bg-red-200"
-                                        : "border-blue-500 bg-blue-200"
+                                        : "border-[var(--accent)] bg-[var(--surface-2)]"
                                     }`}
                                   />
                                 </div>
@@ -372,14 +372,14 @@ export default function ScheduleBuilderPage() {
                                 {/* Trial info */}
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
+                                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)]">
                                       {trial.organization_name}
                                     </span>
                                     <span
                                       className={`text-xs font-medium px-1.5 py-0.5 rounded capitalize ${
                                         STATUS_LABELS[trial.saved_status]
                                           ? `${STATUS_LABELS[trial.saved_status].bg} ${STATUS_LABELS[trial.saved_status].color}`
-                                          : "bg-gray-100 text-gray-600"
+                                          : "bg-[var(--surface-2)] text-[var(--muted)]"
                                       }`}
                                     >
                                       {STATUS_LABELS[trial.saved_status]?.label || trial.saved_status}
@@ -391,27 +391,27 @@ export default function ScheduleBuilderPage() {
                                       </span>
                                     )}
                                   </div>
-                                  <h4 className="text-sm font-medium text-gray-900 mt-1">
+                                  <h4 className="text-sm font-medium text-[var(--cream)] mt-1">
                                     {trial.source_url ? (
                                       <a
                                         href={trial.source_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="hover:text-blue-600 inline-flex items-center gap-1"
+                                        className="hover:text-[var(--accent)] inline-flex items-center gap-1"
                                       >
                                         {trial.title}
-                                        <ExternalLink className="h-3 w-3 text-gray-400" />
+                                        <ExternalLink className="h-3 w-3 text-[var(--muted)]" />
                                       </a>
                                     ) : (
                                       trial.title
                                     )}
                                   </h4>
                                   {trial.hosting_club && (
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-[var(--muted)]">
                                       {trial.hosting_club}
                                     </p>
                                   )}
-                                  <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                  <p className="text-xs text-[var(--muted)] flex items-center gap-1 mt-0.5">
                                     <MapPin className="h-3 w-3" />
                                     {trial.venue_name}, {trial.city}, {trial.state}
                                   </p>

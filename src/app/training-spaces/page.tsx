@@ -51,22 +51,22 @@ export default function TrainingSpacesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader maxWidth="4xl" backLabel="Back" />
 
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <div className="text-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
-            <Dumbbell className="h-7 w-7 text-emerald-600" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[var(--cream)] mb-2 flex items-center justify-center gap-2">
+            <Dumbbell className="h-7 w-7 text-[var(--accent)]" />
             Training Spaces
           </h1>
-          <p className="text-gray-600 text-sm">
+          <p className="text-[var(--muted)] text-sm">
             Find agility training facilities near you.
           </p>
           {user && (
             <Link
               href="/training-spaces/submit"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 mt-3 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
             >
               <Plus className="h-3.5 w-3.5" />
               Add a training space
@@ -75,24 +75,24 @@ export default function TrainingSpacesPage() {
         </div>
 
         {/* Search Form */}
-        <form onSubmit={handleSearch} className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <form onSubmit={handleSearch} className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-gray-500 mb-1">Location</label>
+              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Location</label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="City, state, or zip code"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Radius</label>
+              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Radius</label>
               <select
                 value={radius}
                 onChange={(e) => setRadius(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               >
                 <option value="10">10 miles</option>
                 <option value="25">25 miles</option>
@@ -102,11 +102,11 @@ export default function TrainingSpacesPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Type</label>
+              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Type</label>
               <select
                 value={indoorFilter}
                 onChange={(e) => setIndoorFilter(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               >
                 <option value="">All</option>
                 <option value="true">Indoor</option>
@@ -117,11 +117,11 @@ export default function TrainingSpacesPage() {
 
           <div className="flex items-center gap-3 mt-3">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Surface</label>
+              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Surface</label>
               <select
                 value={surfaceFilter}
                 onChange={(e) => setSurfaceFilter(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               >
                 <option value="">Any surface</option>
                 <option value="grass">Grass</option>
@@ -136,7 +136,7 @@ export default function TrainingSpacesPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 disabled:opacity-50 self-end"
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)] disabled:opacity-50 self-end"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -150,33 +150,33 @@ export default function TrainingSpacesPage() {
 
         {/* Results */}
         {isLoading ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mx-auto mb-4" />
-            <p className="text-gray-600">Searching...</p>
+          <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)] mx-auto mb-4" />
+            <p className="text-[var(--muted)]">Searching...</p>
           </div>
         ) : !hasSearched ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <Dumbbell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+            <Dumbbell className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               Search for training spaces
             </h3>
-            <p className="text-gray-500 max-w-md mx-auto">
+            <p className="text-[var(--muted)] max-w-md mx-auto">
               Enter your location to find agility training facilities near you.
             </p>
           </div>
         ) : spaces.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <Dumbbell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+            <Dumbbell className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No training spaces found
             </h3>
-            <p className="text-gray-500 max-w-md mx-auto mb-4">
+            <p className="text-[var(--muted)] max-w-md mx-auto mb-4">
               Try expanding your search radius or adjusting your filters.
             </p>
             {user && (
               <Link
                 href="/training-spaces/submit"
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-emerald-600 border border-emerald-300 rounded-md hover:bg-emerald-50"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--accent)] border border-[var(--accent)] rounded-md hover:bg-[var(--surface-2)]"
               >
                 <Plus className="h-4 w-4" />
                 Add a training space
@@ -185,7 +185,7 @@ export default function TrainingSpacesPage() {
           </div>
         ) : (
           <>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-[var(--muted)] mb-4">
               {spaces.length} training space{spaces.length !== 1 ? "s" : ""} found
             </p>
             <div className="space-y-3">

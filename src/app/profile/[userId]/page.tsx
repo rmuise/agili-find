@@ -111,10 +111,10 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-lg font-medium text-gray-900 mb-2">Profile not found</h2>
-          <Link href="/" className="text-sm text-blue-600 hover:text-blue-700">
+          <h2 className="text-lg font-medium text-[var(--cream)] mb-2">Profile not found</h2>
+          <Link href="/" className="text-sm text-[var(--accent)] hover:opacity-80">
             Back to search
           </Link>
         </div>
@@ -125,26 +125,26 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
   const isOwnProfile = user?.id === userId;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader backLabel="Back" />
 
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8">
         {/* Profile Header */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+        <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-6 mb-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                <span className="text-xl font-bold text-blue-600">
+              <div className="w-14 h-14 bg-[var(--surface-2)] rounded-full flex items-center justify-center mb-3">
+                <span className="text-xl font-bold text-[var(--accent)]">
                   {(profile.display_name || "?")[0].toUpperCase()}
                 </span>
               </div>
-              <h1 className="text-xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold text-[var(--cream)]">
                 {profile.display_name}
               </h1>
               {profile.bio && (
-                <p className="text-sm text-gray-600 mt-1">{profile.bio}</p>
+                <p className="text-sm text-[var(--muted)] mt-1">{profile.bio}</p>
               )}
-              <div className="flex flex-wrap gap-3 mt-3 text-xs text-gray-500">
+              <div className="flex flex-wrap gap-3 mt-3 text-xs text-[var(--muted)]">
                 {profile.location && (
                   <span className="inline-flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
@@ -164,12 +164,12 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
               </div>
               <div className="flex gap-4 mt-3 text-sm">
                 <span>
-                  <strong className="text-gray-900">{followers}</strong>{" "}
-                  <span className="text-gray-500">followers</span>
+                  <strong className="text-[var(--cream)]">{followers}</strong>{" "}
+                  <span className="text-[var(--muted)]">followers</span>
                 </span>
                 <span>
-                  <strong className="text-gray-900">{following}</strong>{" "}
-                  <span className="text-gray-500">following</span>
+                  <strong className="text-[var(--cream)]">{following}</strong>{" "}
+                  <span className="text-[var(--muted)]">following</span>
                 </span>
               </div>
             </div>
@@ -179,8 +179,8 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                 onClick={handleFollow}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                   isFollowing
-                    ? "text-gray-600 bg-gray-100 hover:bg-red-50 hover:text-red-600"
-                    : "text-white bg-blue-600 hover:bg-blue-700"
+                    ? "text-[var(--muted)] bg-[var(--surface-2)] hover:bg-red-50 hover:text-red-600"
+                    : "text-[var(--black)] bg-[var(--accent)] hover:bg-[var(--accent-dark)]"
                 }`}
               >
                 {isFollowing ? (
@@ -200,7 +200,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
             {isOwnProfile && (
               <Link
                 href="/settings"
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-[var(--accent)] hover:opacity-80"
               >
                 Edit profile
               </Link>
@@ -210,26 +210,26 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
         {/* Trial Reviews */}
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3">
             Trial Reviews ({reviews.length})
           </h2>
           {reviews.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-              <Star className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-              <p className="text-sm text-gray-500">No reviews yet</p>
+            <div className="text-center py-12 bg-[var(--surface)] rounded-lg border border-[var(--border)]">
+              <Star className="h-8 w-8 text-[var(--muted-2)] mx-auto mb-2" />
+              <p className="text-sm text-[var(--muted)]">No reviews yet</p>
             </div>
           ) : (
             <div className="space-y-3">
               {reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="bg-white rounded-lg border border-gray-200 p-4"
+                  className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-gray-100 text-gray-600 uppercase">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)] uppercase">
                       {review.trials.organization_id}
                     </span>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-[var(--cream)]">
                       {review.trials.title}
                     </span>
                   </div>
@@ -241,21 +241,21 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                           className={`h-3.5 w-3.5 ${
                             s <= review.rating!
                               ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-200"
+                              : "text-[var(--muted-2)]"
                           }`}
                         />
                       ))}
                     </div>
                   )}
                   {review.comment && (
-                    <p className="text-sm text-gray-700 mb-1">{review.comment}</p>
+                    <p className="text-sm text-[var(--cream)] mb-1">{review.comment}</p>
                   )}
                   {review.results && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-[var(--muted)]">
                       Results: {review.results}
                     </p>
                   )}
-                  <p className="text-xs text-gray-400 mt-2">
+                  <p className="text-xs text-[var(--muted-2)] mt-2">
                     {review.trials.city}, {review.trials.state} &middot;{" "}
                     {new Date(review.created_at).toLocaleDateString()}
                   </p>

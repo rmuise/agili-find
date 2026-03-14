@@ -96,16 +96,16 @@ export default function SubmitSeminarPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--bg)]">
         <PageHeader backLabel="Back" />
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <BookOpen className="h-8 w-8 text-green-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Seminar submitted!
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[var(--muted)] mb-6">
             Your seminar is now listed and will appear in search results.
           </p>
           <div className="flex gap-3 justify-center">
@@ -126,13 +126,13 @@ export default function SubmitSeminarPage() {
                 setContactUrl("");
                 setPrice("");
               }}
-              className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-300 rounded-md hover:bg-blue-50"
+              className="px-4 py-2 text-sm font-medium text-[var(--accent)] border border-[var(--accent)] rounded-md hover:bg-[var(--surface-2)]"
             >
               Submit another
             </Link>
             <Link
               href="/"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              className="px-4 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
             >
               Back to search
             </Link>
@@ -143,16 +143,16 @@ export default function SubmitSeminarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader backLabel="Back" />
 
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-blue-600" />
+          <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+            <BookOpen className="h-6 w-6 text-[var(--accent)]" />
             Submit a Seminar
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             Share an agility seminar or clinic with the community.
           </p>
         </div>
@@ -163,11 +163,11 @@ export default function SubmitSeminarPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-6 space-y-5">
           {/* Title + Instructor */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Seminar title *
               </label>
               <input
@@ -176,11 +176,11 @@ export default function SubmitSeminarPage() {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Agility Foundations Clinic"
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Instructor *
               </label>
               <input
@@ -189,14 +189,14 @@ export default function SubmitSeminarPage() {
                 onChange={(e) => setInstructor(e.target.value)}
                 placeholder="e.g. Jane Smith"
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--cream)] mb-1">
               Description
             </label>
             <textarea
@@ -204,14 +204,14 @@ export default function SubmitSeminarPage() {
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="What will be covered, skill levels welcome, etc."
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           {/* Dates */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Start date *
               </label>
               <input
@@ -219,11 +219,11 @@ export default function SubmitSeminarPage() {
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 End date
               </label>
               <input
@@ -231,15 +231,15 @@ export default function SubmitSeminarPage() {
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 min={startDate || undefined}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
-              <p className="text-xs text-gray-400 mt-0.5">Same as start if single-day</p>
+              <p className="text-xs text-[var(--muted-2)] mt-0.5">Same as start if single-day</p>
             </div>
           </div>
 
           {/* Venue */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--cream)] mb-1">
               Venue name *
             </label>
             <input
@@ -248,12 +248,12 @@ export default function SubmitSeminarPage() {
               onChange={(e) => setVenueName(e.target.value)}
               placeholder="e.g. Paws & Play Training Center"
               required
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--cream)] mb-1">
               Address
             </label>
             <input
@@ -261,13 +261,13 @@ export default function SubmitSeminarPage() {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main St"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 City *
               </label>
               <input
@@ -275,11 +275,11 @@ export default function SubmitSeminarPage() {
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 State *
               </label>
               <input
@@ -288,18 +288,18 @@ export default function SubmitSeminarPage() {
                 onChange={(e) => setState(e.target.value)}
                 placeholder="e.g. CA"
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Country
               </label>
               <input
                 type="text"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           </div>
@@ -307,18 +307,18 @@ export default function SubmitSeminarPage() {
           {/* Contact + Price */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Contact email
               </label>
               <input
                 type="email"
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Website / signup link
               </label>
               <input
@@ -326,11 +326,11 @@ export default function SubmitSeminarPage() {
                 value={contactUrl}
                 onChange={(e) => setContactUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Price
               </label>
               <input
@@ -338,7 +338,7 @@ export default function SubmitSeminarPage() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="e.g. $150/day"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           </div>
@@ -346,7 +346,7 @@ export default function SubmitSeminarPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white rounded-md py-2.5 text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-[var(--accent)] text-[var(--black)] rounded-md py-2.5 text-sm font-medium hover:bg-[var(--accent-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>

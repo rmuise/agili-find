@@ -103,17 +103,17 @@ export default function PublicSchedulePage() {
 
   if (notFound) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Schedule not found
           </h1>
-          <p className="text-gray-500 mb-4">
+          <p className="text-[var(--muted)] mb-4">
             This schedule link may be invalid or expired.
           </p>
           <Link
             href="/"
-            className="text-blue-600 hover:underline font-medium text-sm"
+            className="text-[var(--accent)] hover:underline font-medium text-sm"
           >
             Go to AgiliFind
           </Link>
@@ -126,24 +126,24 @@ export default function PublicSchedulePage() {
   const pastGroups = groupByMonth(sortedTrials.past);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader maxWidth="5xl" backLabel="Search trials" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         {/* Title */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-[var(--cream)]">
             {displayName ? `${displayName}'s` : ""} Agility Schedule
           </h1>
           <div className="flex items-center gap-4 mt-2">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--muted)]">
               {sortedTrials.upcoming.length} upcoming trial
               {sortedTrials.upcoming.length !== 1 ? "s" : ""}
             </p>
             {icalUrl && (
               <a
                 href={icalUrl}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] hover:opacity-80"
               >
                 <CalendarPlus className="h-3.5 w-3.5" />
                 Subscribe to calendar
@@ -154,11 +154,11 @@ export default function PublicSchedulePage() {
 
         {trials.length === 0 ? (
           <div className="text-center py-16">
-            <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <Calendar className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No trials on this schedule
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--muted)]">
               This user hasn&apos;t saved any trials yet.
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function PublicSchedulePage() {
               <div>
                 {Object.entries(upcomingGroups).map(([month, items]) => (
                   <div key={month} className="mb-6">
-                    <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                    <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3">
                       {month}
                     </h2>
                     <div className="space-y-2">
@@ -188,12 +188,12 @@ export default function PublicSchedulePage() {
             {/* Past */}
             {sortedTrials.past.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3 border-t border-gray-200 pt-6">
+                <h2 className="text-sm font-semibold text-[var(--muted-2)] uppercase tracking-wide mb-3 border-t border-[var(--border)] pt-6">
                   Past Trials
                 </h2>
                 {Object.entries(pastGroups).map(([month, items]) => (
                   <div key={month} className="mb-4">
-                    <h3 className="text-xs font-medium text-gray-400 mb-2">
+                    <h3 className="text-xs font-medium text-[var(--muted-2)] mb-2">
                       {month}
                     </h3>
                     <div className="space-y-2">
@@ -227,8 +227,8 @@ function TrialRow({
 
   return (
     <div
-      className={`bg-white rounded-lg border p-3 sm:p-4 ${
-        isPast ? "opacity-50 border-gray-100" : "border-gray-200"
+      className={`bg-[var(--surface)] rounded-lg border p-3 sm:p-4 ${
+        isPast ? "opacity-50 border-[var(--border)]" : "border-[var(--border)]"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -239,18 +239,18 @@ function TrialRow({
               href={trial.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-gray-900 truncate hover:text-blue-600 hover:underline"
+              className="text-sm font-semibold text-[var(--cream)] truncate hover:text-[var(--accent)] hover:underline"
             >
               {trial.title}
             </a>
           </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-gray-400" />
+              <Calendar className="h-3.5 w-3.5 text-[var(--muted)]" />
               {formatTrialDateRange(trial.start_date, trial.end_date)}
             </span>
             <span className="flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5 text-gray-400" />
+              <MapPin className="h-3.5 w-3.5 text-[var(--muted)]" />
               {trial.city}, {trial.state}
             </span>
           </div>
@@ -267,7 +267,7 @@ function TrialRow({
             href={trial.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+            className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
           >
             <ExternalLink className="h-4 w-4" />
           </a>

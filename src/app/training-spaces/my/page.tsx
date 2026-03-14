@@ -57,23 +57,23 @@ export default function MyTrainingSpacesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader backLabel="Back" />
 
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Dumbbell className="h-6 w-6 text-emerald-600" />
+            <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+              <Dumbbell className="h-6 w-6 text-[var(--accent)]" />
               My Training Spaces
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--muted)] mt-1">
               Manage your listed training facilities.
             </p>
           </div>
           <Link
             href="/training-spaces/submit"
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
           >
             <Plus className="h-4 w-4" />
             Add new
@@ -82,20 +82,20 @@ export default function MyTrainingSpacesPage() {
 
         {isLoading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)] mx-auto" />
           </div>
         ) : spaces.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <Dumbbell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+            <Dumbbell className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No training spaces yet
             </h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-[var(--muted)] mb-4">
               Share a training facility with the agility community.
             </p>
             <Link
               href="/training-spaces/submit"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
             >
               <Plus className="h-4 w-4" />
               Add a training space
@@ -106,11 +106,11 @@ export default function MyTrainingSpacesPage() {
             {spaces.map((space) => (
               <div
                 key={space.id}
-                className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between"
+                className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 flex items-center justify-between"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium text-gray-900 truncate">
+                    <h3 className="font-medium text-[var(--cream)] truncate">
                       {space.name}
                     </h3>
                     <span
@@ -125,7 +125,7 @@ export default function MyTrainingSpacesPage() {
                       {space.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                  <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       {space.city}, {space.state}
@@ -144,7 +144,7 @@ export default function MyTrainingSpacesPage() {
                 </div>
                 <button
                   onClick={() => handleDelete(space.id)}
-                  className="ml-3 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  className="ml-3 p-2 text-[var(--muted)] hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="h-4 w-4" />

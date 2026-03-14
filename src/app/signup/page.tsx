@@ -14,12 +14,12 @@ export default async function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[var(--bg)] flex flex-col items-center justify-center px-4">
       <Link href="/" className="flex items-center gap-2 mb-8">
-        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-lg">AF</span>
+        <div className="w-10 h-10 bg-[var(--accent)] rounded-lg flex items-center justify-center">
+          <span className="text-[var(--black)] font-bold text-lg">AF</span>
         </div>
-        <span className="text-2xl font-bold text-gray-900">AgiliFind</span>
+        <span className="text-2xl font-bold text-[var(--cream)]">AgiliFind</span>
       </Link>
       <SignupForm />
     </div>

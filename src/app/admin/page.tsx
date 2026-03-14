@@ -152,11 +152,11 @@ export default function AdminPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
         <div className="text-center">
           <Shield className="h-12 w-12 text-red-300 mx-auto mb-4" />
-          <h2 className="text-lg font-medium text-gray-900 mb-2">{error}</h2>
-          <Link href="/" className="text-sm text-blue-600 hover:text-blue-700">
+          <h2 className="text-lg font-medium text-[var(--cream)] mb-2">{error}</h2>
+          <Link href="/" className="text-sm text-[var(--accent)] hover:opacity-80">
             Back to search
           </Link>
         </div>
@@ -165,30 +165,30 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader maxWidth="5xl" backLabel="Back" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Shield className="h-6 w-6 text-blue-600" />
+          <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+            <Shield className="h-6 w-6 text-[var(--accent)]" />
             Moderation Dashboard
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             {pendingCount} item{pendingCount !== 1 ? "s" : ""} pending review
           </p>
         </div>
 
         {/* Tab filters */}
-        <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5 mb-6 w-fit">
+        <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-0.5 mb-6 w-fit">
           {(["pending", "approved", "rejected", "all"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors capitalize ${
                 tab === t
-                  ? "bg-white shadow-sm text-gray-900"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
+                  : "text-[var(--muted)] hover:text-[var(--cream)]"
               }`}
             >
               {t}
@@ -199,9 +199,9 @@ export default function AdminPage() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-lg border p-4 animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-1/3 mb-3" />
-                <div className="h-3 bg-gray-100 rounded w-2/3" />
+              <div key={i} className="bg-[var(--surface)] rounded-lg border p-4 animate-pulse">
+                <div className="h-4 bg-[var(--surface-2)] rounded w-1/3 mb-3" />
+                <div className="h-3 bg-[var(--surface-3)] rounded w-2/3" />
               </div>
             ))}
           </div>
@@ -210,7 +210,7 @@ export default function AdminPage() {
             {/* Seminars */}
             {filteredSeminars.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                   <BookOpen className="h-3.5 w-3.5" />
                   Seminars ({filteredSeminars.length})
                 </h2>
@@ -218,16 +218,16 @@ export default function AdminPage() {
                   {filteredSeminars.map((sem) => (
                     <div
                       key={sem.id}
-                      className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
+                      className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 flex items-center justify-between gap-3"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-[var(--cream)]">
                             {sem.title}
                           </span>
                           <StatusBadge status={sem.status} />
                         </div>
-                        <div className="flex flex-wrap gap-x-3 text-xs text-gray-500">
+                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)]">
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {sem.city}, {sem.state}
@@ -273,7 +273,7 @@ export default function AdminPage() {
             {/* Training Spaces */}
             {filteredSpaces.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                   <Dumbbell className="h-3.5 w-3.5" />
                   Training Spaces ({filteredSpaces.length})
                 </h2>
@@ -281,16 +281,16 @@ export default function AdminPage() {
                   {filteredSpaces.map((space) => (
                     <div
                       key={space.id}
-                      className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
+                      className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 flex items-center justify-between gap-3"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-[var(--cream)]">
                             {space.name}
                           </span>
                           <StatusBadge status={space.status} />
                         </div>
-                        <div className="flex flex-wrap gap-x-3 text-xs text-gray-500">
+                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)]">
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {space.city}, {space.state}
@@ -337,7 +337,7 @@ export default function AdminPage() {
             {/* Unverified Providers */}
             {tab === "pending" && unverifiedProviders.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                   <Store className="h-3.5 w-3.5" />
                   Unverified Providers ({unverifiedProviders.length})
                 </h2>
@@ -345,18 +345,18 @@ export default function AdminPage() {
                   {unverifiedProviders.map((prov) => (
                     <div
                       key={prov.id}
-                      className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
+                      className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 flex items-center justify-between gap-3"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-[var(--cream)]">
                             {prov.business_name}
                           </span>
-                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 capitalize">
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)] capitalize">
                             {prov.provider_type.replace("_", " ")}
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-x-3 text-xs text-gray-500">
+                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)]">
                           <span>{prov.contact_name}</span>
                           <span>{prov.email}</span>
                           {prov.location_city && (
@@ -388,12 +388,12 @@ export default function AdminPage() {
             )}
 
             {filteredSeminars.length === 0 && filteredSpaces.length === 0 && (tab !== "pending" || unverifiedProviders.length === 0) && (
-              <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-                <Clock className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
+                <Clock className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
                   No items to review
                 </h3>
-                <p className="text-gray-500">
+                <p className="text-[var(--muted)]">
                   {tab === "pending"
                     ? "All submissions have been reviewed."
                     : "No items match this filter."}
@@ -416,7 +416,7 @@ function StatusBadge({ status }: { status: string }) {
   return (
     <span
       className={`text-[10px] font-medium px-1.5 py-0.5 rounded capitalize ${
-        styles[status] || "bg-gray-50 text-gray-700"
+        styles[status] || "bg-[var(--surface-2)] text-[var(--muted)]"
       }`}
     >
       {status}

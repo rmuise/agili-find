@@ -150,17 +150,17 @@ export default function SchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader maxWidth="5xl" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         {/* Title */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Calendar className="h-6 w-6 text-blue-600" />
+          <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+            <Calendar className="h-6 w-6 text-[var(--accent)]" />
             My Schedule
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             {savedTrials.length} saved trial{savedTrials.length !== 1 ? "s" : ""}
           </p>
 
@@ -169,7 +169,7 @@ export default function SchedulePage() {
             <div className="flex flex-wrap gap-2 mt-3">
               <button
                 onClick={() => shareUrl && copyToClipboard(shareUrl, "link")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--muted)] bg-[var(--surface)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
               >
                 {copied === "link" ? (
                   <Check className="h-3.5 w-3.5 text-green-600" />
@@ -180,7 +180,7 @@ export default function SchedulePage() {
               </button>
               <button
                 onClick={() => icalUrl && copyToClipboard(icalUrl, "ical")}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--muted)] bg-[var(--surface)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-2)] transition-colors"
               >
                 {copied === "ical" ? (
                   <Check className="h-3.5 w-3.5 text-green-600" />
@@ -191,7 +191,7 @@ export default function SchedulePage() {
               </button>
               <Link
                 href="/schedule/builder"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--accent)] bg-[var(--surface-2)] border border-[var(--border)] rounded-md hover:bg-[var(--surface-3)] transition-colors"
               >
                 <Wrench className="h-3.5 w-3.5" />
                 Schedule Builder
@@ -204,8 +204,8 @@ export default function SchedulePage() {
         <div className="flex flex-wrap gap-3 mb-6">
           {/* Status filter */}
           <div className="flex items-center gap-1.5">
-            <Filter className="h-3.5 w-3.5 text-gray-400" />
-            <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+            <Filter className="h-3.5 w-3.5 text-[var(--muted)]" />
+            <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-0.5">
               {(["all", "interested", "registered", "attending"] as StatusFilter[]).map(
                 (s) => (
                   <button
@@ -213,8 +213,8 @@ export default function SchedulePage() {
                     onClick={() => setStatusFilter(s)}
                     className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                       statusFilter === s
-                        ? "bg-white shadow-sm text-gray-900"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
+                        : "text-[var(--muted)] hover:text-[var(--cream)]"
                     }`}
                   >
                     {s === "all" ? "All" : STATUS_LABELS[s]?.label}
@@ -225,15 +225,15 @@ export default function SchedulePage() {
           </div>
 
           {/* Time filter */}
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+          <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-0.5">
             {(["upcoming", "past", "all"] as TimeFilter[]).map((t) => (
               <button
                 key={t}
                 onClick={() => setTimeFilter(t)}
                 className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                   timeFilter === t
-                    ? "bg-white shadow-sm text-gray-900"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
+                    : "text-[var(--muted)] hover:text-[var(--cream)]"
                 }`}
               >
                 {t === "all" ? "All Time" : t === "upcoming" ? "Upcoming" : "Past"}
@@ -248,28 +248,28 @@ export default function SchedulePage() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse"
+                className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 animate-pulse"
               >
-                <div className="h-4 bg-gray-200 rounded w-1/3 mb-3" />
-                <div className="h-3 bg-gray-100 rounded w-2/3 mb-2" />
-                <div className="h-3 bg-gray-100 rounded w-1/2" />
+                <div className="h-4 bg-[var(--surface-2)] rounded w-1/3 mb-3" />
+                <div className="h-3 bg-[var(--surface-3)] rounded w-2/3 mb-2" />
+                <div className="h-3 bg-[var(--surface-3)] rounded w-1/2" />
               </div>
             ))}
           </div>
         ) : filteredTrials.length === 0 ? (
           <div className="text-center py-16">
-            <Bookmark className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <Bookmark className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
             {savedTrials.length === 0 ? (
               <>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
                   No saved trials yet
                 </h3>
-                <p className="text-sm text-gray-500 mb-4">
+                <p className="text-sm text-[var(--muted)] mb-4">
                   Search for trials and tap the bookmark icon to save them here.
                 </p>
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:opacity-80"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Search trials
@@ -277,10 +277,10 @@ export default function SchedulePage() {
               </>
             ) : (
               <>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
                   No matching trials
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[var(--muted)]">
                   Try changing your filters to see more results.
                 </p>
               </>
@@ -290,7 +290,7 @@ export default function SchedulePage() {
           <div className="space-y-8">
             {Object.entries(groupedTrials).map(([month, trials]) => (
               <div key={month}>
-                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3">
                   {month}
                 </h2>
                 <div className="space-y-2">
@@ -301,8 +301,8 @@ export default function SchedulePage() {
                     return (
                       <div
                         key={trial.id}
-                        className={`bg-white rounded-lg border p-4 transition-shadow hover:shadow-md ${
-                          past ? "opacity-60 border-gray-100" : "border-gray-200"
+                        className={`bg-[var(--surface)] rounded-lg border p-4 transition-shadow hover:shadow-md ${
+                          past ? "opacity-60 border-[var(--border)]" : "border-[var(--border)]"
                         }`}
                       >
                         <div className="flex items-start justify-between gap-3">
@@ -314,25 +314,25 @@ export default function SchedulePage() {
                                 href={trial.source_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-sm font-semibold text-gray-900 truncate hover:text-blue-600 hover:underline"
+                                className="text-sm font-semibold text-[var(--cream)] truncate hover:text-[var(--accent)] hover:underline"
                               >
                                 {trial.title}
                               </a>
                               {past && (
-                                <span className="text-xs text-gray-400 font-medium">
+                                <span className="text-xs text-[var(--muted-2)] font-medium">
                                   Past
                                 </span>
                               )}
                             </div>
 
                             {/* Date + location */}
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
                               <span className="flex items-center gap-1">
-                                <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                                <Calendar className="h-3.5 w-3.5 text-[var(--muted)]" />
                                 {formatTrialDateRange(trial.start_date, trial.end_date)}
                               </span>
                               <span className="flex items-center gap-1">
-                                <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                                <MapPin className="h-3.5 w-3.5 text-[var(--muted)]" />
                                 {trial.city}, {trial.state}
                               </span>
                             </div>
@@ -347,8 +347,8 @@ export default function SchedulePage() {
                                 handleStatusChange(trial.id, e.target.value)
                               }
                               className={`text-xs font-medium px-2 py-1 rounded border cursor-pointer ${
-                                statusInfo?.bg || "bg-gray-50 border-gray-200"
-                              } ${statusInfo?.color || "text-gray-600"}`}
+                                statusInfo?.bg || "bg-[var(--surface-2)] border-[var(--border)]"
+                              } ${statusInfo?.color || "text-[var(--muted)]"}`}
                             >
                               <option value="interested">Interested</option>
                               <option value="registered">Registered</option>
@@ -360,7 +360,7 @@ export default function SchedulePage() {
                               href={trial.source_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                              className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
                               title="View on source"
                             >
                               <ExternalLink className="h-4 w-4" />
@@ -369,7 +369,7 @@ export default function SchedulePage() {
                             {/* View details */}
                             <Link
                               href={`/trials/${trial.id}`}
-                              className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                              className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
                               title="View trial details"
                             >
                               <Eye className="h-4 w-4" />
@@ -378,7 +378,7 @@ export default function SchedulePage() {
                             {/* Remove */}
                             <button
                               onClick={() => handleUnsave(trial.id)}
-                              className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                              className="p-1.5 text-[var(--muted)] hover:text-red-500 transition-colors"
                               title="Remove from schedule"
                             >
                               <Bookmark

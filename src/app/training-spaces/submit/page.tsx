@@ -113,16 +113,16 @@ export default function SubmitTrainingSpacePage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[var(--bg)]">
         <PageHeader backLabel="Back" />
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Dumbbell className="h-8 w-8 text-green-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Training space submitted!
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[var(--muted)] mb-6">
             Your training space is now listed and will appear in the directory.
           </p>
           <div className="flex gap-3 justify-center">
@@ -131,13 +131,13 @@ export default function SubmitTrainingSpacePage() {
                 setSuccess(false);
                 resetForm();
               }}
-              className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-300 rounded-md hover:bg-blue-50"
+              className="px-4 py-2 text-sm font-medium text-[var(--accent)] border border-[var(--accent)] rounded-md hover:bg-[var(--surface-2)]"
             >
               Submit another
             </button>
             <Link
               href="/training-spaces"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              className="px-4 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
             >
               Browse spaces
             </Link>
@@ -148,16 +148,16 @@ export default function SubmitTrainingSpacePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader backLabel="Back" />
 
       <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Dumbbell className="h-6 w-6 text-emerald-600" />
+          <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+            <Dumbbell className="h-6 w-6 text-[var(--accent)]" />
             Add a Training Space
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--muted)] mt-1">
             Share a training facility with the agility community.
           </p>
         </div>
@@ -168,10 +168,10 @@ export default function SubmitTrainingSpacePage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-6 space-y-5">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--cream)] mb-1">
               Facility name *
             </label>
             <input
@@ -180,13 +180,13 @@ export default function SubmitTrainingSpacePage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Happy Paws Agility Field"
               required
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--cream)] mb-1">
               Description
             </label>
             <textarea
@@ -194,14 +194,14 @@ export default function SubmitTrainingSpacePage() {
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Describe the facility, size, availability, etc."
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           {/* Type + Surface */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Environment
               </label>
               <div className="flex items-center gap-3 mt-1.5">
@@ -210,20 +210,20 @@ export default function SubmitTrainingSpacePage() {
                     type="checkbox"
                     checked={indoor}
                     onChange={(e) => setIndoor(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
                   />
                   Indoor
                 </label>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Surface type
               </label>
               <select
                 value={surfaceType}
                 onChange={(e) => setSurfaceType(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               >
                 <option value="">Select...</option>
                 <option value="grass">Grass</option>
@@ -236,7 +236,7 @@ export default function SubmitTrainingSpacePage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Equipment
               </label>
               <div className="flex items-center gap-1.5 mt-1.5">
@@ -245,7 +245,7 @@ export default function SubmitTrainingSpacePage() {
                     type="checkbox"
                     checked={hasEquipment}
                     onChange={(e) => setHasEquipment(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
                   />
                   Has agility equipment
                 </label>
@@ -256,7 +256,7 @@ export default function SubmitTrainingSpacePage() {
           {/* Equipment details (conditional) */}
           {hasEquipment && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Equipment details
               </label>
               <input
@@ -264,14 +264,14 @@ export default function SubmitTrainingSpacePage() {
                 value={equipmentDetails}
                 onChange={(e) => setEquipmentDetails(e.target.value)}
                 placeholder="e.g. Full set of jumps, tunnels, weaves, A-frame"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           )}
 
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[var(--cream)] mb-1">
               Address
             </label>
             <input
@@ -279,13 +279,13 @@ export default function SubmitTrainingSpacePage() {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder="123 Main St"
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
             />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 City *
               </label>
               <input
@@ -293,11 +293,11 @@ export default function SubmitTrainingSpacePage() {
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 State *
               </label>
               <input
@@ -306,18 +306,18 @@ export default function SubmitTrainingSpacePage() {
                 onChange={(e) => setState(e.target.value)}
                 placeholder="e.g. CA"
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Country
               </label>
               <input
                 type="text"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           </div>
@@ -325,32 +325,32 @@ export default function SubmitTrainingSpacePage() {
           {/* Contact + Rental */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Contact email
               </label>
               <input
                 type="email"
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Contact phone
               </label>
               <input
                 type="tel"
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Website
               </label>
               <input
@@ -358,11 +358,11 @@ export default function SubmitTrainingSpacePage() {
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="https://..."
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--cream)] mb-1">
                 Rental info
               </label>
               <input
@@ -370,7 +370,7 @@ export default function SubmitTrainingSpacePage() {
                 value={rentalInfo}
                 onChange={(e) => setRentalInfo(e.target.value)}
                 placeholder="e.g. $25/hr, members only, free"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
               />
             </div>
           </div>
@@ -378,7 +378,7 @@ export default function SubmitTrainingSpacePage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-emerald-600 text-white rounded-md py-2.5 text-sm font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-[var(--accent)] text-[var(--black)] rounded-md py-2.5 text-sm font-medium hover:bg-[var(--accent-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>

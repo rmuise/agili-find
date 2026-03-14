@@ -66,23 +66,23 @@ export default function MySeminarsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg)]">
       <PageHeader maxWidth="5xl" />
 
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-blue-600" />
+            <h1 className="text-2xl font-bold text-[var(--cream)] flex items-center gap-2">
+              <BookOpen className="h-6 w-6 text-[var(--accent)]" />
               My Seminars
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--muted)] mt-1">
               {seminars.length} seminar{seminars.length !== 1 ? "s" : ""} submitted
             </p>
           </div>
           <Link
             href="/seminars/submit"
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-[var(--black)] bg-[var(--accent)] rounded-md hover:bg-[var(--accent-dark)]"
           >
             <Plus className="h-4 w-4" />
             Submit new
@@ -92,24 +92,24 @@ export default function MySeminarsPage() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2].map((i) => (
-              <div key={i} className="bg-white rounded-lg border p-4 animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-1/3 mb-3" />
-                <div className="h-3 bg-gray-100 rounded w-2/3" />
+              <div key={i} className="bg-[var(--surface)] rounded-lg border p-4 animate-pulse">
+                <div className="h-4 bg-[var(--surface-2)] rounded w-1/3 mb-3" />
+                <div className="h-3 bg-[var(--surface-3)] rounded w-2/3" />
               </div>
             ))}
           </div>
         ) : seminars.length === 0 ? (
           <div className="text-center py-16">
-            <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <BookOpen className="h-12 w-12 text-[var(--muted-2)] mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No seminars yet
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-[var(--muted)] mb-4">
               Submit a seminar to share it with the agility community.
             </p>
             <Link
               href="/seminars/submit"
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              className="text-sm font-medium text-[var(--accent)] hover:opacity-80"
             >
               Submit your first seminar
             </Link>
@@ -119,14 +119,14 @@ export default function MySeminarsPage() {
             {seminars.map((sem) => (
               <div
                 key={sem.id}
-                className="bg-white rounded-lg border border-gray-200 p-4 flex items-start justify-between gap-3"
+                className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 flex items-start justify-between gap-3"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold text-white bg-indigo-500">
                       SEMINAR
                     </span>
-                    <span className="text-sm font-semibold text-gray-900 truncate">
+                    <span className="text-sm font-semibold text-[var(--cream)] truncate">
                       {sem.title}
                     </span>
                     <span
@@ -141,16 +141,16 @@ export default function MySeminarsPage() {
                       {sem.status}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
                     <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                      <Calendar className="h-3.5 w-3.5 text-[var(--muted)]" />
                       {format(parseISO(sem.start_date), "MMM d, yyyy")}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                      <MapPin className="h-3.5 w-3.5 text-[var(--muted)]" />
                       {sem.city}, {sem.state}
                     </span>
-                    <span className="text-gray-500">
+                    <span className="text-[var(--muted)]">
                       by {sem.instructor}
                     </span>
                   </div>
@@ -161,14 +161,14 @@ export default function MySeminarsPage() {
                       href={sem.contact_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 text-gray-400 hover:text-blue-600"
+                      className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)]"
                     >
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   )}
                   <button
                     onClick={() => handleDelete(sem.id)}
-                    className="p-1.5 text-gray-400 hover:text-red-500"
+                    className="p-1.5 text-[var(--muted)] hover:text-red-500"
                     title="Delete seminar"
                   >
                     <Trash2 className="h-4 w-4" />
