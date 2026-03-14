@@ -22,6 +22,8 @@ import { LoadingState } from "@/components/ui/loading-state";
 import { STATUS_LABELS } from "@/lib/constants";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useToast } from "@/components/ui/toast";
+import { usePreferences } from "@/lib/preferences-context";
+import { formatDistance } from "@/lib/utils";
 import {
   exportFunSchedule,
   exportPlainSchedule,
@@ -101,6 +103,7 @@ export default function ScheduleBuilderPage() {
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
+  const { distanceUnit } = usePreferences();
   const [trials, setTrials] = useState<SavedTrial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
@@ -317,17 +320,19 @@ export default function ScheduleBuilderPage() {
                 <p className="text-2xl font-bold text-[var(--cream)]">{upcomingTrials.length}</p>
                 <p className="text-xs text-[var(--muted)]">Upcoming Trials</p>
               </div>
-              <div className={`rounded-lg border p-4 text-center ${conflicts.length > 0 ? "bg-red-50 border-red-200" : "bg-[var(--surface)] border-[var(--border)]"}`}>
-                <p className={`text-2xl font-bold ${conflicts.length > 0 ? "text-red-600" : "text-[var(--cream)]"}`}>
+              <div className={`rounded-lg border p-4 text-center ${conflicts.length > 0 ? "bg-[var(--error-bg)] border-[var(--error-border)]" : "bg-[var(--surface)] border-[var(--border)]"}`}>
+                <p className={`text-2xl font-bold ${conflicts.length > 0 ? "text-[var(--error-text)]" : "text-[var(--cream)]"}`}>
                   {conflicts.length}
                 </p>
                 <p className="text-xs text-[var(--muted)]">Conflicts</p>
               </div>
               <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
                 <p className="text-2xl font-bold text-[var(--cream)]">
-                  {totalMiles.toLocaleString()}
+                  {distanceUnit === "km"
+                    ? Math.round(totalMiles * 1.60934).toLocaleString()
+                    : totalMiles.toLocaleString()}
                 </p>
-                <p className="text-xs text-[var(--muted)]">Total Miles</p>
+                <p className="text-xs text-[var(--muted)]">Total {distanceUnit === "km" ? "km" : "Miles"}</p>
               </div>
               <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
                 <p className="text-2xl font-bold text-[var(--cream)]">
@@ -339,16 +344,16 @@ export default function ScheduleBuilderPage() {
 
             {/* Conflicts Alert */}
             {conflicts.length > 0 && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="mb-6 p-4 bg-[var(--error-bg)] border border-[var(--error-border)] rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className="h-5 w-5 text-red-600" />
-                  <h3 className="font-semibold text-red-800">
+                  <AlertTriangle className="h-5 w-5 text-[var(--error-text)]" />
+                  <h3 className="font-semibold text-[var(--error-text-strong)]">
                     {conflicts.length} Date Conflict{conflicts.length !== 1 ? "s" : ""}
                   </h3>
                 </div>
                 <div className="space-y-2">
                   {conflicts.map((c, i) => (
-                    <div key={i} className="text-sm text-red-700">
+                    <div key={i} className="text-sm text-[var(--error-text)]">
                       <span className="font-medium">{c.trialA.title}</span>
                       {" overlaps with "}
                       <span className="font-medium">{c.trialB.title}</span>
@@ -401,7 +406,7 @@ export default function ScheduleBuilderPage() {
                             <div key={trial.id}>
                               <div
                                 className={`px-4 py-3 flex items-start gap-3 ${
-                                  hasConflict ? "bg-red-50" : idx % 2 === 0 ? "bg-[var(--surface)]" : "bg-[var(--surface-2)]"
+                                  hasConflict ? "bg-[var(--error-bg)]" : idx % 2 === 0 ? "bg-[var(--surface)]" : "bg-[var(--surface-2)]"
                                 }`}
                               >
                                 {/* Date column */}
@@ -416,7 +421,7 @@ export default function ScheduleBuilderPage() {
                                   <div
                                     className={`w-3 h-3 rounded-full border-2 ${
                                       hasConflict
-                                        ? "border-red-500 bg-red-200"
+                                        ? "border-[var(--error-text)] bg-[var(--error-border)]"
                                         : "border-[var(--accent)] bg-[var(--surface-2)]"
                                     }`}
                                   />
@@ -438,7 +443,7 @@ export default function ScheduleBuilderPage() {
                                       {STATUS_LABELS[trial.saved_status]?.label || trial.saved_status}
                                     </span>
                                     {hasConflict && (
-                                      <span className="inline-flex items-center gap-0.5 text-xs text-red-600 font-medium">
+                                      <span className="inline-flex items-center gap-0.5 text-xs text-[var(--error-text)] font-medium">
                                         <AlertTriangle className="h-3 w-3" />
                                         Conflict
                                       </span>
@@ -473,17 +478,17 @@ export default function ScheduleBuilderPage() {
 
                               {/* Travel segment */}
                               {segment && (
-                                <div className="px-4 py-2 flex items-center gap-3 bg-blue-50 border-t border-b border-blue-100">
+                                <div className="px-4 py-2 flex items-center gap-3 bg-[var(--info-bg)] border-t border-b border-[var(--info-border)]">
                                   <div className="w-24 flex-shrink-0" />
                                   <div className="flex items-center flex-shrink-0">
-                                    <div className="w-[1px] h-4 bg-blue-300 ml-[5px]" />
+                                    <div className="w-[1px] h-4 bg-[var(--info-text-muted)] ml-[5px]" />
                                   </div>
-                                  <div className="flex items-center gap-2 text-xs text-blue-700">
+                                  <div className="flex items-center gap-2 text-xs text-[var(--info-text)]">
                                     <Car className="h-3.5 w-3.5" />
                                     <span className="font-medium">
-                                      ~{segment.distanceMiles} mi drive
+                                      ~{formatDistance(segment.distanceMiles, distanceUnit)} drive
                                     </span>
-                                    <span className="text-blue-500">
+                                    <span className="opacity-70">
                                       {segment.gapDays <= 0
                                         ? "(same day / overlapping)"
                                         : segment.gapDays === 1

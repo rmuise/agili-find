@@ -99,6 +99,16 @@
   --border-2: rgba(255, 255, 255, 0.13);
   --glass-bg: rgba(9, 9, 9, 0.88);
 
+  /* Semantic state colors */
+  --error-bg: rgba(239, 68, 68, 0.08);
+  --error-border: rgba(239, 68, 68, 0.22);
+  --error-text: #f87171;
+  --error-text-strong: #fca5a5;
+  --info-bg: rgba(59, 130, 246, 0.08);
+  --info-border: rgba(59, 130, 246, 0.18);
+  --info-text: #93c5fd;
+  --info-text-muted: #60a5fa;
+
   /* Org colors */
   --akc: #85b7eb;
   --usdaa: #e8ff47;
@@ -142,6 +152,16 @@
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-2: rgba(0, 0, 0, 0.14);
   --glass-bg: rgba(248, 247, 244, 0.92);
+
+  /* Semantic state colors (light mode) */
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+  --error-text: #dc2626;
+  --error-text-strong: #991b1b;
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+  --info-text: #1d4ed8;
+  --info-text-muted: #3b82f6;
 }
 
 /* Light mode: calendar icon should be dark, not inverted */
