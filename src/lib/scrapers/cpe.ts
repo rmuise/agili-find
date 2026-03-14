@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import type { AnyNode } from "domhandler";
 import { BaseScraper } from "./base";
 import { ScrapedTrial, ScrapePageResult } from "@/types/scraper";
 
@@ -63,7 +64,7 @@ export class CpeScraper extends BaseScraper {
 
   private parseEventItem(
     $: cheerio.CheerioAPI,
-    item: cheerio.Cheerio<cheerio.AnyNode>,
+    item: cheerio.Cheerio<AnyNode>,
     now: Date
   ): ScrapedTrial | null {
     // Extract date range from <h2>
