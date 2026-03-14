@@ -5,6 +5,7 @@ import { SavedTrialsProvider } from "@/lib/hooks/saved-trials-context";
 import { ToastProvider } from "@/components/ui/toast";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { ThemeProvider } from "@/lib/theme-context";
+import { PreferencesProvider } from "@/lib/preferences-context";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -82,13 +83,15 @@ export default function RootLayout({
         className={`${bebasNeue.variable} ${dmSans.variable} antialiased`}
       >
         <ThemeProvider>
-          <ErrorBoundary>
-            <ToastProvider>
-              <AuthProvider>
-                <SavedTrialsProvider>{children}</SavedTrialsProvider>
-              </AuthProvider>
-            </ToastProvider>
-          </ErrorBoundary>
+          <PreferencesProvider>
+            <ErrorBoundary>
+              <ToastProvider>
+                <AuthProvider>
+                  <SavedTrialsProvider>{children}</SavedTrialsProvider>
+                </AuthProvider>
+              </ToastProvider>
+            </ErrorBoundary>
+          </PreferencesProvider>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

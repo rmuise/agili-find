@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -11,11 +11,21 @@ import {
   ChevronDown,
   ChevronRight,
   ExternalLink,
+  Download,
+  Share2,
+  ImagePlus,
+  X,
+  Loader2,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { LoadingState } from "@/components/ui/loading-state";
 import { STATUS_LABELS } from "@/lib/constants";
 import { useAuth } from "@/lib/supabase/auth-context";
+import { useToast } from "@/components/ui/toast";
+import {
+  exportFunSchedule,
+  exportPlainSchedule,
+} from "@/lib/services/pdfExport";
 
 interface SavedTrial {
   id: string;
@@ -89,10 +99,53 @@ function formatDateRange(start: string, end: string) {
 
 export default function ScheduleBuilderPage() {
   const { user, isLoading: authLoading } = useAuth();
+  const { toast } = useToast();
   const router = useRouter();
   const [trials, setTrials] = useState<SavedTrial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
+
+  // PDF export state
+  const [dogPhoto, setDogPhoto] = useState<string | null>(null);
+  const [exportingFun, setExportingFun] = useState(false);
+  const [exportingPlain, setExportingPlain] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setDogPhoto(ev.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function handleExportFun() {
+    if (upcomingTrials.length === 0) return;
+    setExportingFun(true);
+    try {
+      await exportFunSchedule(upcomingTrials, dogPhoto, user?.email ?? null);
+      toast("Your schedule PDF is ready!", "success");
+    } catch {
+      toast("PDF export failed. Please try again.", "error");
+    } finally {
+      setExportingFun(false);
+    }
+  }
+
+  function handleExportPlain() {
+    if (upcomingTrials.length === 0) return;
+    setExportingPlain(true);
+    try {
+      exportPlainSchedule(upcomingTrials, user?.email ?? null);
+      toast("Your schedule PDF is ready!", "success");
+    } catch {
+      toast("PDF export failed. Please try again.", "error");
+    } finally {
+      setExportingPlain(false);
+    }
+  }
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -306,6 +359,102 @@ export default function ScheduleBuilderPage() {
                 </div>
               </div>
             )}
+
+            {/* Export Controls */}
+            <div className="mb-6 bg-[var(--surface)] rounded-xl border border-[var(--border)] p-4">
+              <h2 className="text-sm font-semibold text-[var(--cream)] mb-3 flex items-center gap-2">
+                <Download className="h-4 w-4 text-[var(--accent)]" />
+                Export Schedule
+              </h2>
+
+              {/* Dog photo upload */}
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="relative w-12 h-12 rounded-full border-2 border-dashed border-[var(--border)] flex items-center justify-center cursor-pointer hover:border-[var(--accent)] transition-colors overflow-hidden flex-shrink-0"
+                  onClick={() => photoInputRef.current?.click()}
+                  title="Upload a dog photo for the fun PDF"
+                >
+                  {dogPhoto ? (
+                    <img
+                      src={dogPhoto}
+                      alt="Dog"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <ImagePlus className="h-5 w-5 text-[var(--muted)]" />
+                  )}
+                </div>
+                <input
+                  ref={photoInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handlePhotoChange}
+                />
+                <div className="text-xs text-[var(--muted)]">
+                  {dogPhoto ? (
+                    <div className="flex items-center gap-2">
+                      <span>Dog photo added</span>
+                      <button
+                        onClick={() => setDogPhoto(null)}
+                        className="text-[var(--muted-2)] hover:text-[var(--cream)] transition-colors"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => photoInputRef.current?.click()}
+                      className="hover:text-[var(--cream)] transition-colors"
+                    >
+                      Add dog photo for fun PDF (optional)
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {/* Share My Schedule button */}
+                <button
+                  onClick={handleExportFun}
+                  disabled={exportingFun || upcomingTrials.length === 0}
+                  title={upcomingTrials.length === 0 ? "Add at least one trial to export" : undefined}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md text-white bg-[#FF6B35] hover:bg-[#e55a28] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  {exportingFun ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating PDF...
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="h-4 w-4" />
+                      Share My Schedule!
+                    </>
+                  )}
+                </button>
+
+                {/* Plain schedule button */}
+                <button
+                  onClick={handleExportPlain}
+                  disabled={exportingPlain || upcomingTrials.length === 0}
+                  title={upcomingTrials.length === 0 ? "Add at least one trial to export" : undefined}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md text-[var(--cream)] bg-transparent border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  {exportingPlain ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating PDF...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      Download Plain Schedule
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
 
             {/* Timeline */}
             <div className="space-y-4">
