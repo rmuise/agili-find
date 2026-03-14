@@ -6,6 +6,8 @@ import { OrgChip } from '@/components/ui/OrgChip';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { SaveButton } from '@/components/ui/SaveButton';
 import { formatDateRange } from '@/lib/data';
+import { formatDistanceFromKm } from '@/lib/utils';
+import { usePreferences } from '@/lib/preferences-context';
 
 interface TrialCardProps {
   trial: Trial;
@@ -19,6 +21,7 @@ export function TrialCard({ trial, isSaved = false }: TrialCardProps) {
     registrationCloses, levels, featured,
   } = trial;
 
+  const { distanceUnit } = usePreferences();
   const dateStr = formatDateRange(startDate, endDate);
 
   return (
@@ -85,7 +88,7 @@ export function TrialCard({ trial, isSaved = false }: TrialCardProps) {
           {distanceKm !== undefined && (
             <div className="text-[0.78rem] text-[var(--muted)] text-right whitespace-nowrap">
               <strong className="text-cream text-[1rem] font-medium block">
-                {distanceKm} km
+                {formatDistanceFromKm(distanceKm, distanceUnit)}
               </strong>
               away
             </div>

@@ -1,7 +1,8 @@
 "use client";
 
 import { MapPin, Calendar, User, ExternalLink, BookOpen, DollarSign } from "lucide-react";
-import { formatTrialDateRange } from "@/lib/utils";
+import { formatTrialDateRange, formatDistance } from "@/lib/utils";
+import { usePreferences } from "@/lib/preferences-context";
 
 export interface SeminarResult {
   id: string;
@@ -26,7 +27,7 @@ interface SeminarCardProps {
 }
 
 export function SeminarCard({ seminar }: SeminarCardProps) {
-
+  const { distanceUnit } = usePreferences();
   const linkUrl = seminar.contact_url || (seminar.contact_email ? `mailto:${seminar.contact_email}` : null);
 
   return (
@@ -76,7 +77,7 @@ export function SeminarCard({ seminar }: SeminarCardProps) {
               </span>
               {seminar.distance_miles !== null && (
                 <span className="ml-1 text-xs text-[var(--muted-2)]">
-                  ({seminar.distance_miles} mi)
+                  ({formatDistance(seminar.distance_miles, distanceUnit)})
                 </span>
               )}
             </div>

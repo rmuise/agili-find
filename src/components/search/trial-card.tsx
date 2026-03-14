@@ -12,7 +12,8 @@ import { GatedActionPrompt } from "@/components/auth/gated-action-prompt";
 import { OrgBadge } from "@/components/ui/org-badge";
 import { useClickOutside } from "@/lib/hooks/use-click-outside";
 import { STATUS_LABELS } from "@/lib/constants";
-import { formatTrialDateRange } from "@/lib/utils";
+import { formatTrialDateRange, formatDistance } from "@/lib/utils";
+import { usePreferences } from "@/lib/preferences-context";
 
 interface TrialCardProps {
   trial: TrialResult;
@@ -21,6 +22,7 @@ interface TrialCardProps {
 export function TrialCard({ trial }: TrialCardProps) {
   const { user } = useAuth();
   const { isSaved, getStatus, toggleSave, updateStatus } = useSavedTrials();
+  const { distanceUnit } = usePreferences();
   const [showGatedPrompt, setShowGatedPrompt] = useState(false);
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const statusMenuRef = useRef<HTMLDivElement>(null);
@@ -106,7 +108,7 @@ export function TrialCard({ trial }: TrialCardProps) {
                 </span>
                 {trial.distance_miles !== null && (
                   <span className="ml-1 text-xs text-[var(--muted-2)]">
-                    ({trial.distance_miles} mi)
+                    ({formatDistance(trial.distance_miles, distanceUnit)})
                   </span>
                 )}
               </div>
