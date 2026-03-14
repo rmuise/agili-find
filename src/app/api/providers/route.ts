@@ -122,7 +122,7 @@ export async function GET(request: Request) {
     let providers = (data || [])
       .filter((row) => row.srv_providers)
       .map((row) => ({
-        ...(row.srv_providers as object),
+        ...(row.srv_providers as Record<string, unknown>),
         is_attending: row.is_attending,
       }));
 
