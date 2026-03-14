@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import type { AnyNode } from "domhandler";
 import { BaseScraper } from "./base";
 import { ScrapedTrial, ScrapePageResult } from "@/types/scraper";
 
@@ -274,7 +275,7 @@ export class CkcScraper extends BaseScraper {
 
   private extractJudges(
     $: cheerio.CheerioAPI,
-    siblings: cheerio.Cheerio<cheerio.AnyNode>
+    siblings: cheerio.Cheerio<AnyNode>
   ): string[] {
     const judges: string[] = [];
 
@@ -298,7 +299,7 @@ export class CkcScraper extends BaseScraper {
 
   private extractEntryDates(
     $: cheerio.CheerioAPI,
-    siblings: cheerio.Cheerio<cheerio.AnyNode>
+    siblings: cheerio.Cheerio<AnyNode>
   ): { openDate: string | null; closeDate: string | null } {
     let openDate: string | null = null;
     let closeDate: string | null = null;
@@ -326,7 +327,7 @@ export class CkcScraper extends BaseScraper {
 
   private extractSecretary(
     $: cheerio.CheerioAPI,
-    siblings: cheerio.Cheerio<cheerio.AnyNode>
+    siblings: cheerio.Cheerio<AnyNode>
   ): string | null {
     let secretary: string | null = null;
 
@@ -345,7 +346,7 @@ export class CkcScraper extends BaseScraper {
 
   private extractSourceUrl(
     $: cheerio.CheerioAPI,
-    siblings: cheerio.Cheerio<cheerio.AnyNode>
+    siblings: cheerio.Cheerio<AnyNode>
   ): string | null {
     let url: string | null = null;
 
