@@ -1,9 +1,23 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const NAV_ITEMS = [
+interface NavLink {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  count?: number;
+  countVariant?: 'danger';
+}
+
+interface NavSection {
+  section: string;
+  links: NavLink[];
+}
+
+const NAV_ITEMS: NavSection[] = [
   {
     section: 'My Account',
     links: [
@@ -97,9 +111,7 @@ export function DashboardSidebar() {
           <div className="text-[0.6rem] font-medium tracking-[0.16em] uppercase text-[var(--muted)] px-3 py-2 mt-3 first:mt-0">
             {section}
           </div>
-          {links.map((link) => {
-            const { href, label, icon, count } = link;
-            const countVariant = 'countVariant' in link ? link.countVariant : undefined;
+          {links.map(({ href, label, icon, count, countVariant }) => {
             const active = pathname === href || (href !== '/dashboard' && pathname?.startsWith(href));
             return (
               <Link
