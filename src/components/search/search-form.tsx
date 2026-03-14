@@ -2,10 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useClickOutside } from "@/lib/hooks/use-click-outside";
-import { Search, MapPin, Calendar, Filter, Loader2, X } from "lucide-react";
+import { Search, MapPin, Calendar, Filter, Loader2, X, User } from "lucide-react";
 import type { OrganizationId } from "@/types/trial";
 import { CLASS_DATA, type ClassInfo } from "@/lib/class-data";
 import { ORGANIZATIONS, ORG_NAMES } from "@/lib/constants";
+import { OrgBadge } from "@/components/ui/org-badge";
+import type { JudgeSearchResult } from "@/types/judge";
 
 const RADIUS_OPTIONS = [
   { value: "25", label: "25 mi" },
@@ -53,13 +55,14 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const classDropdownRef = useRef<HTMLDivElement>(null);
   const classInputRef = useRef<HTMLInputElement>(null);
 
-  // Judge autocomplete state
-  const [allJudges, setAllJudges] = useState<string[]>([]);
-  const [filteredJudges, setFilteredJudges] = useState<string[]>([]);
+  // Judge autocomplete state — debounced search against /api/judges/search
+  const [judgeResults, setJudgeResults] = useState<JudgeSearchResult[]>([]);
+  const [judgeLoading, setJudgeLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const judgeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Build org-linked class list based on selected orgs
   const availableClasses: GroupedClass[] = useMemo(() => {
@@ -103,17 +106,6 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
     return Object.entries(groups);
   }, [filteredClasses]);
 
-  // Fetch all judges on mount
-  useEffect(() => {
-    fetch("/api/judges")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.judges) {
-          setAllJudges(data.judges);
-        }
-      })
-      .catch((err) => console.error("Failed to load judges:", err));
-  }, []);
 
   // Close class dropdown on outside click
   useClickOutside(
@@ -134,55 +126,73 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
     setClassFilter("");
   }, []);
 
-  // Filter judges as user types
+  // Debounced judge search — hits /api/judges/search?q= instead of loading all names
   useEffect(() => {
+    if (judgeDebounceRef.current) clearTimeout(judgeDebounceRef.current);
+
     if (!judge.trim()) {
-      setFilteredJudges([]);
+      setJudgeResults([]);
       return;
     }
-    const query = judge.toLowerCase();
-    const matches = allJudges.filter((j) =>
-      j.toLowerCase().includes(query)
-    );
-    setFilteredJudges(matches.slice(0, 20));
-    setHighlightIndex(-1);
-  }, [judge, allJudges]);
+
+    judgeDebounceRef.current = setTimeout(async () => {
+      setJudgeLoading(true);
+      try {
+        const res = await fetch(
+          `/api/judges/search?q=${encodeURIComponent(judge.trim())}&limit=10`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setJudgeResults(data.judges ?? []);
+          setHighlightIndex(-1);
+        }
+      } catch {
+        // Silently fail — search is best-effort
+      } finally {
+        setJudgeLoading(false);
+      }
+    }, 250);
+
+    return () => {
+      if (judgeDebounceRef.current) clearTimeout(judgeDebounceRef.current);
+    };
+  }, [judge]);
 
   // Close judge dropdown on outside click
   useClickOutside(
-    [dropdownRef, inputRef],
+    dropdownRef,
     useCallback(() => setShowDropdown(false), [])
   );
 
-  const selectJudge = useCallback((name: string) => {
-    setJudge(name);
+  const selectJudge = useCallback((result: JudgeSearchResult) => {
+    setJudge(result.name);
     setShowDropdown(false);
-    setFilteredJudges([]);
+    setJudgeResults([]);
   }, []);
 
   const clearJudge = useCallback(() => {
     setJudge("");
     setShowDropdown(false);
-    setFilteredJudges([]);
+    setJudgeResults([]);
     inputRef.current?.focus();
   }, []);
 
   const handleJudgeKeyDown = (e: React.KeyboardEvent) => {
-    if (!showDropdown || filteredJudges.length === 0) return;
+    if (!showDropdown || judgeResults.length === 0) return;
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setHighlightIndex((prev) =>
-        prev < filteredJudges.length - 1 ? prev + 1 : 0
+        prev < judgeResults.length - 1 ? prev + 1 : 0
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setHighlightIndex((prev) =>
-        prev > 0 ? prev - 1 : filteredJudges.length - 1
+        prev > 0 ? prev - 1 : judgeResults.length - 1
       );
     } else if (e.key === "Enter" && highlightIndex >= 0) {
       e.preventDefault();
-      selectJudge(filteredJudges[highlightIndex]);
+      selectJudge(judgeResults[highlightIndex]);
     } else if (e.key === "Escape") {
       setShowDropdown(false);
     }
@@ -410,9 +420,9 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
 
       {/* 5. Judge + Search */}
       <div className="flex gap-3 flex-wrap">
-        {/* Judge Autocomplete */}
-        <div className="relative flex-1 min-w-0 sm:min-w-[200px]">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--muted-text)]" />
+        {/* Judge Autocomplete — debounced search via /api/judges/search */}
+        <div className="relative flex-1 min-w-0 sm:min-w-[200px]" ref={dropdownRef}>
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--muted-text)]" />
           <input
             ref={inputRef}
             type="text"
@@ -425,11 +435,14 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
               if (judge.trim()) setShowDropdown(true);
             }}
             onKeyDown={handleJudgeKeyDown}
-            placeholder={`Judge name (${allJudges.length} available)...`}
+            placeholder="Filter by judge name..."
             className="w-full pl-10 pr-10 py-3 rounded-lg border border-[var(--border-2)] bg-transparent text-[var(--cream)] focus:ring-2 focus:ring-[var(--agili-accent)] focus:border-[rgba(232,255,71,0.5)] outline-none"
             autoComplete="off"
           />
-          {judge && (
+          {judgeLoading && (
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--muted-text)] animate-spin" />
+          )}
+          {judge && !judgeLoading && (
             <button
               type="button"
               onClick={clearJudge}
@@ -439,43 +452,62 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
             </button>
           )}
 
-          {/* Dropdown */}
-          {showDropdown && filteredJudges.length > 0 && (
-            <div
-              ref={dropdownRef}
-              className="absolute z-50 top-full left-0 right-0 mt-1 bg-[var(--surface)] border border-[var(--border-2)] rounded-lg shadow-lg max-h-60 overflow-y-auto"
-            >
-              {filteredJudges.map((name, i) => (
+          {/* Enriched dropdown — shows org badges + location */}
+          {showDropdown && judgeResults.length > 0 && (
+            <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-[var(--surface)] border border-[var(--border-2)] rounded-lg shadow-xl max-h-64 overflow-y-auto">
+              {judgeResults.map((result, i) => (
                 <button
-                  key={name}
+                  key={result.id}
                   type="button"
-                  onClick={() => selectJudge(name)}
-                  className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[rgba(232,255,71,0.05)] transition-colors ${
+                  onClick={() => selectJudge(result)}
+                  onMouseEnter={() => setHighlightIndex(i)}
+                  className={`w-full text-left px-3 py-2.5 flex items-center gap-2.5 transition-colors ${
                     i === highlightIndex
-                      ? "bg-[rgba(232,255,71,0.08)] text-[var(--agili-accent)]"
-                      : "text-[var(--cream)]"
+                      ? "bg-[rgba(232,255,71,0.07)]"
+                      : "hover:bg-[rgba(232,255,71,0.04)]"
                   }`}
                 >
-                  <HighlightMatch text={name} query={judge} />
+                  {/* Avatar */}
+                  <div className="w-7 h-7 rounded-full bg-[var(--surface-2)] border border-[var(--border)] flex-shrink-0 flex items-center justify-center">
+                    {result.photo_url ? (
+                      <img src={result.photo_url} alt="" className="w-full h-full rounded-full object-cover" />
+                    ) : (
+                      <span className="text-[10px] font-bold text-[var(--agili-accent)]">
+                        {result.name[0]?.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-[var(--cream)] truncate">
+                      <HighlightMatch text={result.name} query={judge} />
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                      {result.location && (
+                        <span className="text-[10px] text-[var(--muted-2)]">{result.location}</span>
+                      )}
+                      {result.organizations.map((org) => (
+                        <OrgBadge key={org} orgId={org} />
+                      ))}
+                    </div>
+                  </div>
+                  {result.trial_count > 0 && (
+                    <span className="text-[10px] text-[var(--muted-2)] flex-shrink-0">
+                      {result.trial_count} upcoming
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
           )}
 
-          {/* No results message */}
-          {showDropdown &&
-            judge.trim().length > 0 &&
-            filteredJudges.length === 0 &&
-            allJudges.length > 0 && (
-              <div
-                ref={dropdownRef}
-                className="absolute z-50 top-full left-0 right-0 mt-1 bg-[var(--surface)] border border-[var(--border-2)] rounded-lg shadow-lg"
-              >
-                <div className="px-4 py-3 text-sm text-[var(--muted-text)]">
-                  No judges matching &ldquo;{judge}&rdquo;
-                </div>
+          {/* No results */}
+          {showDropdown && !judgeLoading && judge.trim().length > 1 && judgeResults.length === 0 && (
+            <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-[var(--surface)] border border-[var(--border-2)] rounded-lg shadow-lg">
+              <div className="px-4 py-3 text-sm text-[var(--muted-text)]">
+                No judges matching &ldquo;{judge}&rdquo;
               </div>
-            )}
+            </div>
+          )}
         </div>
 
         <button
