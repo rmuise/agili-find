@@ -122,7 +122,8 @@ export async function GET(request: Request) {
     let providers = (data || [])
       .filter((row) => row.srv_providers)
       .map((row) => ({
-        ...(row.srv_providers as Record<string, unknown>),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...(row.srv_providers as any),
         is_attending: row.is_attending,
       }));
 
