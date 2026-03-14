@@ -24,10 +24,76 @@ export abstract class BaseScraper {
   protected orgId: OrganizationId;
   protected options: Required<ScraperOptions>;
   private lastRequestTime = 0;
+  /** Cache of disallowed path prefixes, keyed by origin URL */
+  private robotsCache = new Map<string, string[]>();
 
   constructor(orgId: OrganizationId, options?: ScraperOptions) {
     this.orgId = orgId;
     this.options = { ...DEFAULT_OPTIONS, ...options };
+  }
+
+  /** Parse a robots.txt body and return disallowed path prefixes for this agent */
+  private parseRobotsTxt(text: string): string[] {
+    const agentLower = this.options.userAgent.split("/")[0].toLowerCase();
+    // Two-pass: collect rules for * and for our specific agent
+    const groups: { agents: string[]; disallows: string[] }[] = [];
+    let current: { agents: string[]; disallows: string[] } | null = null;
+    for (const raw of text.split("\n")) {
+      const line = raw.trim();
+      if (!line || line.startsWith("#")) continue;
+      const colon = line.indexOf(":");
+      if (colon === -1) continue;
+      const key = line.slice(0, colon).trim().toLowerCase();
+      const value = line.slice(colon + 1).trim();
+      if (key === "user-agent") {
+        if (!current || current.disallows.length > 0) {
+          current = { agents: [], disallows: [] };
+          groups.push(current);
+        }
+        current.agents.push(value.toLowerCase());
+      } else if (key === "disallow" && current && value) {
+        current.disallows.push(value);
+      }
+    }
+    // Prefer a specific group matching our agent; fall back to *
+    const specific = groups.find((g) => g.agents.some((a) => a.includes(agentLower)));
+    const fallback = groups.find((g) => g.agents.includes("*"));
+    return (specific ?? fallback)?.disallows ?? [];
+  }
+
+  /** Fetch and cache robots.txt for the given URL's origin; return disallowed paths */
+  private async fetchRobots(url: string): Promise<string[]> {
+    const origin = new URL(url).origin;
+    if (this.robotsCache.has(origin)) return this.robotsCache.get(origin)!;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(`${origin}/robots.txt`, {
+        signal: controller.signal,
+        headers: { "User-Agent": this.options.userAgent },
+      });
+      clearTimeout(timeoutId);
+      const disallowed = res.ok ? this.parseRobotsTxt(await res.text()) : [];
+      this.robotsCache.set(origin, disallowed);
+      return disallowed;
+    } catch {
+      // If robots.txt is unreachable, assume allowed
+      this.robotsCache.set(origin, []);
+      return [];
+    }
+  }
+
+  /** Throws if the URL is disallowed by robots.txt */
+  protected async assertRobotsAllowed(url: string): Promise<void> {
+    const disallowed = await this.fetchRobots(url);
+    if (disallowed.length === 0) return;
+    const path = new URL(url).pathname;
+    const blocked = disallowed.find((prefix) => path.startsWith(prefix));
+    if (blocked) {
+      throw new Error(
+        `[${this.orgId}] robots.txt disallows "${path}" (matched rule: ${blocked})`
+      );
+    }
   }
 
   /** Subclasses implement this to scrape trials */
@@ -38,6 +104,7 @@ export abstract class BaseScraper {
     url: string,
     init?: RequestInit
   ): Promise<Response> {
+    await this.assertRobotsAllowed(url);
     await this.rateLimit();
 
     let lastError: Error | null = null;
