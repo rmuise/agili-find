@@ -19,7 +19,7 @@ const config: Config = {
           2: "#1c1c1e",
           3: "#2c2c2e",
         },
-        cream: "#f5f2ed",
+        cream: "var(--cream)",
         accent: {
           DEFAULT: "#e8ff47",
           dark: "#c9e000",

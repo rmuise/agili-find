@@ -5,6 +5,8 @@
 @tailwind utilities;
 
 :root {
+  /* ── Dark mode (default) ── */
+  --bg: #090909;
   --black: #090909;
   --surface: #111111;
   --surface-2: #1c1c1e;
@@ -16,6 +18,9 @@
   --muted-2: rgba(245, 242, 237, 0.18);
   --border: rgba(255, 255, 255, 0.08);
   --border-2: rgba(255, 255, 255, 0.13);
+  --glass-bg: rgba(9, 9, 9, 0.88);
+  --scrollbar-track: #111111;
+  --scrollbar-thumb: #2c2c2e;
 
   /* Org colors */
   --akc: #85b7eb;
@@ -32,16 +37,33 @@
   --radius-xl: 28px;
 }
 
+/* ── Light mode overrides ── */
+[data-theme="light"] {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface-2: #f0ede8;
+  --surface-3: #e5e2dd;
+  --cream: #151515;
+  --muted: rgba(21, 21, 21, 0.5);
+  --muted-2: rgba(21, 21, 21, 0.25);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-2: rgba(0, 0, 0, 0.14);
+  --glass-bg: rgba(248, 247, 244, 0.92);
+  --scrollbar-track: #f0ede8;
+  --scrollbar-thumb: #ccc8c2;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--black);
+  background-color: var(--bg);
   color: var(--cream);
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Typography ── */
@@ -51,8 +73,8 @@ body {
 
 /* ── Custom scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--surface); }
-::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 2px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 2px; }
 
 /* ── Org chip variants ── */
 .chip-akc {
@@ -138,7 +160,7 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
-  border: 2px solid var(--black);
+  border: 2px solid var(--bg);
   transition: transform 0.1s;
 }
 input[type='range']::-webkit-slider-thumb:active {
@@ -147,7 +169,7 @@ input[type='range']::-webkit-slider-thumb:active {
 
 /* ── Frosted glass ── */
 .glass {
-  background: rgba(9, 9, 9, 0.88);
+  background: var(--glass-bg);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }

@@ -124,7 +124,7 @@ export default function Home() {
   const seminarCount = seminars.length;
 
   return (
-    <div className="min-h-screen bg-[var(--black)]">
+    <div className="min-h-screen bg-[var(--bg)]">
       {/* Header */}
       <header className="glass sticky top-0 z-50 border-b border-[var(--border)]">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">

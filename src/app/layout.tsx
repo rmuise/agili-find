@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/supabase/auth-context";
 import { SavedTrialsProvider } from "@/lib/hooks/saved-trials-context";
 import { ToastProvider } from "@/components/ui/toast";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { ThemeProvider } from "@/lib/theme-context";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -69,17 +70,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('agili-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}})();`,
+          }}
+        />
+      </head>
       <body
         className={`${bebasNeue.variable} ${dmSans.variable} antialiased`}
       >
-        <ErrorBoundary>
-          <ToastProvider>
-            <AuthProvider>
-              <SavedTrialsProvider>{children}</SavedTrialsProvider>
-            </AuthProvider>
-          </ToastProvider>
-        </ErrorBoundary>
+        <ThemeProvider>
+          <ErrorBoundary>
+            <ToastProvider>
+              <AuthProvider>
+                <SavedTrialsProvider>{children}</SavedTrialsProvider>
+              </AuthProvider>
+            </ToastProvider>
+          </ErrorBoundary>
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>

@@ -13,21 +13,21 @@ export function PageHeader({
   maxWidth = "3xl",
 }: PageHeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-200">
+    <header className="glass border-b border-[var(--border)]">
       <div
         className={`${
           maxWidth === "5xl" ? "max-w-5xl" : maxWidth === "4xl" ? "max-w-4xl" : "max-w-3xl"
         } mx-auto px-4 py-3 sm:py-4 flex items-center justify-between`}
       >
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">AF</span>
+        <Link href="/" className="flex items-center gap-2 no-underline">
+          <div className="w-8 h-8 bg-[var(--accent)] rounded-[10px] flex items-center justify-center">
+            <span className="font-display text-[0.85rem] tracking-[0.05em] text-black">AF</span>
           </div>
-          <span className="text-xl font-bold text-gray-900">AgiliFind</span>
+          <span className="font-display text-[1.2rem] tracking-[0.05em] text-cream">AgiliFind</span>
         </Link>
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-1.5 text-[0.82rem] text-[var(--muted)] hover:text-cream transition-colors no-underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           {backLabel}

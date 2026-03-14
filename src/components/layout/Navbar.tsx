@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/lib/theme-context';
 
 interface NavbarProps {
   showSearch?: boolean;
@@ -19,6 +21,7 @@ export function Navbar({
 }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
 
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') onSearchSubmit?.();
@@ -84,6 +87,15 @@ export function Navbar({
           Sign Up
         </Link>
 
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="flex items-center justify-center w-8 h-8 rounded-[10px] text-[var(--muted)] hover:text-cream hover:bg-[var(--surface-2)] transition-all ml-1"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
+
         {/* Hamburger (mobile) */}
         <button
           className="md:hidden ml-auto flex flex-col gap-[4.5px] cursor-pointer p-2"
@@ -129,6 +141,13 @@ export function Navbar({
           >
             Create Free Account
           </Link>
+          <button
+            onClick={toggleTheme}
+            className="mt-4 flex items-center gap-3 text-[var(--muted)] text-[0.9rem] py-3"
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          </button>
         </div>
       )}
     </>
