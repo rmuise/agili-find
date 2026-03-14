@@ -221,7 +221,7 @@ export function CourseMapUpload({ judgeSlug, onUploaded }: CourseMapUploadProps)
       <input
         value={sourceLabel}
         onChange={(e) => setSourceLabel(e.target.value)}
-        placeholder="Source, e.g. "AKC Regionals 2024" (optional)"
+        placeholder='Source, e.g. "AKC Regionals 2024" (optional)'
         className="w-full px-2.5 py-1.5 text-sm rounded-md bg-[var(--surface-2)] border border-[var(--border)] text-[var(--cream)] placeholder:text-[var(--muted-2)] focus:outline-none focus:border-[var(--agili-accent)] transition-colors mb-3"
       />
 
