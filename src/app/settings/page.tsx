@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, Loader2, Save, Sun, Moon, Ruler } from "lucide-react";
+import { Bell, Loader2, Save, Sun, Moon, Ruler, Monitor } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { LoadingState } from "@/components/ui/loading-state";
 import { useAuth } from "@/lib/supabase/auth-context";
@@ -53,7 +53,7 @@ export default function SettingsPage() {
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { distanceUnit, setDistanceUnit } = usePreferences();
 
   const [prefs, setPrefs] = useState<NotificationPreferences>({
@@ -137,8 +137,9 @@ export default function SettingsPage() {
               </div>
               <SegmentedControl
                 value={theme}
-                onChange={(v) => { if (v !== theme) toggleTheme(); }}
+                onChange={(v) => setTheme(v)}
                 options={[
+                  { value: "auto",  label: "Auto",  icon: <Monitor className="h-3.5 w-3.5" /> },
                   { value: "light", label: "Light", icon: <Sun className="h-3.5 w-3.5" /> },
                   { value: "dark",  label: "Dark",  icon: <Moon className="h-3.5 w-3.5" /> },
                 ]}
@@ -280,11 +281,13 @@ export default function SettingsPage() {
                       }
                       className="rounded-md border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--cream)] focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:border-transparent"
                     >
-                      <option value={25}>25 miles</option>
-                      <option value={50}>50 miles</option>
-                      <option value={100}>100 miles</option>
-                      <option value={200}>200 miles</option>
-                      <option value={500}>500 miles</option>
+                      {([25, 50, 100, 200, 500] as const).map((mi) => (
+                        <option key={mi} value={mi}>
+                          {distanceUnit === "km"
+                            ? `${Math.round(mi * 1.60934)} km`
+                            : `${mi} miles`}
+                        </option>
+                      ))}
                     </select>
                     <p className="text-xs text-[var(--muted-text)] mt-1">
                       Set your location by searching from the main page. Your last search location will be used.

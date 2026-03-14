@@ -8,14 +8,11 @@ import { CLASS_DATA, type ClassInfo } from "@/lib/class-data";
 import { ORGANIZATIONS, ORG_NAMES } from "@/lib/constants";
 import { OrgBadge } from "@/components/ui/org-badge";
 import type { JudgeSearchResult } from "@/types/judge";
+import { usePreferences } from "@/lib/preferences-context";
 
-const RADIUS_OPTIONS = [
-  { value: "25", label: "25 mi" },
-  { value: "50", label: "50 mi" },
-  { value: "100", label: "100 mi" },
-  { value: "200", label: "200 mi" },
-  { value: "any", label: "Any" },
-];
+/** Radius options — values are always in miles (what the API expects).
+ *  Labels are rendered dynamically based on the user's distance unit preference. */
+const RADIUS_MILES = [25, 50, 100, 200] as const;
 
 export interface SearchFormValues {
   location: string;
@@ -41,6 +38,7 @@ interface GroupedClass {
 }
 
 export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
+  const { distanceUnit } = usePreferences();
   const [location, setLocation] = useState("");
   const [radius, setRadius] = useState("100");
   const [selectedOrgs, setSelectedOrgs] = useState<Set<OrganizationId>>(
@@ -314,11 +312,14 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
           onChange={(e) => setRadius(e.target.value)}
           className="px-4 py-3 rounded-lg border border-[var(--border-2)] bg-transparent text-[var(--cream)] focus:ring-2 focus:ring-[var(--agili-accent)] focus:border-[rgba(232,255,71,0.5)] outline-none"
         >
-          {RADIUS_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
+          {RADIUS_MILES.map((mi) => (
+            <option key={mi} value={String(mi)}>
+              {distanceUnit === "km"
+                ? `${Math.round(mi * 1.60934)} km`
+                : `${mi} mi`}
             </option>
           ))}
+          <option value="any">Any distance</option>
         </select>
       </div>
 
