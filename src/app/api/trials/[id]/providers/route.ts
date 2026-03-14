@@ -58,7 +58,8 @@ export async function GET(
       association_id: row.id,
       is_attending: row.is_attending,
       association_note: row.association_note,
-      ...(row.srv_providers as Record<string, unknown>),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(row.srv_providers as any),
     }));
 
     return NextResponse.json({ providers });
