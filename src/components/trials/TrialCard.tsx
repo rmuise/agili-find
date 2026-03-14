@@ -59,7 +59,7 @@ export function TrialCard({ trial, isSaved = false }: TrialCardProps) {
             <OrgChip orgId={org} />
           </div>
 
-          <div className="flex items-center gap-2 text-[0.78rem] text-[var(--muted)] flex-wrap mb-[0.5rem]">
+          <div className="flex items-center gap-2 text-[0.78rem] text-[var(--muted-text)] flex-wrap mb-[0.5rem]">
             <span>{dateStr}</span>
             <Dot />
             <span>{city}, {province}</span>
@@ -72,13 +72,13 @@ export function TrialCard({ trial, isSaved = false }: TrialCardProps) {
             {levels.slice(0, 4).map((level) => (
               <span
                 key={level}
-                className="text-[0.67rem] text-[var(--muted)] bg-[var(--surface-3)] px-[0.6rem] py-[0.18rem] rounded-[5px] border border-[var(--border)]"
+                className="text-[0.67rem] text-[var(--muted-text)] bg-[var(--surface-3)] px-[0.6rem] py-[0.18rem] rounded-[5px] border border-[var(--border)]"
               >
                 {level}
               </span>
             ))}
             {levels.length > 4 && (
-              <span className="text-[0.67rem] text-[var(--muted)]">+{levels.length - 4} more</span>
+              <span className="text-[0.67rem] text-[var(--muted-text)]">+{levels.length - 4} more</span>
             )}
           </div>
         </div>
@@ -86,7 +86,7 @@ export function TrialCard({ trial, isSaved = false }: TrialCardProps) {
         {/* RIGHT */}
         <div className="flex flex-col items-end justify-between gap-[0.75rem] shrink-0 min-w-[100px]">
           {distanceKm !== undefined && (
-            <div className="text-[0.78rem] text-[var(--muted)] text-right whitespace-nowrap">
+            <div className="text-[0.78rem] text-[var(--muted-text)] text-right whitespace-nowrap">
               <strong className="text-cream text-[1rem] font-medium block">
                 {formatDistanceFromKm(distanceKm, distanceUnit)}
               </strong>

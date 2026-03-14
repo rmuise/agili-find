@@ -3,13 +3,13 @@ import type { ProviderWithAssociation } from "@/types/services";
 import { AttendingBadge } from "./attending-badge";
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  club: { label: "Club", color: "bg-blue-100 text-blue-700" },
-  presenter: { label: "Presenter", color: "bg-purple-100 text-purple-700" },
-  facility: { label: "Facility", color: "bg-green-100 text-green-700" },
-  body_worker: { label: "Body Worker", color: "bg-orange-100 text-orange-700" },
-  vendor: { label: "Vendor", color: "bg-pink-100 text-pink-700" },
-  photographer: { label: "Photographer", color: "bg-teal-100 text-teal-700" },
-  vet: { label: "Veterinarian", color: "bg-red-100 text-red-700" },
+  club:         { label: "Club",          color: "bg-blue-500/15 text-blue-400 border border-blue-500/25" },
+  presenter:    { label: "Presenter",     color: "bg-purple-500/15 text-purple-400 border border-purple-500/25" },
+  facility:     { label: "Facility",      color: "bg-green-500/15 text-green-400 border border-green-500/25" },
+  body_worker:  { label: "Body Worker",   color: "bg-orange-500/15 text-orange-400 border border-orange-500/25" },
+  vendor:       { label: "Vendor",        color: "bg-pink-500/15 text-pink-400 border border-pink-500/25" },
+  photographer: { label: "Photographer",  color: "bg-teal-500/15 text-teal-400 border border-teal-500/25" },
+  vet:          { label: "Veterinarian",  color: "bg-red-500/15 text-red-400 border border-red-500/25" },
 };
 
 interface ProviderCardProps {
@@ -19,7 +19,7 @@ interface ProviderCardProps {
 export function ProviderCard({ provider }: ProviderCardProps) {
   const typeInfo = TYPE_LABELS[provider.provider_type] || {
     label: provider.provider_type,
-    color: "bg-gray-100 text-gray-700",
+    color: "bg-[var(--surface-3)] text-[var(--muted-text)] border border-[var(--border)]",
   };
 
   const truncatedDescription =
@@ -28,7 +28,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
       : provider.description;
 
   return (
-    <div className="flex gap-3 p-3 bg-white rounded-lg border border-gray-200">
+    <div className="flex gap-3 p-3 bg-[var(--surface)] rounded-lg border border-[var(--border)]">
       {/* Logo / fallback avatar */}
       <div className="flex-shrink-0">
         {provider.logo_url ? (
@@ -38,8 +38,8 @@ export function ProviderCard({ provider }: ProviderCardProps) {
             className="w-10 h-10 rounded-full object-cover"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-            <User className="h-5 w-5 text-gray-400" />
+          <div className="w-10 h-10 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
+            <User className="h-5 w-5 text-[var(--muted-text)]" />
           </div>
         )}
       </div>
@@ -47,7 +47,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
-          <span className="text-sm font-semibold text-gray-900 truncate">
+          <span className="text-sm font-semibold text-[var(--cream)] truncate">
             {provider.business_name}
           </span>
           <span
@@ -56,7 +56,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
             {typeInfo.label}
           </span>
           {provider.is_verified && (
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-blue-700">
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-blue-400">
               <BadgeCheck className="h-3 w-3" />
               Verified
             </span>
@@ -65,7 +65,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
         </div>
 
         {truncatedDescription && (
-          <p className="text-xs text-gray-600 mb-2">{truncatedDescription}</p>
+          <p className="text-xs text-[var(--muted-text)] mb-2">{truncatedDescription}</p>
         )}
 
         {/* Action links */}
@@ -75,7 +75,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
               href={provider.website_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
+              className="inline-flex items-center gap-1 text-xs text-[var(--agili-accent)] hover:brightness-90 font-medium"
             >
               <Globe className="h-3 w-3" />
               Website
@@ -84,7 +84,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
           {provider.phone && (
             <a
               href={`tel:${provider.phone}`}
-              className="inline-flex items-center gap-1 text-xs text-gray-600 hover:text-gray-800"
+              className="inline-flex items-center gap-1 text-xs text-[var(--muted-text)] hover:text-[var(--cream)]"
             >
               <Phone className="h-3 w-3" />
               {provider.phone}
@@ -93,7 +93,7 @@ export function ProviderCard({ provider }: ProviderCardProps) {
           {provider.email && (
             <a
               href={`mailto:${provider.email}`}
-              className="inline-flex items-center gap-1 text-xs text-gray-600 hover:text-gray-800"
+              className="inline-flex items-center gap-1 text-xs text-[var(--muted-text)] hover:text-[var(--cream)]"
             >
               <Mail className="h-3 w-3" />
               {provider.email}

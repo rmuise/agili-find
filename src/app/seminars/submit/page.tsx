@@ -105,7 +105,7 @@ export default function SubmitSeminarPage() {
           <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Seminar submitted!
           </h1>
-          <p className="text-[var(--muted)] mb-6">
+          <p className="text-[var(--muted-text)] mb-6">
             Your seminar is now listed and will appear in search results.
           </p>
           <div className="flex gap-3 justify-center">
@@ -152,7 +152,7 @@ export default function SubmitSeminarPage() {
             <BookOpen className="h-6 w-6 text-[var(--accent)]" />
             Submit a Seminar
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
+          <p className="text-sm text-[var(--muted-text)] mt-1">
             Share an agility seminar or clinic with the community.
           </p>
         </div>

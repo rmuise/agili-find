@@ -57,27 +57,27 @@ export function ServicesAccordion({
   });
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border border-[var(--border)] rounded-lg overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+        className="w-full flex items-center justify-between px-4 py-3 bg-[var(--surface-2)] hover:bg-[var(--surface-3)] transition-colors text-left"
       >
         <div className="flex items-center gap-2">
           {icon}
-          <span className="text-sm font-semibold text-gray-900">{title}</span>
-          <span className="text-xs text-gray-500 bg-gray-200 px-1.5 py-0.5 rounded-full">
+          <span className="text-sm font-semibold text-[var(--cream)]">{title}</span>
+          <span className="text-xs text-[var(--muted-text)] bg-[var(--surface-3)] px-1.5 py-0.5 rounded-full">
             {totalItems}
           </span>
         </div>
         <ChevronDown
-          className={`h-4 w-4 text-gray-500 transition-transform ${
+          className={`h-4 w-4 text-[var(--muted-text)] transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
       {isOpen && (
-        <div className="p-3 space-y-2 bg-gray-50/50">
+        <div className="p-3 space-y-2 bg-[var(--surface)]">
           {/* 1. Attending providers */}
           {sortedAttending.map((p) => (
             <ProviderCard key={p.id} provider={p} />

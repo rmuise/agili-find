@@ -185,7 +185,7 @@ export default function ProviderDashboard() {
           <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Register as a Provider
           </h1>
-          <p className="text-sm text-[var(--muted)] mb-6">
+          <p className="text-sm text-[var(--muted-text)] mb-6">
             Create your listing so trial attendees can find your services.
           </p>
           <ProviderProfileForm onSuccess={handleProviderCreated} />
@@ -197,7 +197,7 @@ export default function ProviderDashboard() {
   if (isLoading || !provider) {
     return (
       <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-[var(--muted)]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[var(--muted-text)]" />
       </div>
     );
   }
@@ -224,7 +224,7 @@ export default function ProviderDashboard() {
         <h1 className="text-2xl font-bold text-[var(--cream)] mb-1">
           Provider Dashboard
         </h1>
-        <p className="text-sm text-[var(--muted)] mb-6">{provider.business_name}</p>
+        <p className="text-sm text-[var(--muted-text)] mb-6">{provider.business_name}</p>
 
         {/* Tabs */}
         <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-0.5 mb-6">
@@ -235,7 +235,7 @@ export default function ProviderDashboard() {
               className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                 tab === key
                   ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
-                  : "text-[var(--muted)] hover:text-[var(--cream)]"
+                  : "text-[var(--muted-text)] hover:text-[var(--cream)]"
               }`}
             >
               <Icon className="h-3.5 w-3.5" />
@@ -271,7 +271,7 @@ export default function ProviderDashboard() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Business Name
                     </label>
                     <input
@@ -287,7 +287,7 @@ export default function ProviderDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Contact Name
                     </label>
                     <input
@@ -306,7 +306,7 @@ export default function ProviderDashboard() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Email
                     </label>
                     <input
@@ -322,7 +322,7 @@ export default function ProviderDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Phone
                     </label>
                     <input
@@ -341,7 +341,7 @@ export default function ProviderDashboard() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Website
                     </label>
                     <input
@@ -357,7 +357,7 @@ export default function ProviderDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Logo URL
                     </label>
                     <input
@@ -376,7 +376,7 @@ export default function ProviderDashboard() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       City
                     </label>
                     <input
@@ -392,7 +392,7 @@ export default function ProviderDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                       Province / State
                     </label>
                     <input
@@ -410,7 +410,7 @@ export default function ProviderDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-[var(--muted)] mb-1">
+                  <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
                     Description
                   </label>
                   <textarea
@@ -465,7 +465,7 @@ export default function ProviderDashboard() {
             {associations.length === 0 ? (
               <div className="text-center py-12">
                 <Calendar className="h-10 w-10 text-[var(--muted-2)] mx-auto mb-3" />
-                <p className="text-sm text-[var(--muted)] mb-3">
+                <p className="text-sm text-[var(--muted-text)] mb-3">
                   No trial associations yet
                 </p>
                 <button
@@ -487,7 +487,7 @@ export default function ProviderDashboard() {
                       <p className="text-sm font-medium text-[var(--cream)] truncate">
                         Trial: {assoc.trial_id}
                       </p>
-                      <p className="text-xs text-[var(--muted)]">
+                      <p className="text-xs text-[var(--muted-text)]">
                         Added {format(parseISO(assoc.created_at), "MMM d, yyyy")}
                       </p>
                     </div>
@@ -500,7 +500,7 @@ export default function ProviderDashboard() {
                         className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full transition-colors ${
                           assoc.is_attending
                             ? "bg-amber-50 text-amber-700 border border-amber-200"
-                            : "bg-[var(--surface-2)] text-[var(--muted)] border border-[var(--border)] hover:bg-[var(--surface-3)]"
+                            : "bg-[var(--surface-2)] text-[var(--muted-text)] border border-[var(--border)] hover:bg-[var(--surface-3)]"
                         }`}
                       >
                         {togglingId === assoc.id ? (
@@ -516,7 +516,7 @@ export default function ProviderDashboard() {
                       <button
                         onClick={() => handleRemoveAssociation(assoc)}
                         disabled={removingId === assoc.id}
-                        className="p-1.5 text-[var(--muted)] hover:text-red-500 transition-colors"
+                        className="p-1.5 text-[var(--muted-text)] hover:text-red-500 transition-colors"
                         title="Remove association"
                       >
                         {removingId === assoc.id ? (

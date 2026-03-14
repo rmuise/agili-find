@@ -76,7 +76,7 @@ export default function MySeminarsPage() {
               <BookOpen className="h-6 w-6 text-[var(--accent)]" />
               My Seminars
             </h1>
-            <p className="text-sm text-[var(--muted)] mt-1">
+            <p className="text-sm text-[var(--muted-text)] mt-1">
               {seminars.length} seminar{seminars.length !== 1 ? "s" : ""} submitted
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function MySeminarsPage() {
             <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No seminars yet
             </h3>
-            <p className="text-sm text-[var(--muted)] mb-4">
+            <p className="text-sm text-[var(--muted-text)] mb-4">
               Submit a seminar to share it with the agility community.
             </p>
             <Link
@@ -141,16 +141,16 @@ export default function MySeminarsPage() {
                       {sem.status}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted-text)]">
                     <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5 text-[var(--muted)]" />
+                      <Calendar className="h-3.5 w-3.5 text-[var(--muted-text)]" />
                       {format(parseISO(sem.start_date), "MMM d, yyyy")}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5 text-[var(--muted)]" />
+                      <MapPin className="h-3.5 w-3.5 text-[var(--muted-text)]" />
                       {sem.city}, {sem.state}
                     </span>
-                    <span className="text-[var(--muted)]">
+                    <span className="text-[var(--muted-text)]">
                       by {sem.instructor}
                     </span>
                   </div>
@@ -161,14 +161,14 @@ export default function MySeminarsPage() {
                       href={sem.contact_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)]"
+                      className="p-1.5 text-[var(--muted-text)] hover:text-[var(--accent)]"
                     >
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   )}
                   <button
                     onClick={() => handleDelete(sem.id)}
-                    className="p-1.5 text-[var(--muted)] hover:text-red-500"
+                    className="p-1.5 text-[var(--muted-text)] hover:text-red-500"
                     title="Delete seminar"
                   >
                     <Trash2 className="h-4 w-4" />

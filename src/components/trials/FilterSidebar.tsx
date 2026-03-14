@@ -56,12 +56,12 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
 
       {/* Header */}
       <div className="flex justify-between items-center">
-        <span className="text-[0.62rem] font-medium tracking-[0.16em] uppercase text-[var(--muted)]">
+        <span className="text-[0.62rem] font-medium tracking-[0.16em] uppercase text-[var(--muted-text)]">
           Filters
         </span>
         <button
           onClick={clearAll}
-          className="text-[0.75rem] text-[var(--muted)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors p-0"
+          className="text-[0.75rem] text-[var(--muted-text)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors p-0"
         >
           Clear all
         </button>
@@ -101,7 +101,7 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
 
       {/* Distance */}
       <FilterGroup title="Distance">
-        <div className="flex justify-between text-[0.78rem] text-[var(--muted)] mb-2">
+        <div className="flex justify-between text-[0.78rem] text-[var(--muted-text)] mb-2">
           <span>Within</span>
           <strong className="text-[var(--accent)] font-medium">{filters.distanceKm} km</strong>
         </div>
@@ -127,7 +127,7 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
                 rounded-full border transition-all duration-150 cursor-pointer
                 ${filters.levels.includes(level)
                   ? 'bg-[var(--surface-3)] border-[var(--border-2)] text-cream'
-                  : 'bg-transparent border-[var(--border-2)] text-[var(--muted)]'
+                  : 'bg-transparent border-[var(--border-2)] text-[var(--muted-text)]'
                 }
               `}
             >
@@ -165,7 +165,7 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-[0.62rem] font-medium tracking-[0.16em] uppercase text-[var(--muted)] mb-3">
+      <div className="text-[0.62rem] font-medium tracking-[0.16em] uppercase text-[var(--muted-text)] mb-3">
         {title}
       </div>
       {children}
@@ -195,7 +195,7 @@ function FilterRow({ label, checked, onChange, count, dot }: FilterRowProps) {
       </div>
       <div className="flex items-center gap-2">
         {count !== undefined && (
-          <span className="text-[0.72rem] text-[var(--muted)]">{count}</span>
+          <span className="text-[0.72rem] text-[var(--muted-text)]">{count}</span>
         )}
         <Checkbox checked={checked} />
       </div>

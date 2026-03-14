@@ -77,7 +77,7 @@ export default function TrialDetailPage() {
           <h1 className="text-lg font-semibold text-[var(--cream)] mb-2">
             Trial not found
           </h1>
-          <p className="text-sm text-[var(--muted)] mb-4">{error}</p>
+          <p className="text-sm text-[var(--muted-text)] mb-4">{error}</p>
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:opacity-80"
@@ -113,7 +113,7 @@ export default function TrialDetailPage() {
                 </h1>
               </div>
               {trial.hosting_club && trial.hosting_club !== trial.title && (
-                <p className="text-sm text-[var(--muted)]">{trial.hosting_club}</p>
+                <p className="text-sm text-[var(--muted-text)]">{trial.hosting_club}</p>
               )}
             </div>
 
@@ -123,7 +123,7 @@ export default function TrialDetailPage() {
                 className={`p-2 rounded-md transition-colors ${
                   saved
                     ? "text-[var(--accent)] hover:opacity-80 hover:bg-[var(--surface-2)]"
-                    : "text-[var(--muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)]"
+                    : "text-[var(--muted-text)] hover:text-[var(--accent)] hover:bg-[var(--surface-2)]"
                 }`}
                 title={saved ? "Unsave trial" : "Save trial"}
               >
@@ -136,7 +136,7 @@ export default function TrialDetailPage() {
                 href={trial.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
+                className="p-2 text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors"
                 title="View on source"
               >
                 <ExternalLink className="h-5 w-5" />
@@ -147,17 +147,17 @@ export default function TrialDetailPage() {
           {/* Details */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-[var(--cream)]">
-              <Calendar className="h-4 w-4 text-[var(--muted)] flex-shrink-0" />
+              <Calendar className="h-4 w-4 text-[var(--muted-text)] flex-shrink-0" />
               <span>{formatTrialDateRange(trial.start_date, trial.end_date)}</span>
               {closingDate && (
-                <span className="text-xs px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)]">
+                <span className="text-xs px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted-text)]">
                   Closes {closingDate}
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-2 text-sm text-[var(--cream)]">
-              <MapPin className="h-4 w-4 text-[var(--muted)] flex-shrink-0" />
+              <MapPin className="h-4 w-4 text-[var(--muted-text)] flex-shrink-0" />
               <span>
                 {trial.venue_name} — {trial.city}, {trial.state}
               </span>
@@ -165,7 +165,7 @@ export default function TrialDetailPage() {
 
             {trial.judges.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-[var(--cream)]">
-                <User className="h-4 w-4 text-[var(--muted)] flex-shrink-0" />
+                <User className="h-4 w-4 text-[var(--muted-text)] flex-shrink-0" />
                 <span>
                   {trial.judges.map((name, i) => (
                     <Fragment key={name}>

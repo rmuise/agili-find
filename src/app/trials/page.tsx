@@ -88,12 +88,12 @@ function TrialsPageContent() {
 
           {/* Header row */}
           <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
-            <div className="text-[0.82rem] text-[var(--muted)]">
+            <div className="text-[0.82rem] text-[var(--muted-text)]">
               <strong className="text-cream font-medium">{filtered.length} trials</strong>{' '}
               near {filters.location || 'your location'}
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[0.78rem] text-[var(--muted)] hidden sm:block">Sort</span>
+              <span className="text-[0.78rem] text-[var(--muted-text)] hidden sm:block">Sort</span>
               <select
                 value={filters.sortBy}
                 onChange={(e) => { setFilters((f) => ({ ...f, sortBy: e.target.value as SortOption })); setPage(1); }}
@@ -115,12 +115,12 @@ function TrialsPageContent() {
                   className="flex items-center gap-[0.4rem] text-[0.72rem] px-3 py-[0.3rem] bg-[var(--surface-2)] border border-[var(--border-2)] rounded-full text-cream cursor-pointer hover:border-[rgba(245,70,70,0.4)] transition-colors"
                 >
                   {chip}
-                  <span className="text-[0.65rem] text-[var(--muted)]">✕</span>
+                  <span className="text-[0.65rem] text-[var(--muted-text)]">✕</span>
                 </div>
               ))}
               <button
                 onClick={() => setFilters(DEFAULT_FILTERS)}
-                className="text-[0.72rem] text-[var(--muted)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors px-2"
+                className="text-[0.72rem] text-[var(--muted-text)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors px-2"
               >
                 Clear all
               </button>
@@ -139,7 +139,7 @@ function TrialsPageContent() {
               <div className="font-display text-[2rem] tracking-[0.04em] text-cream mb-2">
                 No trials found
               </div>
-              <p className="text-[0.9rem] text-[var(--muted)] max-w-xs">
+              <p className="text-[0.9rem] text-[var(--muted-text)] max-w-xs">
                 Try expanding your search area or adjusting the filters.
               </p>
             </div>
@@ -161,7 +161,7 @@ function TrialsPageContent() {
                   onClick={() => setPage(p)}
                 />
               ))}
-              {totalPages > 5 && <span className="text-[var(--muted)] text-[0.82rem] px-1">…</span>}
+              {totalPages > 5 && <span className="text-[var(--muted-text)] text-[0.82rem] px-1">…</span>}
               {totalPages > 5 && (
                 <PageBtn
                   label={String(totalPages)}
@@ -208,7 +208,7 @@ function PageBtn({
         disabled:opacity-30 disabled:cursor-default
         ${active
           ? 'bg-[var(--accent)] border-[var(--accent)] text-black font-medium'
-          : 'bg-[var(--surface-2)] border-[var(--border)] text-[var(--muted)] hover:border-[var(--border-2)] hover:text-cream'
+          : 'bg-[var(--surface-2)] border-[var(--border)] text-[var(--muted-text)] hover:border-[var(--border-2)] hover:text-cream'
         }
       `}
     >

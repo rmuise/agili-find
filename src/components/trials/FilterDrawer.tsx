@@ -116,7 +116,7 @@ export function FilterDrawer({ isOpen, onClose, filters, onChange }: FilterDrawe
           {/* Distance */}
           <div>
             <SectionLabel>Distance</SectionLabel>
-            <div className="flex justify-between text-[0.78rem] text-[var(--muted)] mb-2">
+            <div className="flex justify-between text-[0.78rem] text-[var(--muted-text)] mb-2">
               <span>Within</span>
               <strong className="text-[var(--accent)] font-medium">{filters.distanceKm} km</strong>
             </div>
@@ -143,7 +143,7 @@ export function FilterDrawer({ isOpen, onClose, filters, onChange }: FilterDrawe
                     rounded-full border transition-all duration-150
                     ${filters.levels.includes(level)
                       ? 'bg-[var(--surface-3)] border-[var(--border-2)] text-cream'
-                      : 'bg-transparent border-[var(--border-2)] text-[var(--muted)]'
+                      : 'bg-transparent border-[var(--border-2)] text-[var(--muted-text)]'
                     }
                   `}
                   style={{ minHeight: 32 }}
@@ -162,7 +162,7 @@ export function FilterDrawer({ isOpen, onClose, filters, onChange }: FilterDrawe
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[0.62rem] font-medium tracking-[0.16em] uppercase text-[var(--muted)] mb-3">
+    <div className="text-[0.62rem] font-medium tracking-[0.16em] uppercase text-[var(--muted-text)] mb-3">
       {children}
     </div>
   );

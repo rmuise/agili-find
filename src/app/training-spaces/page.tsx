@@ -60,7 +60,7 @@ export default function TrainingSpacesPage() {
             <Dumbbell className="h-7 w-7 text-[var(--accent)]" />
             Training Spaces
           </h1>
-          <p className="text-[var(--muted)] text-sm">
+          <p className="text-[var(--muted-text)] text-sm">
             Find agility training facilities near you.
           </p>
           {user && (
@@ -78,7 +78,7 @@ export default function TrainingSpacesPage() {
         <form onSubmit={handleSearch} className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Location</label>
+              <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">Location</label>
               <input
                 type="text"
                 value={location}
@@ -88,7 +88,7 @@ export default function TrainingSpacesPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Radius</label>
+              <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">Radius</label>
               <select
                 value={radius}
                 onChange={(e) => setRadius(e.target.value)}
@@ -102,7 +102,7 @@ export default function TrainingSpacesPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Type</label>
+              <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">Type</label>
               <select
                 value={indoorFilter}
                 onChange={(e) => setIndoorFilter(e.target.value)}
@@ -117,7 +117,7 @@ export default function TrainingSpacesPage() {
 
           <div className="flex items-center gap-3 mt-3">
             <div>
-              <label className="block text-xs font-medium text-[var(--muted)] mb-1">Surface</label>
+              <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">Surface</label>
               <select
                 value={surfaceFilter}
                 onChange={(e) => setSurfaceFilter(e.target.value)}
@@ -152,7 +152,7 @@ export default function TrainingSpacesPage() {
         {isLoading ? (
           <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)] mx-auto mb-4" />
-            <p className="text-[var(--muted)]">Searching...</p>
+            <p className="text-[var(--muted-text)]">Searching...</p>
           </div>
         ) : !hasSearched ? (
           <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
@@ -160,7 +160,7 @@ export default function TrainingSpacesPage() {
             <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               Search for training spaces
             </h3>
-            <p className="text-[var(--muted)] max-w-md mx-auto">
+            <p className="text-[var(--muted-text)] max-w-md mx-auto">
               Enter your location to find agility training facilities near you.
             </p>
           </div>
@@ -170,7 +170,7 @@ export default function TrainingSpacesPage() {
             <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No training spaces found
             </h3>
-            <p className="text-[var(--muted)] max-w-md mx-auto mb-4">
+            <p className="text-[var(--muted-text)] max-w-md mx-auto mb-4">
               Try expanding your search radius or adjusting your filters.
             </p>
             {user && (
@@ -185,7 +185,7 @@ export default function TrainingSpacesPage() {
           </div>
         ) : (
           <>
-            <p className="text-sm text-[var(--muted)] mb-4">
+            <p className="text-sm text-[var(--muted-text)] mb-4">
               {spaces.length} training space{spaces.length !== 1 ? "s" : ""} found
             </p>
             <div className="space-y-3">

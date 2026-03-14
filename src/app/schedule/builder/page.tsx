@@ -286,7 +286,7 @@ export default function ScheduleBuilderPage() {
             <Calendar className="h-6 w-6 text-[var(--accent)]" />
             Schedule Builder
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
+          <p className="text-sm text-[var(--muted-text)] mt-1">
             Plan your season with conflict detection and travel estimates.
           </p>
         </div>
@@ -294,7 +294,7 @@ export default function ScheduleBuilderPage() {
         {isLoading ? (
           <div className="text-center py-16">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)] mx-auto mb-4" />
-            <p className="text-[var(--muted)]">Loading your schedule...</p>
+            <p className="text-[var(--muted-text)]">Loading your schedule...</p>
           </div>
         ) : upcomingTrials.length === 0 ? (
           <div className="text-center py-16 bg-[var(--surface)] rounded-xl border border-[var(--border)]">
@@ -302,7 +302,7 @@ export default function ScheduleBuilderPage() {
             <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No upcoming trials saved
             </h3>
-            <p className="text-[var(--muted)] mb-4">
+            <p className="text-[var(--muted-text)] mb-4">
               Save some trials to start planning your season.
             </p>
             <Link
@@ -318,13 +318,13 @@ export default function ScheduleBuilderPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
               <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
                 <p className="text-2xl font-bold text-[var(--cream)]">{upcomingTrials.length}</p>
-                <p className="text-xs text-[var(--muted)]">Upcoming Trials</p>
+                <p className="text-xs text-[var(--muted-text)]">Upcoming Trials</p>
               </div>
               <div className={`rounded-lg border p-4 text-center ${conflicts.length > 0 ? "bg-[var(--error-bg)] border-[var(--error-border)]" : "bg-[var(--surface)] border-[var(--border)]"}`}>
                 <p className={`text-2xl font-bold ${conflicts.length > 0 ? "text-[var(--error-text)]" : "text-[var(--cream)]"}`}>
                   {conflicts.length}
                 </p>
-                <p className="text-xs text-[var(--muted)]">Conflicts</p>
+                <p className="text-xs text-[var(--muted-text)]">Conflicts</p>
               </div>
               <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
                 <p className="text-2xl font-bold text-[var(--cream)]">
@@ -332,13 +332,13 @@ export default function ScheduleBuilderPage() {
                     ? Math.round(totalMiles * 1.60934).toLocaleString()
                     : totalMiles.toLocaleString()}
                 </p>
-                <p className="text-xs text-[var(--muted)]">Total {distanceUnit === "km" ? "km" : "Miles"}</p>
+                <p className="text-xs text-[var(--muted-text)]">Total {distanceUnit === "km" ? "km" : "Miles"}</p>
               </div>
               <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4 text-center">
                 <p className="text-2xl font-bold text-[var(--cream)]">
                   {monthGroups.length}
                 </p>
-                <p className="text-xs text-[var(--muted)]">Active Months</p>
+                <p className="text-xs text-[var(--muted-text)]">Active Months</p>
               </div>
             </div>
 
@@ -383,9 +383,9 @@ export default function ScheduleBuilderPage() {
                     >
                       <div className="flex items-center gap-2">
                         {isExpanded ? (
-                          <ChevronDown className="h-4 w-4 text-[var(--muted)]" />
+                          <ChevronDown className="h-4 w-4 text-[var(--muted-text)]" />
                         ) : (
-                          <ChevronRight className="h-4 w-4 text-[var(--muted)]" />
+                          <ChevronRight className="h-4 w-4 text-[var(--muted-text)]" />
                         )}
                         <span className="font-semibold text-[var(--cream)]">
                           {monthLabel}
@@ -430,14 +430,14 @@ export default function ScheduleBuilderPage() {
                                 {/* Trial info */}
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)]">
+                                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted-text)]">
                                       {trial.organization_name}
                                     </span>
                                     <span
                                       className={`text-xs font-medium px-1.5 py-0.5 rounded capitalize ${
                                         STATUS_LABELS[trial.saved_status]
                                           ? `${STATUS_LABELS[trial.saved_status].bg} ${STATUS_LABELS[trial.saved_status].color}`
-                                          : "bg-[var(--surface-2)] text-[var(--muted)]"
+                                          : "bg-[var(--surface-2)] text-[var(--muted-text)]"
                                       }`}
                                     >
                                       {STATUS_LABELS[trial.saved_status]?.label || trial.saved_status}
@@ -458,18 +458,18 @@ export default function ScheduleBuilderPage() {
                                         className="hover:text-[var(--accent)] inline-flex items-center gap-1"
                                       >
                                         {trial.title}
-                                        <ExternalLink className="h-3 w-3 text-[var(--muted)]" />
+                                        <ExternalLink className="h-3 w-3 text-[var(--muted-text)]" />
                                       </a>
                                     ) : (
                                       trial.title
                                     )}
                                   </h4>
                                   {trial.hosting_club && (
-                                    <p className="text-xs text-[var(--muted)]">
+                                    <p className="text-xs text-[var(--muted-text)]">
                                       {trial.hosting_club}
                                     </p>
                                   )}
-                                  <p className="text-xs text-[var(--muted)] flex items-center gap-1 mt-0.5">
+                                  <p className="text-xs text-[var(--muted-text)] flex items-center gap-1 mt-0.5">
                                     <MapPin className="h-3 w-3" />
                                     {trial.venue_name}, {trial.city}, {trial.state}
                                   </p>
@@ -532,7 +532,7 @@ export default function ScheduleBuilderPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <ImagePlus className="h-5 w-5 text-[var(--muted)]" />
+                  <ImagePlus className="h-5 w-5 text-[var(--muted-text)]" />
                 )}
               </div>
               <input
@@ -542,7 +542,7 @@ export default function ScheduleBuilderPage() {
                 className="hidden"
                 onChange={handlePhotoChange}
               />
-              <div className="text-xs text-[var(--muted)]">
+              <div className="text-xs text-[var(--muted-text)]">
                 {dogPhoto ? (
                   <div className="flex items-center gap-2">
                     <span>Dog photo added</span>

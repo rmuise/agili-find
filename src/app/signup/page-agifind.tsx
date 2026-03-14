@@ -94,13 +94,13 @@ export default function AuthPage() {
             One place.
           </h1>
 
-          <p className="text-[0.92rem] font-light text-[var(--muted)] leading-[1.75] max-w-[380px] mb-10">
+          <p className="text-[0.92rem] font-light text-[var(--muted-text)] leading-[1.75] max-w-[380px] mb-10">
             Save trials, set alerts, build your calendar, and get notified when registration opens — across all six major organizations.
           </p>
 
           <div className="flex flex-col gap-4">
             {FEATURES.map(({ icon, text }, i) => (
-              <div key={i} className="flex items-center gap-4 text-[0.85rem] text-[var(--muted)]">
+              <div key={i} className="flex items-center gap-4 text-[0.85rem] text-[var(--muted-text)]">
                 <div className="w-7 h-7 rounded-[8px] bg-[rgba(232,255,71,0.07)] border border-[rgba(232,255,71,0.18)] flex items-center justify-center shrink-0">
                   {icon}
                 </div>
@@ -118,13 +118,13 @@ export default function AuthPage() {
               <div className="flex bg-[var(--surface-2)] border border-[var(--border)] rounded-[10px] overflow-hidden mb-7">
                 <button
                   onClick={() => setMode('signup')}
-                  className={`flex-1 py-[0.625rem] text-[0.82rem] font-medium border-none cursor-pointer transition-all ${mode === 'signup' ? 'bg-[var(--accent)] text-black' : 'bg-transparent text-[var(--muted)] hover:text-cream'}`}
+                  className={`flex-1 py-[0.625rem] text-[0.82rem] font-medium border-none cursor-pointer transition-all ${mode === 'signup' ? 'bg-[var(--accent)] text-black' : 'bg-transparent text-[var(--muted-text)] hover:text-cream'}`}
                 >
                   Create account
                 </button>
                 <button
                   onClick={() => setMode('login')}
-                  className={`flex-1 py-[0.625rem] text-[0.82rem] font-medium border-none cursor-pointer transition-all ${mode === 'login' ? 'bg-[var(--accent)] text-black' : 'bg-transparent text-[var(--muted)] hover:text-cream'}`}
+                  className={`flex-1 py-[0.625rem] text-[0.82rem] font-medium border-none cursor-pointer transition-all ${mode === 'login' ? 'bg-[var(--accent)] text-black' : 'bg-transparent text-[var(--muted-text)] hover:text-cream'}`}
                 >
                   Sign in
                 </button>
@@ -135,7 +135,7 @@ export default function AuthPage() {
             {mode === 'signup' && (
               <>
                 <h2 className="font-display text-[1.8rem] tracking-[0.04em] text-cream mb-1">Get started free</h2>
-                <p className="text-[0.82rem] text-[var(--muted)] font-light mb-6">No credit card. Cancel anytime.</p>
+                <p className="text-[0.82rem] text-[var(--muted-text)] font-light mb-6">No credit card. Cancel anytime.</p>
 
                 <GoogleButton />
                 <Divider />
@@ -152,9 +152,9 @@ export default function AuthPage() {
 
                 <p className="text-[0.7rem] text-[rgba(245,242,237,0.2)] text-center mt-4 leading-[1.6]">
                   By signing up you agree to our{' '}
-                  <Link href="/terms" className="text-[var(--muted)] no-underline hover:text-[var(--accent)]">Terms</Link>{' '}
+                  <Link href="/terms" className="text-[var(--muted-text)] no-underline hover:text-[var(--accent)]">Terms</Link>{' '}
                   and{' '}
-                  <Link href="/privacy" className="text-[var(--muted)] no-underline hover:text-[var(--accent)]">Privacy Policy</Link>.
+                  <Link href="/privacy" className="text-[var(--muted-text)] no-underline hover:text-[var(--accent)]">Privacy Policy</Link>.
                 </p>
               </>
             )}
@@ -163,7 +163,7 @@ export default function AuthPage() {
             {mode === 'login' && (
               <>
                 <h2 className="font-display text-[1.8rem] tracking-[0.04em] text-cream mb-1">Welcome back</h2>
-                <p className="text-[0.82rem] text-[var(--muted)] font-light mb-6">Sign in to your AgiFind account.</p>
+                <p className="text-[0.82rem] text-[var(--muted-text)] font-light mb-6">Sign in to your AgiFind account.</p>
 
                 <GoogleButton />
                 <Divider />
@@ -176,7 +176,7 @@ export default function AuthPage() {
                       <button
                         type="button"
                         onClick={() => setMode('forgot')}
-                        className="text-[0.75rem] text-[var(--muted)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors p-0"
+                        className="text-[0.75rem] text-[var(--muted-text)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors p-0"
                       >
                         Forgot password?
                       </button>
@@ -192,7 +192,7 @@ export default function AuthPage() {
               <>
                 <button
                   onClick={() => setMode('login')}
-                  className="flex items-center gap-2 text-[0.78rem] text-[var(--muted)] bg-transparent border-none cursor-pointer hover:text-cream transition-colors mb-6 p-0"
+                  className="flex items-center gap-2 text-[0.78rem] text-[var(--muted-text)] bg-transparent border-none cursor-pointer hover:text-cream transition-colors mb-6 p-0"
                 >
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
@@ -200,7 +200,7 @@ export default function AuthPage() {
                   Back to sign in
                 </button>
                 <h2 className="font-display text-[1.8rem] tracking-[0.04em] text-cream mb-1">Reset password</h2>
-                <p className="text-[0.82rem] text-[var(--muted)] font-light mb-6">
+                <p className="text-[0.82rem] text-[var(--muted-text)] font-light mb-6">
                   Enter your email and we'll send you a reset link.
                 </p>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -245,7 +245,7 @@ function GoogleButton() {
 
 function Divider() {
   return (
-    <div className="flex items-center gap-3 my-5 text-[var(--muted)] text-[0.75rem]">
+    <div className="flex items-center gap-3 my-5 text-[var(--muted-text)] text-[0.75rem]">
       <span className="flex-1 h-px bg-[var(--border)]" />
       or
       <span className="flex-1 h-px bg-[var(--border)]" />
@@ -264,7 +264,7 @@ function FormField({
 }) {
   return (
     <div>
-      <label className="block text-[0.68rem] font-medium tracking-[0.1em] uppercase text-[var(--muted)] mb-[0.45rem]">
+      <label className="block text-[0.68rem] font-medium tracking-[0.1em] uppercase text-[var(--muted-text)] mb-[0.45rem]">
         {label}
       </label>
       <input

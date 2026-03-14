@@ -67,7 +67,7 @@ export default function MapPage() {
                   rounded-full border cursor-pointer transition-all duration-150
                   ${activeOrgs.has(org)
                     ? ''
-                    : 'bg-transparent border-[var(--border)] text-[var(--muted)]'
+                    : 'bg-transparent border-[var(--border)] text-[var(--muted-text)]'
                   }
                 `}
                 style={
@@ -86,7 +86,7 @@ export default function MapPage() {
           </div>
 
           {/* Results count */}
-          <div className="px-4 py-3 border-b border-[var(--border)] text-[0.78rem] text-[var(--muted)]">
+          <div className="px-4 py-3 border-b border-[var(--border)] text-[0.78rem] text-[var(--muted-text)]">
             <strong className="text-cream font-medium">{visibleTrials.length} trials</strong> in this area
           </div>
 
@@ -109,7 +109,7 @@ export default function MapPage() {
                   <span className="text-[0.85rem] font-medium text-cream leading-snug">{trial.name}</span>
                   <OrgChip orgId={trial.org} />
                 </div>
-                <div className="flex items-center gap-2 text-[0.72rem] text-[var(--muted)] flex-wrap">
+                <div className="flex items-center gap-2 text-[0.72rem] text-[var(--muted-text)] flex-wrap">
                   <span>{formatDateRange(trial.startDate, trial.endDate)}</span>
                   <span className="w-[2px] h-[2px] rounded-full bg-[var(--muted-2)] inline-block" />
                   <span>{trial.city}, {trial.province}</span>
@@ -151,7 +151,7 @@ export default function MapPage() {
                   <div className="text-[0.92rem] font-medium text-cream mb-1 leading-snug">
                     {selectedTrial.name}
                   </div>
-                  <div className="flex items-center gap-2 text-[0.75rem] text-[var(--muted)] flex-wrap">
+                  <div className="flex items-center gap-2 text-[0.75rem] text-[var(--muted-text)] flex-wrap">
                     <span>{formatDateRange(selectedTrial.startDate, selectedTrial.endDate)}</span>
                     <span className="w-[2px] h-[2px] rounded-full bg-[var(--muted-2)] inline-block" />
                     <span>{selectedTrial.city}, {selectedTrial.province}</span>
@@ -163,10 +163,10 @@ export default function MapPage() {
               <div className="flex items-center gap-2 mb-3 flex-wrap">
                 <StatusBadge status={selectedTrial.status} spotsRemaining={selectedTrial.spotsRemaining} />
                 {selectedTrial.distanceKm && (
-                  <span className="text-[0.72rem] text-[var(--muted)]">{selectedTrial.distanceKm} km away</span>
+                  <span className="text-[0.72rem] text-[var(--muted-text)]">{selectedTrial.distanceKm} km away</span>
                 )}
                 {selectedTrial.rings && (
-                  <span className="text-[0.72rem] text-[var(--muted)]">· {selectedTrial.rings} rings</span>
+                  <span className="text-[0.72rem] text-[var(--muted-text)]">· {selectedTrial.rings} rings</span>
                 )}
               </div>
 
@@ -179,7 +179,7 @@ export default function MapPage() {
                 </Link>
                 <button
                   onClick={() => setSelectedId(null)}
-                  className="w-10 flex items-center justify-center bg-[var(--surface-2)] border border-[var(--border)] rounded-[10px] text-[var(--muted)] cursor-pointer hover:text-cream transition-colors"
+                  className="w-10 flex items-center justify-center bg-[var(--surface-2)] border border-[var(--border)] rounded-[10px] text-[var(--muted-text)] cursor-pointer hover:text-cream transition-colors"
                 >
                   ✕
                 </button>

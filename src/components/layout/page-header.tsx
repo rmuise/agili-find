@@ -27,7 +27,7 @@ export function PageHeader({
         </Link>
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1.5 text-[0.82rem] text-[var(--muted)] hover:text-cream transition-colors no-underline"
+          className="inline-flex items-center gap-1.5 text-[0.82rem] text-[var(--muted-text)] hover:text-cream transition-colors no-underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           {backLabel}

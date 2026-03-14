@@ -122,7 +122,7 @@ export default function SubmitTrainingSpacePage() {
           <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Training space submitted!
           </h1>
-          <p className="text-[var(--muted)] mb-6">
+          <p className="text-[var(--muted-text)] mb-6">
             Your training space is now listed and will appear in the directory.
           </p>
           <div className="flex gap-3 justify-center">
@@ -157,7 +157,7 @@ export default function SubmitTrainingSpacePage() {
             <Dumbbell className="h-6 w-6 text-[var(--accent)]" />
             Add a Training Space
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
+          <p className="text-sm text-[var(--muted-text)] mt-1">
             Share a training facility with the agility community.
           </p>
         </div>

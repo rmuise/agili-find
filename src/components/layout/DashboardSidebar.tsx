@@ -108,7 +108,7 @@ export function DashboardSidebar() {
     <aside className="border-r border-[var(--border)] px-4 py-6 sticky top-14 h-[calc(100vh-56px)] overflow-y-auto hidden md:flex flex-col gap-1">
       {NAV_ITEMS.map(({ section, links }) => (
         <div key={section}>
-          <div className="text-[0.6rem] font-medium tracking-[0.16em] uppercase text-[var(--muted)] px-3 py-2 mt-3 first:mt-0">
+          <div className="text-[0.6rem] font-medium tracking-[0.16em] uppercase text-[var(--muted-text)] px-3 py-2 mt-3 first:mt-0">
             {section}
           </div>
           {links.map(({ href, label, icon, count, countVariant }) => {
@@ -122,7 +122,7 @@ export function DashboardSidebar() {
                   no-underline transition-all duration-150 cursor-pointer
                   ${active
                     ? 'bg-[rgba(232,255,71,0.08)] text-[var(--accent)]'
-                    : 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-cream'
+                    : 'text-[var(--muted-text)] hover:bg-[var(--surface-2)] hover:text-cream'
                   }
                 `}
               >
@@ -138,7 +138,7 @@ export function DashboardSidebar() {
                         ? 'bg-[rgba(240,149,149,0.15)] text-[#f09595]'
                         : active
                           ? 'bg-[rgba(232,255,71,0.15)] text-[var(--accent)]'
-                          : 'bg-[var(--surface-3)] text-[var(--muted)]'
+                          : 'bg-[var(--surface-3)] text-[var(--muted-text)]'
                       }
                     `}
                   >
@@ -153,7 +153,7 @@ export function DashboardSidebar() {
 
       {/* Sign out */}
       <div className="mt-auto pt-4 border-t border-[var(--border)]">
-        <button className="flex items-center gap-3 text-[0.82rem] text-[var(--muted)] px-3 py-[0.625rem] rounded-[10px] w-full hover:bg-[var(--surface-2)] hover:text-cream transition-all cursor-pointer bg-transparent border-none">
+        <button className="flex items-center gap-3 text-[0.82rem] text-[var(--muted-text)] px-3 py-[0.625rem] rounded-[10px] w-full hover:bg-[var(--surface-2)] hover:text-cream transition-all cursor-pointer bg-transparent border-none">
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
             <path d="M6 1H2a1 1 0 00-1 1v11a1 1 0 001 1h4M10 11l3-3.5-3-3.5M13 7.5H5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

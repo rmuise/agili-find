@@ -37,7 +37,7 @@ export default function DashboardPage() {
             <h1 className="font-display text-[2rem] tracking-[0.04em] text-cream mb-1">
               {greeting}, {MOCK_USER.firstName}
             </h1>
-            <p className="text-[0.85rem] text-[var(--muted)] font-light">
+            <p className="text-[0.85rem] text-[var(--muted-text)] font-light">
               Here's what's happening with your trials this week.
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function DashboardPage() {
               { label: 'Alerts', value: unreadCount, sub: 'New this week', accent: unreadCount > 0 },
             ].map(({ label, value, sub, accent }) => (
               <div key={label} className="bg-[var(--surface-2)] border border-[var(--border)] rounded-[14px] px-5 py-4">
-                <div className="text-[0.62rem] font-medium tracking-[0.12em] uppercase text-[var(--muted)] mb-[0.4rem]">
+                <div className="text-[0.62rem] font-medium tracking-[0.12em] uppercase text-[var(--muted-text)] mb-[0.4rem]">
                   {label}
                 </div>
                 <div
@@ -60,7 +60,7 @@ export default function DashboardPage() {
                 >
                   {value}
                 </div>
-                <div className="text-[0.72rem] text-[var(--muted)]">{sub}</div>
+                <div className="text-[0.72rem] text-[var(--muted-text)]">{sub}</div>
               </div>
             ))}
           </div>
@@ -89,7 +89,7 @@ export default function DashboardPage() {
                         <Link href={`/trials/${trial.id}`} className="text-[0.92rem] font-medium text-cream no-underline hover:text-[var(--accent)] transition-colors block mb-[0.25rem] truncate">
                           {trial.name}
                         </Link>
-                        <div className="flex items-center gap-2 text-[0.75rem] text-[var(--muted)] flex-wrap">
+                        <div className="flex items-center gap-2 text-[0.75rem] text-[var(--muted-text)] flex-wrap">
                           <span>{formatDateRange(trial.startDate, trial.endDate)}</span>
                           <span className="w-[2.5px] h-[2.5px] rounded-full bg-[var(--muted-2)] inline-block" />
                           <span>{trial.city}, {trial.province}</span>
@@ -106,7 +106,7 @@ export default function DashboardPage() {
                         <StatusBadge status={trial.status} spotsRemaining={trial.spotsRemaining} />
                         <button
                           onClick={() => setRemovedIds((prev) => new Set([...prev, trial.id]))}
-                          className="text-[0.68rem] text-[var(--muted)] bg-transparent border-none cursor-pointer hover:text-[#f09595] transition-colors p-0"
+                          className="text-[0.68rem] text-[var(--muted-text)] bg-transparent border-none cursor-pointer hover:text-[#f09595] transition-colors p-0"
                         >
                           Remove
                         </button>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
                         <div className="text-[0.82rem] font-medium text-cream mb-[0.1rem] truncate">
                           {notif.title}
                         </div>
-                        <div className="text-[0.72rem] text-[var(--muted)] line-clamp-1">
+                        <div className="text-[0.72rem] text-[var(--muted-text)] line-clamp-1">
                           {notif.body}
                         </div>
                       </div>
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                           <Link href={`/trials/${trial.id}`} className="text-[0.85rem] font-medium text-cream no-underline hover:text-[var(--accent)] transition-colors block truncate mb-[0.15rem]">
                             {trial.name}
                           </Link>
-                          <div className="text-[0.72rem] text-[var(--muted)]">
+                          <div className="text-[0.72rem] text-[var(--muted-text)]">
                             {trial.city}, {trial.province}
                           </div>
                         </div>
@@ -218,11 +218,11 @@ export default function DashboardPage() {
                             </span>
                           )}
                         </div>
-                        <div className="text-[0.72rem] text-[var(--muted)]">
+                        <div className="text-[0.72rem] text-[var(--muted-text)]">
                           {search.orgs.join(' · ')} · {search.distanceKm} km
                         </div>
                       </div>
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-[var(--muted)] shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-[var(--muted-text)] shrink-0">
                         <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
                       </svg>
                     </Link>
@@ -254,7 +254,7 @@ function SectionHeader({
         <span className="flex-1 h-px bg-[var(--border)]" />
       </div>
       {action && (
-        <Link href={action.href} className="text-[0.75rem] text-[var(--muted)] no-underline hover:text-[var(--accent)] transition-colors ml-3 shrink-0">
+        <Link href={action.href} className="text-[0.75rem] text-[var(--muted-text)] no-underline hover:text-[var(--accent)] transition-colors ml-3 shrink-0">
           {action.label}
         </Link>
       )}
@@ -274,7 +274,7 @@ function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center py-10 text-center border border-dashed border-[var(--border-2)] rounded-[14px] gap-3">
       <div className="text-[0.88rem] font-medium text-cream">{title}</div>
-      <div className="text-[0.78rem] text-[var(--muted)] max-w-[200px] leading-[1.6]">{sub}</div>
+      <div className="text-[0.78rem] text-[var(--muted-text)] max-w-[200px] leading-[1.6]">{sub}</div>
       {action && (
         <Link href={action.href} className="text-[0.78rem] bg-[var(--accent)] text-black font-medium px-4 py-[0.45rem] rounded-[8px] no-underline hover:bg-[var(--accent-dark)] transition-colors mt-1">
           {action.label}
@@ -330,7 +330,7 @@ function MiniCalendar({ trialDays }: { trialDays: Set<number> }) {
     <div>
       <div className="grid grid-cols-7 gap-[0.375rem] mb-1">
         {DAYS.map((d) => (
-          <div key={d} className="text-center text-[0.62rem] font-medium tracking-[0.08em] uppercase text-[var(--muted)] py-[0.375rem]">
+          <div key={d} className="text-center text-[0.62rem] font-medium tracking-[0.08em] uppercase text-[var(--muted-text)] py-[0.375rem]">
             {d}
           </div>
         ))}
@@ -347,7 +347,7 @@ function MiniCalendar({ trialDays }: { trialDays: Set<number> }) {
                 rounded-[8px] cursor-pointer transition-all duration-150 relative
                 ${cell.prevMonth || cell.nextMonth ? 'text-[rgba(245,242,237,0.15)]' : ''}
                 ${isToday ? 'bg-[rgba(232,255,71,0.1)] text-[var(--accent)] font-medium' : ''}
-                ${!isToday && !cell.prevMonth && !cell.nextMonth ? 'text-[var(--muted)] hover:bg-[var(--surface-2)] hover:text-cream' : ''}
+                ${!isToday && !cell.prevMonth && !cell.nextMonth ? 'text-[var(--muted-text)] hover:bg-[var(--surface-2)] hover:text-cream' : ''}
                 ${isTrial && !isToday ? 'text-cream font-medium' : ''}
               `}
             >

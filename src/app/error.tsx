@@ -15,7 +15,7 @@ export default function Error({
         <h1 className="font-display text-[2rem] tracking-[0.04em] text-cream mb-2">
           Something went wrong
         </h1>
-        <p className="text-[var(--muted)] text-[0.9rem] mb-6">
+        <p className="text-[var(--muted-text)] text-[0.9rem] mb-6">
           An unexpected error occurred. Please try again.
         </p>
         <button

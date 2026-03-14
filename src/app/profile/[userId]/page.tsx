@@ -142,9 +142,9 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                 {profile.display_name}
               </h1>
               {profile.bio && (
-                <p className="text-sm text-[var(--muted)] mt-1">{profile.bio}</p>
+                <p className="text-sm text-[var(--muted-text)] mt-1">{profile.bio}</p>
               )}
-              <div className="flex flex-wrap gap-3 mt-3 text-xs text-[var(--muted)]">
+              <div className="flex flex-wrap gap-3 mt-3 text-xs text-[var(--muted-text)]">
                 {profile.location && (
                   <span className="inline-flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
@@ -165,11 +165,11 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
               <div className="flex gap-4 mt-3 text-sm">
                 <span>
                   <strong className="text-[var(--cream)]">{followers}</strong>{" "}
-                  <span className="text-[var(--muted)]">followers</span>
+                  <span className="text-[var(--muted-text)]">followers</span>
                 </span>
                 <span>
                   <strong className="text-[var(--cream)]">{following}</strong>{" "}
-                  <span className="text-[var(--muted)]">following</span>
+                  <span className="text-[var(--muted-text)]">following</span>
                 </span>
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                 onClick={handleFollow}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
                   isFollowing
-                    ? "text-[var(--muted)] bg-[var(--surface-2)] hover:bg-red-50 hover:text-red-600"
+                    ? "text-[var(--muted-text)] bg-[var(--surface-2)] hover:bg-red-50 hover:text-red-600"
                     : "text-[var(--black)] bg-[var(--accent)] hover:bg-[var(--accent-dark)]"
                 }`}
               >
@@ -210,13 +210,13 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
 
         {/* Trial Reviews */}
         <div>
-          <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3">
+          <h2 className="text-sm font-semibold text-[var(--muted-text)] uppercase tracking-wide mb-3">
             Trial Reviews ({reviews.length})
           </h2>
           {reviews.length === 0 ? (
             <div className="text-center py-12 bg-[var(--surface)] rounded-lg border border-[var(--border)]">
               <Star className="h-8 w-8 text-[var(--muted-2)] mx-auto mb-2" />
-              <p className="text-sm text-[var(--muted)]">No reviews yet</p>
+              <p className="text-sm text-[var(--muted-text)]">No reviews yet</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -226,7 +226,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                   className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-4"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)] uppercase">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted-text)] uppercase">
                       {review.trials.organization_id}
                     </span>
                     <span className="text-sm font-medium text-[var(--cream)]">
@@ -251,7 +251,7 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
                     <p className="text-sm text-[var(--cream)] mb-1">{review.comment}</p>
                   )}
                   {review.results && (
-                    <p className="text-xs text-[var(--muted)]">
+                    <p className="text-xs text-[var(--muted-text)]">
                       Results: {review.results}
                     </p>
                   )}

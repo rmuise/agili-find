@@ -174,7 +174,7 @@ export default function AdminPage() {
             <Shield className="h-6 w-6 text-[var(--accent)]" />
             Moderation Dashboard
           </h1>
-          <p className="text-sm text-[var(--muted)] mt-1">
+          <p className="text-sm text-[var(--muted-text)] mt-1">
             {pendingCount} item{pendingCount !== 1 ? "s" : ""} pending review
           </p>
         </div>
@@ -188,7 +188,7 @@ export default function AdminPage() {
               className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors capitalize ${
                 tab === t
                   ? "bg-[var(--surface)] shadow-sm text-[var(--cream)]"
-                  : "text-[var(--muted)] hover:text-[var(--cream)]"
+                  : "text-[var(--muted-text)] hover:text-[var(--cream)]"
               }`}
             >
               {t}
@@ -210,7 +210,7 @@ export default function AdminPage() {
             {/* Seminars */}
             {filteredSeminars.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h2 className="text-sm font-semibold text-[var(--muted-text)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                   <BookOpen className="h-3.5 w-3.5" />
                   Seminars ({filteredSeminars.length})
                 </h2>
@@ -227,7 +227,7 @@ export default function AdminPage() {
                           </span>
                           <StatusBadge status={sem.status} />
                         </div>
-                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)]">
+                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted-text)]">
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {sem.city}, {sem.state}
@@ -273,7 +273,7 @@ export default function AdminPage() {
             {/* Training Spaces */}
             {filteredSpaces.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h2 className="text-sm font-semibold text-[var(--muted-text)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                   <Dumbbell className="h-3.5 w-3.5" />
                   Training Spaces ({filteredSpaces.length})
                 </h2>
@@ -290,7 +290,7 @@ export default function AdminPage() {
                           </span>
                           <StatusBadge status={space.status} />
                         </div>
-                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)]">
+                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted-text)]">
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
                             {space.city}, {space.state}
@@ -337,7 +337,7 @@ export default function AdminPage() {
             {/* Unverified Providers */}
             {tab === "pending" && unverifiedProviders.length > 0 && (
               <div>
-                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                <h2 className="text-sm font-semibold text-[var(--muted-text)] uppercase tracking-wide mb-3 flex items-center gap-1.5">
                   <Store className="h-3.5 w-3.5" />
                   Unverified Providers ({unverifiedProviders.length})
                 </h2>
@@ -352,11 +352,11 @@ export default function AdminPage() {
                           <span className="text-sm font-medium text-[var(--cream)]">
                             {prov.business_name}
                           </span>
-                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted)] capitalize">
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[var(--surface-2)] text-[var(--muted-text)] capitalize">
                             {prov.provider_type.replace("_", " ")}
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted)]">
+                        <div className="flex flex-wrap gap-x-3 text-xs text-[var(--muted-text)]">
                           <span>{prov.contact_name}</span>
                           <span>{prov.email}</span>
                           {prov.location_city && (
@@ -393,7 +393,7 @@ export default function AdminPage() {
                 <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
                   No items to review
                 </h3>
-                <p className="text-[var(--muted)]">
+                <p className="text-[var(--muted-text)]">
                   {tab === "pending"
                     ? "All submissions have been reviewed."
                     : "No items match this filter."}
@@ -416,7 +416,7 @@ function StatusBadge({ status }: { status: string }) {
   return (
     <span
       className={`text-[10px] font-medium px-1.5 py-0.5 rounded capitalize ${
-        styles[status] || "bg-[var(--surface-2)] text-[var(--muted)]"
+        styles[status] || "bg-[var(--surface-2)] text-[var(--muted-text)]"
       }`}
     >
       {status}

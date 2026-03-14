@@ -108,7 +108,7 @@ export default function PublicSchedulePage() {
           <h1 className="text-2xl font-bold text-[var(--cream)] mb-2">
             Schedule not found
           </h1>
-          <p className="text-[var(--muted)] mb-4">
+          <p className="text-[var(--muted-text)] mb-4">
             This schedule link may be invalid or expired.
           </p>
           <Link
@@ -136,7 +136,7 @@ export default function PublicSchedulePage() {
             {displayName ? `${displayName}'s` : ""} Agility Schedule
           </h1>
           <div className="flex items-center gap-4 mt-2">
-            <p className="text-sm text-[var(--muted)]">
+            <p className="text-sm text-[var(--muted-text)]">
               {sortedTrials.upcoming.length} upcoming trial
               {sortedTrials.upcoming.length !== 1 ? "s" : ""}
             </p>
@@ -158,7 +158,7 @@ export default function PublicSchedulePage() {
             <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No trials on this schedule
             </h3>
-            <p className="text-sm text-[var(--muted)]">
+            <p className="text-sm text-[var(--muted-text)]">
               This user hasn&apos;t saved any trials yet.
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function PublicSchedulePage() {
               <div>
                 {Object.entries(upcomingGroups).map(([month, items]) => (
                   <div key={month} className="mb-6">
-                    <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3">
+                    <h2 className="text-sm font-semibold text-[var(--muted-text)] uppercase tracking-wide mb-3">
                       {month}
                     </h2>
                     <div className="space-y-2">
@@ -244,13 +244,13 @@ function TrialRow({
               {trial.title}
             </a>
           </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted-text)]">
             <span className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-[var(--muted)]" />
+              <Calendar className="h-3.5 w-3.5 text-[var(--muted-text)]" />
               {formatTrialDateRange(trial.start_date, trial.end_date)}
             </span>
             <span className="flex items-center gap-1">
-              <MapPin className="h-3.5 w-3.5 text-[var(--muted)]" />
+              <MapPin className="h-3.5 w-3.5 text-[var(--muted-text)]" />
               {trial.city}, {trial.state}
             </span>
           </div>
@@ -267,7 +267,7 @@ function TrialRow({
             href={trial.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
+            className="p-1.5 text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors"
           >
             <ExternalLink className="h-4 w-4" />
           </a>

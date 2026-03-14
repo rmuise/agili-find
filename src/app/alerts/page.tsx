@@ -52,7 +52,7 @@ export default function AlertsPage() {
           <div className="flex items-start justify-between flex-wrap gap-4 mb-6">
             <div>
               <h1 className="font-display text-[2rem] tracking-[0.04em] text-cream mb-1">Alerts</h1>
-              <p className="text-[0.85rem] text-[var(--muted)] font-light">
+              <p className="text-[0.85rem] text-[var(--muted-text)] font-light">
                 Notifications, saved searches, and alert preferences.
               </p>
             </div>
@@ -88,7 +88,7 @@ export default function AlertsPage() {
                   bg-transparent whitespace-nowrap
                   ${activeTab === id
                     ? 'text-[var(--accent)] border-[var(--accent)]'
-                    : 'text-[var(--muted)] border-transparent hover:text-cream'
+                    : 'text-[var(--muted-text)] border-transparent hover:text-cream'
                   }
                 `}
               >
@@ -108,12 +108,12 @@ export default function AlertsPage() {
               {groups.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <div className="font-display text-[1.5rem] tracking-[0.04em] text-cream mb-2">All caught up</div>
-                  <p className="text-[0.85rem] text-[var(--muted)]">No new notifications right now.</p>
+                  <p className="text-[0.85rem] text-[var(--muted-text)]">No new notifications right now.</p>
                 </div>
               )}
               {groups.map(({ label, items }) => (
                 <div key={label} className="mb-6">
-                  <div className="text-[0.62rem] font-medium tracking-[0.14em] uppercase text-[var(--muted)] mb-3">
+                  <div className="text-[0.62rem] font-medium tracking-[0.14em] uppercase text-[var(--muted-text)] mb-3">
                     {label}
                   </div>
                   <div className="flex flex-col gap-[0.5rem]">
@@ -218,7 +218,7 @@ function NotificationRow({ notif, onDismiss }: { notif: Notification; onDismiss:
         <div className="text-[0.85rem] font-medium text-cream mb-[0.2rem] leading-[1.4]">
           {notif.title}
         </div>
-        <div className="text-[0.75rem] text-[var(--muted)] leading-[1.55] mb-[0.4rem]">
+        <div className="text-[0.75rem] text-[var(--muted-text)] leading-[1.55] mb-[0.4rem]">
           {notif.body}
         </div>
         {notif.trialId && (
@@ -231,7 +231,7 @@ function NotificationRow({ notif, onDismiss }: { notif: Notification; onDismiss:
             </Link>
             <button
               onClick={onDismiss}
-              className="text-[0.72rem] font-medium bg-[var(--surface-3)] text-[var(--muted)] border border-[var(--border)] px-3 py-[0.3rem] rounded-[8px] cursor-pointer hover:text-cream transition-colors"
+              className="text-[0.72rem] font-medium bg-[var(--surface-3)] text-[var(--muted-text)] border border-[var(--border)] px-3 py-[0.3rem] rounded-[8px] cursor-pointer hover:text-cream transition-colors"
             >
               Dismiss
             </button>
@@ -260,7 +260,7 @@ function SavedSearchCard({ search, onToggle }: { search: SavedSearch; onToggle: 
               </span>
             )}
           </div>
-          <div className="text-[0.72rem] text-[var(--muted)]">
+          <div className="text-[0.72rem] text-[var(--muted-text)]">
             Alerts {search.alertsEnabled ? 'on' : 'off'} · checking daily
           </div>
         </div>
@@ -286,16 +286,16 @@ function SavedSearchCard({ search, onToggle }: { search: SavedSearch; onToggle: 
       </div>
       <div className="flex flex-wrap gap-2 px-5 py-3">
         {search.orgs.map((org) => (
-          <span key={org} className="text-[0.68rem] px-[0.6rem] py-[0.2rem] rounded-[5px] bg-[var(--surface-3)] text-[var(--muted)] border border-[var(--border)]">
+          <span key={org} className="text-[0.68rem] px-[0.6rem] py-[0.2rem] rounded-[5px] bg-[var(--surface-3)] text-[var(--muted-text)] border border-[var(--border)]">
             {org}
           </span>
         ))}
         {search.levels.slice(0, 3).map((level) => (
-          <span key={level} className="text-[0.68rem] px-[0.6rem] py-[0.2rem] rounded-[5px] bg-[var(--surface-3)] text-[var(--muted)] border border-[var(--border)]">
+          <span key={level} className="text-[0.68rem] px-[0.6rem] py-[0.2rem] rounded-[5px] bg-[var(--surface-3)] text-[var(--muted-text)] border border-[var(--border)]">
             {level}
           </span>
         ))}
-        <span className="text-[0.68rem] px-[0.6rem] py-[0.2rem] rounded-[5px] bg-[var(--surface-3)] text-[var(--muted)] border border-[var(--border)]">
+        <span className="text-[0.68rem] px-[0.6rem] py-[0.2rem] rounded-[5px] bg-[var(--surface-3)] text-[var(--muted-text)] border border-[var(--border)]">
           {search.distanceKm} km radius
         </span>
       </div>
@@ -326,7 +326,7 @@ function PreferencesPanel({
 
   return (
     <div className="flex flex-col gap-4 max-w-[520px]">
-      <div className="text-[0.62rem] font-medium tracking-[0.14em] uppercase text-[var(--muted)] mb-1">
+      <div className="text-[0.62rem] font-medium tracking-[0.14em] uppercase text-[var(--muted-text)] mb-1">
         Email notifications
       </div>
 
@@ -337,7 +337,7 @@ function PreferencesPanel({
         >
           <div>
             <div className="text-[0.85rem] font-medium text-cream mb-[0.15rem]">{label}</div>
-            <div className="text-[0.72rem] text-[var(--muted)]">{sub}</div>
+            <div className="text-[0.72rem] text-[var(--muted-text)]">{sub}</div>
           </div>
           <button
             onClick={() => toggle(key)}
@@ -355,12 +355,12 @@ function PreferencesPanel({
         </div>
       ))}
 
-      <div className="text-[0.62rem] font-medium tracking-[0.14em] uppercase text-[var(--muted)] mt-2 mb-1">
+      <div className="text-[0.62rem] font-medium tracking-[0.14em] uppercase text-[var(--muted-text)] mt-2 mb-1">
         Notification frequency
       </div>
 
       <div className="bg-[var(--surface-2)] border border-[var(--border)] rounded-[12px] px-4 py-4">
-        <div className="text-[0.82rem] text-[var(--muted)] mb-3">Send me alerts</div>
+        <div className="text-[0.82rem] text-[var(--muted-text)] mb-3">Send me alerts</div>
         <div className="flex gap-2 flex-wrap">
           {(
             [
@@ -377,7 +377,7 @@ function PreferencesPanel({
                 cursor-pointer transition-all duration-150
                 ${prefs.frequency === val
                   ? 'bg-[var(--accent)] text-black font-medium'
-                  : 'bg-[var(--surface-3)] text-[var(--muted)] hover:text-cream'
+                  : 'bg-[var(--surface-3)] text-[var(--muted-text)] hover:text-cream'
                 }
               `}
             >

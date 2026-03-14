@@ -37,10 +37,10 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-[200px] flex items-center justify-center p-8">
           <div className="text-center max-w-md">
             <AlertTriangle className="h-10 w-10 text-red-400 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-semibold text-[var(--cream)] mb-1">
               Something went wrong
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-[var(--muted-text)] mb-4">
               An unexpected error occurred. Please try refreshing the page.
             </p>
             <button
@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 this.setState({ hasError: false, error: null });
                 window.location.reload();
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-black bg-[var(--agili-accent)] rounded-md hover:brightness-110 transition-all"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               Refresh page

@@ -58,13 +58,13 @@ export function LoginForm() {
 
   return (
     <div className="w-full max-w-sm mx-auto">
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+      <div className="bg-[var(--surface)] rounded-lg border border-[var(--border)] p-6 shadow-sm">
+        <h2 className="text-xl font-semibold text-[var(--cream)] mb-6 text-center">
           Log in to AgiliFind
         </h2>
 
         {error && (
-          <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200 text-sm text-red-700">
+          <div className="mb-4 p-3 rounded-md bg-red-500/10 border border-red-500/30 text-sm text-red-400">
             {error}
           </div>
         )}
@@ -73,7 +73,7 @@ export function LoginForm() {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--cream)] mb-1"
             >
               Email
             </label>
@@ -82,7 +82,7 @@ export function LoginForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--cream)] placeholder:text-[var(--muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:border-transparent"
               placeholder="you@example.com"
               required
             />
@@ -91,7 +91,7 @@ export function LoginForm() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-[var(--cream)] mb-1"
             >
               Password
             </label>
@@ -100,7 +100,7 @@ export function LoginForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-md border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-sm text-[var(--cream)] placeholder:text-[var(--muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:border-transparent"
               placeholder="At least 6 characters"
               required
             />
@@ -109,21 +109,21 @@ export function LoginForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 text-white rounded-md py-2 text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-[var(--agili-accent)] text-black rounded-md py-2 text-sm font-medium hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:ring-offset-2 focus:ring-offset-[var(--surface)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isLoading ? "Logging in..." : "Log in"}
           </button>
         </form>
 
         <div className="my-4 flex items-center">
-          <div className="flex-1 border-t border-gray-200" />
-          <span className="px-3 text-xs text-gray-500">or</span>
-          <div className="flex-1 border-t border-gray-200" />
+          <div className="flex-1 border-t border-[var(--border)]" />
+          <span className="px-3 text-xs text-[var(--muted-text)]">or</span>
+          <div className="flex-1 border-t border-[var(--border)]" />
         </div>
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-md py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-[var(--surface-2)] border border-[var(--border)] rounded-md py-2 text-sm font-medium text-[var(--cream)] hover:bg-[var(--surface-3)] focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:ring-offset-2 focus:ring-offset-[var(--surface)] transition-colors"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -146,11 +146,11 @@ export function LoginForm() {
           Sign in with Google
         </button>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm text-[var(--muted-text)]">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="text-blue-600 hover:underline font-medium"
+            className="text-[var(--agili-accent)] hover:underline font-medium"
           >
             Sign up
           </Link>

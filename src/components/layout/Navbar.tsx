@@ -21,7 +21,7 @@ export function Navbar({
 }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') onSearchSubmit?.();
@@ -70,7 +70,7 @@ export function Navbar({
                 className={`text-[0.82rem] transition-colors no-underline ${
                   pathname?.startsWith(href)
                     ? 'text-[var(--accent)]'
-                    : 'text-[var(--muted)] hover:text-cream'
+                    : 'text-[var(--muted-text)] hover:text-cream'
                 }`}
               >
                 {label}
@@ -90,10 +90,10 @@ export function Navbar({
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
-          className="flex items-center justify-center w-8 h-8 rounded-[10px] text-[var(--muted)] hover:text-cream hover:bg-[var(--surface-2)] transition-all ml-1"
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="flex items-center justify-center w-8 h-8 rounded-[10px] text-[var(--muted-text)] hover:text-cream hover:bg-[var(--surface-2)] transition-all ml-1"
+          aria-label={resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
         >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          {resolvedTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
 
         {/* Hamburger (mobile) */}
@@ -143,10 +143,10 @@ export function Navbar({
           </Link>
           <button
             onClick={toggleTheme}
-            className="mt-4 flex items-center gap-3 text-[var(--muted)] text-[0.9rem] py-3"
+            className="mt-4 flex items-center gap-3 text-[var(--muted-text)] text-[0.9rem] py-3"
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            {resolvedTheme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {resolvedTheme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           </button>
         </div>
       )}

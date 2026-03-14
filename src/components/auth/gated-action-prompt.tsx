@@ -18,11 +18,11 @@ export function GatedActionPrompt({ onDismiss }: GatedActionPromptProps) {
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-lg border border-gray-200 shadow-xl p-6 max-w-sm mx-4 w-full">
+      <div className="relative bg-[var(--surface)] rounded-lg border border-[var(--border)] shadow-xl p-6 max-w-sm mx-4 w-full">
         {/* Icon */}
-        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-12 h-12 bg-[var(--agili-accent)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg
-            className="w-6 h-6 text-blue-600"
+            className="w-6 h-6 text-[var(--agili-accent)]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -36,10 +36,10 @@ export function GatedActionPrompt({ onDismiss }: GatedActionPromptProps) {
           </svg>
         </div>
 
-        <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
+        <h3 className="text-lg font-semibold text-[var(--cream)] text-center mb-2">
           Save trials to your schedule
         </h3>
-        <p className="text-sm text-gray-600 text-center mb-6">
+        <p className="text-sm text-[var(--muted-text)] text-center mb-6">
           Create a free account to save trials and build your competition
           schedule.
         </p>
@@ -47,19 +47,19 @@ export function GatedActionPrompt({ onDismiss }: GatedActionPromptProps) {
         <div className="space-y-2">
           <button
             onClick={() => router.push("/signup")}
-            className="w-full bg-blue-600 text-white rounded-md py-2 text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            className="w-full bg-[var(--agili-accent)] text-black rounded-md py-2 text-sm font-medium hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:ring-offset-2 focus:ring-offset-[var(--surface)] transition-all"
           >
             Sign up — it&apos;s free
           </button>
           <button
             onClick={() => router.push("/login")}
-            className="w-full bg-white text-gray-700 border border-gray-300 rounded-md py-2 text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            className="w-full bg-[var(--surface-2)] text-[var(--cream)] border border-[var(--border)] rounded-md py-2 text-sm font-medium hover:bg-[var(--surface-3)] focus:outline-none focus:ring-2 focus:ring-[var(--agili-accent)] focus:ring-offset-2 focus:ring-offset-[var(--surface)] transition-colors"
           >
             Log in
           </button>
           <button
             onClick={onDismiss}
-            className="w-full text-gray-500 text-sm py-1.5 hover:text-gray-700 transition-colors"
+            className="w-full text-[var(--muted-text)] text-sm py-1.5 hover:text-[var(--cream)] transition-colors"
           >
             Maybe later
           </button>

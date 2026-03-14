@@ -240,7 +240,7 @@ export default function SchedulePage() {
         <div className="flex flex-wrap gap-3 mb-6">
           {/* Status filter */}
           <div className="flex items-center gap-1.5">
-            <Filter className="h-3.5 w-3.5 text-[var(--muted)]" />
+            <Filter className="h-3.5 w-3.5 text-[var(--muted-text)]" />
             <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-0.5">
               {(["all", "interested", "registered", "attending"] as StatusFilter[]).map(
                 (s) => (
@@ -300,7 +300,7 @@ export default function SchedulePage() {
                 <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
                   No saved trials yet
                 </h3>
-                <p className="text-sm text-[var(--muted)] mb-4">
+                <p className="text-sm text-[var(--muted-text)] mb-4">
                   Search for trials and tap the bookmark icon to save them here.
                 </p>
                 <Link
@@ -333,7 +333,7 @@ export default function SchedulePage() {
           <div className="space-y-8">
             {Object.entries(groupedTrials).map(([month, trials]) => (
               <div key={month}>
-                <h2 className="text-sm font-semibold text-[var(--muted)] uppercase tracking-wide mb-3">
+                <h2 className="text-sm font-semibold text-[var(--muted-text)] uppercase tracking-wide mb-3">
                   {month}
                 </h2>
                 <div className="space-y-2">
@@ -369,13 +369,13 @@ export default function SchedulePage() {
                             </div>
 
                             {/* Date + location */}
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted)]">
+                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--muted-text)]">
                               <span className="flex items-center gap-1">
-                                <Calendar className="h-3.5 w-3.5 text-[var(--muted)]" />
+                                <Calendar className="h-3.5 w-3.5 text-[var(--muted-text)]" />
                                 {formatTrialDateRange(trial.start_date, trial.end_date)}
                               </span>
                               <span className="flex items-center gap-1">
-                                <MapPin className="h-3.5 w-3.5 text-[var(--muted)]" />
+                                <MapPin className="h-3.5 w-3.5 text-[var(--muted-text)]" />
                                 {trial.city}, {trial.state}
                               </span>
                             </div>
@@ -391,7 +391,7 @@ export default function SchedulePage() {
                               }
                               className={`text-xs font-medium px-2 py-1 rounded border cursor-pointer ${
                                 statusInfo?.bg || "bg-[var(--surface-2)] border-[var(--border)]"
-                              } ${statusInfo?.color || "text-[var(--muted)]"}`}
+                              } ${statusInfo?.color || "text-[var(--muted-text)]"}`}
                             >
                               <option value="interested">Interested</option>
                               <option value="registered">Registered</option>
@@ -403,7 +403,7 @@ export default function SchedulePage() {
                               href={trial.source_url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
+                              className="p-1.5 text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors"
                               title="View on source"
                             >
                               <ExternalLink className="h-4 w-4" />
@@ -412,7 +412,7 @@ export default function SchedulePage() {
                             {/* View details */}
                             <Link
                               href={`/trials/${trial.id}`}
-                              className="p-1.5 text-[var(--muted)] hover:text-[var(--accent)] transition-colors"
+                              className="p-1.5 text-[var(--muted-text)] hover:text-[var(--accent)] transition-colors"
                               title="View trial details"
                             >
                               <Eye className="h-4 w-4" />
@@ -421,7 +421,7 @@ export default function SchedulePage() {
                             {/* Remove */}
                             <button
                               onClick={() => handleUnsave(trial.id)}
-                              className="p-1.5 text-[var(--muted)] hover:text-red-500 transition-colors"
+                              className="p-1.5 text-[var(--muted-text)] hover:text-red-500 transition-colors"
                               title="Remove from schedule"
                             >
                               <Bookmark

@@ -67,7 +67,7 @@ export default function MyTrainingSpacesPage() {
               <Dumbbell className="h-6 w-6 text-[var(--accent)]" />
               My Training Spaces
             </h1>
-            <p className="text-sm text-[var(--muted)] mt-1">
+            <p className="text-sm text-[var(--muted-text)] mt-1">
               Manage your listed training facilities.
             </p>
           </div>
@@ -90,7 +90,7 @@ export default function MyTrainingSpacesPage() {
             <h3 className="text-lg font-medium text-[var(--cream)] mb-2">
               No training spaces yet
             </h3>
-            <p className="text-[var(--muted)] mb-4">
+            <p className="text-[var(--muted-text)] mb-4">
               Share a training facility with the agility community.
             </p>
             <Link
@@ -125,7 +125,7 @@ export default function MyTrainingSpacesPage() {
                       {space.status}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
+                  <div className="flex items-center gap-3 text-xs text-[var(--muted-text)]">
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       {space.city}, {space.state}
@@ -144,7 +144,7 @@ export default function MyTrainingSpacesPage() {
                 </div>
                 <button
                   onClick={() => handleDelete(space.id)}
-                  className="ml-3 p-2 text-[var(--muted)] hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  className="ml-3 p-2 text-[var(--muted-text)] hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="h-4 w-4" />

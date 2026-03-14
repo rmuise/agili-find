@@ -75,7 +75,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem('agili-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}})();`,
+            __html: `(function(){var t=localStorage.getItem('agili-theme');var r=t==='light'||t==='dark'?t:t==='auto'||!t?window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light':'dark';document.documentElement.setAttribute('data-theme',r);})();`,
           }}
         />
       </head>

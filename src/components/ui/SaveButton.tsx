@@ -28,7 +28,7 @@ export function SaveButton({ trialId, initialSaved = false, className = '' }: Sa
         whitespace-nowrap
         ${saved
           ? 'bg-[rgba(232,255,71,0.08)] border-[rgba(232,255,71,0.3)] text-[var(--accent)]'
-          : 'bg-transparent border-[var(--border-2)] text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
+          : 'bg-transparent border-[var(--border-2)] text-[var(--muted-text)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
         }
         ${className}
       `}
