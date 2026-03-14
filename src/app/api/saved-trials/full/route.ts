@@ -38,8 +38,7 @@ export async function GET() {
           city,
           state,
           country,
-          lat,
-          lng
+          location
         ),
         organizations:organization_id (
           name
@@ -63,6 +62,11 @@ export async function GET() {
       const venue = trial.venues as Record<string, unknown> | null;
       const org = trial.organizations as Record<string, unknown> | null;
 
+      // PostgREST returns PostGIS geography as GeoJSON: { type: "Point", coordinates: [lng, lat] }
+      const locationGeo = venue?.location as { coordinates?: [number, number] } | null;
+      const venueLng = locationGeo?.coordinates?.[0] ?? null;
+      const venueLat = locationGeo?.coordinates?.[1] ?? null;
+
       return {
         id: trial.id,
         title: trial.title,
@@ -79,8 +83,8 @@ export async function GET() {
         city: venue?.city || "",
         state: venue?.state || "",
         country: venue?.country || "",
-        lat: venue?.lat || 0,
-        lng: venue?.lng || 0,
+        lat: venueLat,
+        lng: venueLng,
         distance_miles: null,
         // Extra fields for schedule view
         saved_status: row.status,
