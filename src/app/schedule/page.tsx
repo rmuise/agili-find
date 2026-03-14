@@ -15,6 +15,7 @@ import {
   Wrench,
   Eye,
   ArrowLeft,
+  Trash2,
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
@@ -47,6 +48,8 @@ export default function SchedulePage() {
   const [copied, setCopied] = useState<"link" | "ical" | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("upcoming");
+  const [isConfirmingClear, setIsConfirmingClear] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -144,6 +147,19 @@ export default function SchedulePage() {
     setSavedTrials((prev) => prev.filter((t) => t.id !== trialId));
   };
 
+  const handleClearAll = async () => {
+    if (!isConfirmingClear) {
+      setIsConfirmingClear(true);
+      setTimeout(() => setIsConfirmingClear(false), 4000);
+      return;
+    }
+    setIsClearing(true);
+    await Promise.all(savedTrials.map((t) => toggleSave(t.id)));
+    setSavedTrials([]);
+    setIsConfirmingClear(false);
+    setIsClearing(false);
+  };
+
 
   if (authLoading || (!user && !authLoading)) {
     return <LoadingState />;
@@ -170,7 +186,7 @@ export default function SchedulePage() {
             )}
           </p>
 
-          {/* Share + iCal buttons */}
+          {/* Share + iCal + Clear buttons */}
           {shareToken && (
             <div className="flex flex-wrap gap-2 mt-3">
               <button
@@ -202,6 +218,20 @@ export default function SchedulePage() {
                 <Wrench className="h-3.5 w-3.5" />
                 Schedule Builder
               </Link>
+              {savedTrials.length > 0 && (
+                <button
+                  onClick={handleClearAll}
+                  disabled={isClearing}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border transition-colors disabled:opacity-50 ${
+                    isConfirmingClear
+                      ? "text-white bg-red-600 border-red-600 hover:bg-red-700"
+                      : "text-[var(--muted-text)] bg-[var(--surface)] border-[var(--border)] hover:text-red-500 hover:border-red-500"
+                  }`}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  {isClearing ? "Clearing…" : isConfirmingClear ? "Tap to confirm" : "Clear all"}
+                </button>
+              )}
             </div>
           )}
         </div>
