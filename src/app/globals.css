@@ -130,28 +130,42 @@
   --card-foreground: #151515;
   --popover: #f0ede8;
   --popover-foreground: #151515;
+  --primary: #5c7a00;
+  --primary-foreground: #ffffff;
   --secondary: #e5e2dd;
   --secondary-foreground: #151515;
   --muted: #e5e2dd;
-  --muted-foreground: rgba(21, 21, 21, 0.5);
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.1);
+  --muted-foreground: rgba(21, 21, 21, 0.62);
+  --accent: #5c7a00;
+  --accent-foreground: #ffffff;
+  --destructive: #b91c1c;
+  --ring: #5c7a00;
+  --border: rgba(0, 0, 0, 0.12);
+  --input: rgba(0, 0, 0, 0.12);
   --sidebar: #ffffff;
   --sidebar-foreground: #151515;
+  --sidebar-primary: #5c7a00;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f0ede8;
   --sidebar-accent-foreground: #151515;
-  --sidebar-border: rgba(0, 0, 0, 0.08);
+  --sidebar-border: rgba(0, 0, 0, 0.1);
+  --sidebar-ring: #5c7a00;
 
   /* AgiliFind custom tokens */
+  --agili-accent: #5c7a00;
+  --accent-dark: #4a6300;
   --surface: #ffffff;
   --surface-2: #f0ede8;
   --surface-3: #e5e2dd;
   --cream: #151515;
-  --muted-text: rgba(21, 21, 21, 0.5);
-  --muted-2: rgba(21, 21, 21, 0.25);
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-2: rgba(0, 0, 0, 0.14);
+  --muted-text: rgba(21, 21, 21, 0.62);
+  --muted-2: rgba(21, 21, 21, 0.38);
+  --border-subtle: rgba(0, 0, 0, 0.1);
+  --border-2: rgba(0, 0, 0, 0.18);
   --glass-bg: rgba(248, 247, 244, 0.92);
+
+  /* Org colors — darkened for light backgrounds */
+  --usdaa: #6b7c00;
 
   /* Semantic state colors (light mode) */
   --error-bg: #fef2f2;
@@ -256,6 +270,37 @@ html {
   background: rgba(232, 255, 71, 0.08);
   color: var(--agili-accent);
   border: 0.5px solid rgba(232, 255, 71, 0.18);
+}
+
+/* Light mode: fix low-contrast org chips + status badges */
+[data-theme="light"] .chip-usdaa {
+  background: rgba(107, 124, 0, 0.1);
+  color: #5a6800;
+  border: 0.5px solid rgba(107, 124, 0, 0.22);
+}
+[data-theme="light"] .chip-nadac {
+  color: #b56a00;
+  border-color: rgba(181, 106, 0, 0.25);
+}
+[data-theme="light"] .status-open {
+  background: rgba(22, 163, 74, 0.08);
+  color: #15803d;
+  border: 0.5px solid rgba(22, 163, 74, 0.2);
+}
+[data-theme="light"] .status-low {
+  background: rgba(185, 28, 28, 0.08);
+  color: #b91c1c;
+  border: 0.5px solid rgba(185, 28, 28, 0.2);
+}
+[data-theme="light"] .status-soon {
+  background: rgba(180, 83, 9, 0.08);
+  color: #c2410c;
+  border: 0.5px solid rgba(180, 83, 9, 0.2);
+}
+[data-theme="light"] .status-reg {
+  background: rgba(92, 122, 0, 0.08);
+  color: #4a6300;
+  border: 0.5px solid rgba(92, 122, 0, 0.2);
 }
 
 /* Focus styles */
