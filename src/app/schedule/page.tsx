@@ -14,6 +14,7 @@ import {
   Check,
   Wrench,
   Eye,
+  ArrowLeft,
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
