@@ -4,6 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Tailwind v4 theme tokens ── */
+@theme {
+  /* cream references the CSS variable so text-cream/bg-cream switch with theme */
+  --color-cream: var(--cream);
+  --color-black: #090909;
+  --color-surface: #111111;
+  --color-surface-2: #1c1c1e;
+  --color-surface-3: #2c2c2e;
+  --color-accent: #e8ff47;
+  --color-accent-dark: #c9e000;
+
+  /* Org colors */
+  --color-org-akc: #85b7eb;
+  --color-org-usdaa: #e8ff47;
+  --color-org-cpe: #5dcaa5;
+  --color-org-uki: #ed93b1;
+  --color-org-nadac: #fac775;
+  --color-org-ckc: #afa9ec;
+
+  /* Custom border radii (preserve existing values) */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  /* Fonts */
+  --font-display: var(--font-bebas), sans-serif;
+  --font-sans: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
 :root {
   /* ── Dark mode (default) ── */
   --bg: #090909;

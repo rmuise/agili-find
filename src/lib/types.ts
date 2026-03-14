@@ -122,3 +122,59 @@ export const ALL_LEVELS = [
   'Beginner', 'Starters', 'Novice', 'Open', 'Advanced', 'Masters',
   'P1', 'P2', 'P3',
 ];
+
+// ── Saved Search ────────────────────────────────────────────
+export interface SavedSearch {
+  id: string;
+  label: string;
+  location: string;
+  distanceKm: number;
+  orgs: OrgId[];
+  levels: string[];
+  alertsEnabled: boolean;
+  newMatchCount?: number;
+  createdAt: string;
+}
+
+// ── Notification ────────────────────────────────────────────
+export type NotifType = 'closing' | 'new-trial' | 'reg-open' | 'spots-low' | 'reminder';
+
+export interface Notification {
+  id: string;
+  type: NotifType;
+  title: string;
+  body: string;
+  trialId?: string;
+  trialName?: string;
+  read: boolean;
+  createdAt: string;
+}
+
+// ── Alert Preferences ───────────────────────────────────────
+export interface AlertPreferences {
+  closingSoon: boolean;
+  newTrials: boolean;
+  regOpen: boolean;
+  spotsFilling: boolean;
+  weeklyDigest: boolean;
+  frequency: 'immediate' | 'daily' | 'weekly';
+}
+
+export const DEFAULT_ALERT_PREFS: AlertPreferences = {
+  closingSoon: true, newTrials: true, regOpen: true,
+  spotsFilling: false, weeklyDigest: false, frequency: 'daily',
+};
+
+// ── User ────────────────────────────────────────────────────
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarInitials: string;
+  savedTrialIds: string[];
+  savedSearches: SavedSearch[];
+  alertPrefs: AlertPreferences;
+  homeLocation?: string;
+  homeDistanceKm?: number;
+}
