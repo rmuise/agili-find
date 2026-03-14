@@ -14,11 +14,13 @@ interface TrialMapProps {
   seminars?: SeminarResult[];
   trainingSpaces?: TrainingSpaceResult[];
   center?: { lat: number; lng: number };
+  distanceUnit?: "mi" | "km";
 }
 
 import { ORG_HEX_COLORS } from "@/lib/constants";
+import { formatDistance } from "@/lib/utils";
 
-export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], center }: TrialMapProps) {
+export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], center, distanceUnit = "mi" }: TrialMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.LayerGroup | null>(null);
@@ -103,7 +105,7 @@ export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], cent
             (t) =>
               `<div style="margin-bottom:4px;">
                 <strong>${t.title}</strong><br/>
-                <span style="color:#666;font-size:12px;">${t.start_date}${t.distance_miles ? ` · ${t.distance_miles} mi` : ""}</span>
+                <span style="color:#666;font-size:12px;">${t.start_date}${t.distance_miles ? ` · ${formatDistance(t.distance_miles, distanceUnit)}` : ""}</span>
               </div>`
           )
           .join("");
@@ -174,7 +176,7 @@ export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], cent
             (t) =>
               `<div style="margin-bottom:4px;">
                 <strong>${t.title}</strong><br/>
-                <span style="color:#666;font-size:12px;">${t.start_date}${t.distance_miles ? ` · ${t.distance_miles} mi` : ""}</span>
+                <span style="color:#666;font-size:12px;">${t.start_date}${t.distance_miles ? ` · ${formatDistance(t.distance_miles, distanceUnit)}` : ""}</span>
               </div>`
           )
           .join("");
@@ -255,7 +257,7 @@ export function TrialMapInner({ trials, seminars = [], trainingSpaces = [], cent
   return (
     <div
       ref={mapRef}
-      className="w-full h-[350px] sm:h-[450px] md:h-[500px] rounded-xl border border-gray-200 overflow-hidden"
+      className="w-full h-[350px] sm:h-[450px] md:h-[500px] rounded-xl border border-[var(--border)] overflow-hidden"
       style={{ zIndex: 0 }}
     />
   );
