@@ -97,7 +97,9 @@ export function DashboardSidebar() {
           <div className="text-[0.6rem] font-medium tracking-[0.16em] uppercase text-[var(--muted)] px-3 py-2 mt-3 first:mt-0">
             {section}
           </div>
-          {links.map(({ href, label, icon, count, countVariant }) => {
+          {links.map((link) => {
+            const { href, label, icon, count } = link;
+            const countVariant = 'countVariant' in link ? link.countVariant : undefined;
             const active = pathname === href || (href !== '/dashboard' && pathname?.startsWith(href));
             return (
               <Link
