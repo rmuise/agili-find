@@ -97,6 +97,7 @@
   --muted-2: rgba(245, 242, 237, 0.18);
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-2: rgba(255, 255, 255, 0.13);
+  --glass-bg: rgba(9, 9, 9, 0.88);
 
   /* Org colors */
   --akc: #85b7eb;
@@ -108,6 +109,50 @@
   --aac: #14b8a6;
   --tdaa: #d97706;
   --isc: #e8a838;
+}
+
+/* ── Light mode overrides ── */
+[data-theme="light"] {
+  /* Shadcn/standard tokens */
+  --background: #f8f7f4;
+  --foreground: #151515;
+  --card: #ffffff;
+  --card-foreground: #151515;
+  --popover: #f0ede8;
+  --popover-foreground: #151515;
+  --secondary: #e5e2dd;
+  --secondary-foreground: #151515;
+  --muted: #e5e2dd;
+  --muted-foreground: rgba(21, 21, 21, 0.5);
+  --border: rgba(0, 0, 0, 0.08);
+  --input: rgba(0, 0, 0, 0.1);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #151515;
+  --sidebar-accent: #f0ede8;
+  --sidebar-accent-foreground: #151515;
+  --sidebar-border: rgba(0, 0, 0, 0.08);
+
+  /* AgiliFind custom tokens */
+  --surface: #ffffff;
+  --surface-2: #f0ede8;
+  --surface-3: #e5e2dd;
+  --cream: #151515;
+  --muted-text: rgba(21, 21, 21, 0.5);
+  --muted-2: rgba(21, 21, 21, 0.25);
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-2: rgba(0, 0, 0, 0.14);
+  --glass-bg: rgba(248, 247, 244, 0.92);
+}
+
+/* Light mode: calendar icon should be dark, not inverted */
+[data-theme="light"] input[type='date']::-webkit-calendar-picker-indicator {
+  filter: none;
+  opacity: 0.5;
+  cursor: pointer;
+}
+[data-theme="light"] input[type='date']::-webkit-calendar-picker-indicator:hover {
+  filter: none;
+  opacity: 0.85;
 }
 
 html {
@@ -230,9 +275,9 @@ input[type='range']::-webkit-slider-thumb:active {
   transform: scale(1.2);
 }
 
-/* Frosted glass */
+/* Frosted glass — uses --glass-bg so it adapts to light/dark theme */
 .glass {
-  background: rgba(9, 9, 9, 0.88);
+  background: var(--glass-bg);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
