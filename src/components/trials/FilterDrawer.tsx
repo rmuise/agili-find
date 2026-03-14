@@ -53,7 +53,6 @@ export function FilterDrawer({ isOpen, onClose, filters, onChange }: FilterDrawe
 
       {/* Floating action button */}
       <button
-        onClick={onClose}
         className={`
           md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100]
           bg-[var(--accent)] text-black border-none rounded-full
