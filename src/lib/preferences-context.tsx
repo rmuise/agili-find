@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 export type DistanceUnit = 'mi' | 'km';
 
@@ -18,7 +19,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   const [distanceUnit, setDistanceUnitState] = useState<DistanceUnit>('mi');
 
   useEffect(() => {
-    const stored = localStorage.getItem('agili-distance-unit') as DistanceUnit | null;
+    const stored = localStorage.getItem(STORAGE_KEYS.DISTANCE_UNIT) as DistanceUnit | null;
     if (stored === 'mi' || stored === 'km') {
       setDistanceUnitState(stored);
     }
@@ -26,7 +27,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
 
   const setDistanceUnit = (unit: DistanceUnit) => {
     setDistanceUnitState(unit);
-    localStorage.setItem('agili-distance-unit', unit);
+    localStorage.setItem(STORAGE_KEYS.DISTANCE_UNIT, unit);
   };
 
   return (

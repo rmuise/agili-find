@@ -1,26 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import type { SearchFilters, OrgId, TrialStatus } from '@/lib/types';
-import { DEFAULT_FILTERS, ALL_LEVELS } from '@/lib/types';
+import { ORG_HEX_COLORS, ALL_LEVELS } from '@/lib/constants';
+import type { TrialStatus } from '@/lib/constants';
+import { DEFAULT_FILTERS } from '@/types/filters';
+import type { SearchFilters } from '@/types/filters';
 
-const ORGS: { id: OrgId; count: number }[] = [
-  { id: 'AKC', count: 142 },
-  { id: 'USDAA', count: 88 },
-  { id: 'CPE', count: 74 },
-  { id: 'NADAC', count: 61 },
-  { id: 'UKI', count: 43 },
-  { id: 'CKC', count: 29 },
+const FILTER_ORGS: { id: string; count: number }[] = [
+  { id: 'akc', count: 142 },
+  { id: 'usdaa', count: 88 },
+  { id: 'cpe', count: 74 },
+  { id: 'nadac', count: 61 },
+  { id: 'uki', count: 43 },
+  { id: 'ckc', count: 29 },
 ];
-
-const ORG_DOT_COLORS: Record<OrgId, string> = {
-  AKC: '#85b7eb',
-  USDAA: '#e8ff47',
-  CPE: '#5dcaa5',
-  UKI: '#ed93b1',
-  NADAC: '#fac775',
-  CKC: '#afa9ec',
-};
 
 interface FilterSidebarProps {
   filters: SearchFilters;
@@ -28,7 +20,7 @@ interface FilterSidebarProps {
 }
 
 export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
-  const toggleOrg = (org: OrgId) => {
+  const toggleOrg = (org: string) => {
     const orgs = filters.orgs.includes(org)
       ? filters.orgs.filter((o) => o !== org)
       : [...filters.orgs, org];
@@ -69,14 +61,14 @@ export function FilterSidebar({ filters, onChange }: FilterSidebarProps) {
 
       {/* Organization */}
       <FilterGroup title="Organization">
-        {ORGS.map(({ id, count }) => (
+        {FILTER_ORGS.map(({ id, count }) => (
           <FilterRow
             key={id}
-            label={id}
+            label={id.toUpperCase()}
             count={count}
             checked={filters.orgs.includes(id)}
             onChange={() => toggleOrg(id)}
-            dot={ORG_DOT_COLORS[id]}
+            dot={ORG_HEX_COLORS[id]}
           />
         ))}
       </FilterGroup>

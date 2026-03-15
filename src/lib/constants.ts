@@ -1,27 +1,43 @@
-/** Organization metadata */
+/**
+ * AGILIFIND SHARED CONSTANTS
+ * Single source of truth for all shared configuration.
+ * Import from here. Never redefine these values elsewhere.
+ */
+
+// ── Organization metadata ────────────────────────────────────
+// Canonical list of all supported agility organizations.
+// `color` is a Tailwind bg class for non-CSS contexts (map markers, etc.)
+
 export const ORGANIZATIONS = [
-  { id: "akc", name: "AKC", color: "bg-blue-500" },
-  { id: "usdaa", name: "USDAA", color: "bg-red-500" },
-  { id: "cpe", name: "CPE", color: "bg-green-500" },
-  { id: "nadac", name: "NADAC", color: "bg-purple-500" },
-  { id: "uki", name: "UKI", color: "bg-orange-500" },
-  { id: "ckc", name: "CKC", color: "bg-pink-500" },
-  { id: "aac", name: "AAC", color: "bg-teal-500" },
-  { id: "tdaa", name: "TDAA", color: "bg-amber-500" },
-  { id: "isc", name: "ISC", color: "bg-yellow-600" },
+  { id: "akc", name: "AKC", fullName: "American Kennel Club", color: "bg-blue-500" },
+  { id: "usdaa", name: "USDAA", fullName: "United States Dog Agility Association", color: "bg-red-500" },
+  { id: "cpe", name: "CPE", fullName: "Canine Performance Events", color: "bg-green-500" },
+  { id: "nadac", name: "NADAC", fullName: "North American Dog Agility Council", color: "bg-purple-500" },
+  { id: "uki", name: "UKI", fullName: "UK Agility International", color: "bg-orange-500" },
+  { id: "ckc", name: "CKC", fullName: "Canadian Kennel Club", color: "bg-pink-500" },
+  { id: "aac", name: "AAC", fullName: "Agility Association of Canada", color: "bg-teal-500" },
+  { id: "tdaa", name: "TDAA", fullName: "Teacup Dogs Agility Association", color: "bg-amber-500" },
+  { id: "isc", name: "ISC", fullName: "International Selection Committee", color: "bg-yellow-600" },
 ] as const;
 
-/** Tailwind background color classes by organization ID */
+/** All valid org IDs as an array */
+export const ORG_CODES = ORGANIZATIONS.map((o) => o.id);
+
+/** Tailwind bg-* class by org ID */
 export const ORG_COLORS: Record<string, string> = Object.fromEntries(
   ORGANIZATIONS.map((o) => [o.id, o.color])
 );
 
-/** Display names by organization ID */
+/** Display names by org ID */
 export const ORG_NAMES: Record<string, string> = Object.fromEntries(
   ORGANIZATIONS.map((o) => [o.id, o.name])
 );
 
-/** Hex color values by organization ID (for canvas/map rendering) */
+/**
+ * Hex color values by org ID.
+ * Used in canvas/PDF rendering, map markers, and anywhere CSS vars aren't available.
+ * These MUST match the --akc, --usdaa, etc. CSS variables in globals.css.
+ */
 export const ORG_HEX_COLORS: Record<string, string> = {
   akc: "#85b7eb",
   usdaa: "#e8ff47",
@@ -34,10 +50,26 @@ export const ORG_HEX_COLORS: Record<string, string> = {
   isc: "#e8a838",
 };
 
-export const STATUS_LABELS: Record<
-  string,
-  { label: string; color: string; bg: string }
-> = {
+// ── Trial status ─────────────────────────────────────────────
+// Computed from dates, never stored in the database.
+
+export type TrialStatus = "open" | "low" | "soon" | "registering" | "closed" | "waitlist";
+
+export const TRIAL_STATUS_LABELS: Record<TrialStatus, string> = {
+  open: "Open",
+  low: "Spots filling",
+  soon: "Opening soon",
+  registering: "Registering",
+  closed: "Closed",
+  waitlist: "Waitlist",
+};
+
+/** Days before entry_close_date at which status flips to "closing soon" */
+export const CLOSING_SOON_THRESHOLD_DAYS = 7;
+
+// ── Saved trial status labels (schedule page) ────────────────
+
+export const STATUS_LABELS: Record<string, { label: string; color: string; bg: string }> = {
   interested: {
     label: "Interested",
     color: "text-[#85b7eb]",
@@ -55,6 +87,8 @@ export const STATUS_LABELS: Record<
   },
 };
 
+// ── Provider types ───────────────────────────────────────────
+
 export const PROVIDER_TYPES = [
   { value: "club", label: "Club / Trial Host" },
   { value: "presenter", label: "Seminar Presenter" },
@@ -65,3 +99,39 @@ export const PROVIDER_TYPES = [
 ] as const;
 
 export const VALID_PROVIDER_TYPES = PROVIDER_TYPES.map((t) => t.value);
+
+// ── Levels ───────────────────────────────────────────────────
+
+export const ALL_LEVELS = [
+  "Beginner", "Starters", "Novice", "Open", "Advanced", "Masters",
+  "P1", "P2", "P3",
+];
+
+// ── Sort options ─────────────────────────────────────────────
+
+export type SortOption = "date-asc" | "distance-asc" | "recently-added" | "registration-closing";
+
+export const SORT_LABELS: Record<SortOption, string> = {
+  "date-asc": "Date: soonest",
+  "distance-asc": "Distance: nearest",
+  "recently-added": "Recently added",
+  "registration-closing": "Registration closing",
+};
+
+// ── localStorage keys ────────────────────────────────────────
+// All in one place so they never conflict.
+
+export const STORAGE_KEYS = {
+  THEME: "agili-theme",
+  DISTANCE_UNIT: "agili-distance-unit",
+} as const;
+
+// ── API defaults ─────────────────────────────────────────────
+
+export const API_DEFAULTS = {
+  PAGE: 1,
+  LIMIT: 25,
+  MAX_LIMIT: 100,
+  SORT: "date" as const,
+  MAX_RADIUS_MI: 500,
+};

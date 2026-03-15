@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, ZoomIn } from "lucide-react";
 import type { JudgeCourseMap } from "@/types/judge";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 
 interface CourseMapGalleryProps {
   maps: JudgeCourseMap[];

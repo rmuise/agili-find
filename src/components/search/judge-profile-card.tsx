@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import type { JudgeSearchResult } from "@/types/judge";
 
 interface JudgeProfileCardProps {

@@ -16,6 +16,7 @@
  */
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { slugify } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
 // Levenshtein distance (pure implementation — no external dependency needed)
@@ -86,17 +87,6 @@ function normalizeName(raw: string): string {
     .split(" ")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(" ");
-}
-
-/**
- * Generates a URL slug from a judge name.
- * Kept here to avoid circular imports from @/lib/utils.
- */
-function slugify(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
 }
 
 // ---------------------------------------------------------------------------

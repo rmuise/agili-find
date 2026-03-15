@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/lib/theme-context';
+import { TOP_NAV_LINKS } from '@/lib/nav';
 
 interface NavbarProps {
   showSearch?: boolean;
@@ -59,11 +60,7 @@ export function Navbar({
 
         {/* Desktop nav links */}
         <ul className="hidden md:flex gap-7 list-none items-center ml-auto">
-          {[
-            { href: '/trials', label: 'Browse Trials' },
-            { href: '/map', label: 'Map View' },
-            { href: '/saved', label: 'Saved' },
-          ].map(({ href, label }) => (
+          {TOP_NAV_LINKS.map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
@@ -120,11 +117,7 @@ export function Navbar({
       {/* Mobile menu */}
       {menuOpen && (
         <div className="glass fixed inset-0 top-14 z-[190] flex flex-col px-6 pt-6 pb-8 border-t border-[var(--border)] md:hidden">
-          {[
-            { href: '/trials', label: 'Browse Trials' },
-            { href: '/map', label: 'Map View' },
-            { href: '/saved', label: 'Saved' },
-          ].map(({ href, label }) => (
+          {TOP_NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
               href={href}

@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 export type Theme = 'dark' | 'light' | 'auto';
 
@@ -34,7 +35,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
-    const stored = localStorage.getItem('agili-theme') as Theme | null;
+    const stored = localStorage.getItem(STORAGE_KEYS.THEME) as Theme | null;
     const initial: Theme =
       stored === 'light' || stored === 'dark' || stored === 'auto' ? stored : 'auto';
     setThemeState(initial);
@@ -43,7 +44,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Listen for system preference changes when in auto mode
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = () => {
-      const current = (localStorage.getItem('agili-theme') as Theme | null) ?? 'auto';
+      const current = (localStorage.getItem(STORAGE_KEYS.THEME) as Theme | null) ?? 'auto';
       if (current === 'auto') {
         setResolvedTheme(applyTheme('auto'));
       }
@@ -54,7 +55,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (t: Theme) => {
     setThemeState(t);
-    localStorage.setItem('agili-theme', t);
+    localStorage.setItem(STORAGE_KEYS.THEME, t);
     setResolvedTheme(applyTheme(t));
   };
 

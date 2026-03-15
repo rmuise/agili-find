@@ -6,7 +6,7 @@ import { Search, MapPin, Calendar, Filter, Loader2, X, User } from "lucide-react
 import type { OrganizationId } from "@/types/trial";
 import { CLASS_DATA, type ClassInfo } from "@/lib/class-data";
 import { ORGANIZATIONS, ORG_NAMES } from "@/lib/constants";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import type { JudgeSearchResult } from "@/types/judge";
 import { usePreferences } from "@/lib/preferences-context";
 

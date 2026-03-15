@@ -73,6 +73,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Theme IIFE — key must match STORAGE_KEYS.THEME in constants.ts ('agili-theme') */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var t=localStorage.getItem('agili-theme');var r=t==='light'||t==='dark'?t:t==='auto'||!t?window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light':'dark';document.documentElement.setAttribute('data-theme',r);})();`,

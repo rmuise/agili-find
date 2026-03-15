@@ -9,7 +9,7 @@ import { format, parseISO } from "date-fns";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { useSavedTrials } from "@/lib/hooks/saved-trials-context";
 import { GatedActionPrompt } from "@/components/auth/gated-action-prompt";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import { useClickOutside } from "@/lib/hooks/use-click-outside";
 import { STATUS_LABELS } from "@/lib/constants";
 import { formatTrialDateRange, formatDistance } from "@/lib/utils";

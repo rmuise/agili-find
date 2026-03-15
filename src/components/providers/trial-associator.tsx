@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Search, Plus, Check, Loader2, Calendar, MapPin } from "lucide-react";
 import type { TrialResult } from "@/types/search";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import { formatTrialDateRange } from "@/lib/utils";
 
 interface TrialAssociatorProps {

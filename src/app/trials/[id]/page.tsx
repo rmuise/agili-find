@@ -18,7 +18,7 @@ import { useSavedTrials } from "@/lib/hooks/saved-trials-context";
 import { GatedActionPrompt } from "@/components/auth/gated-action-prompt";
 import { TrialServicesPanel } from "@/components/services/trial-services-panel";
 import { PageHeader } from "@/components/layout/page-header";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import { formatTrialDateRange } from "@/lib/utils";
 import type { TrialResult } from "@/types/search";
 

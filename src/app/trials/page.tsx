@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { FilterSidebar } from '@/components/trials/FilterSidebar';
 import { FilterDrawer } from '@/components/trials/FilterDrawer';
-import { TrialCard } from '@/components/trials/TrialCard';
-import { MOCK_TRIALS } from '@/lib/data';
-import { DEFAULT_FILTERS, SORT_LABELS } from '@/lib/types';
-import type { SearchFilters, SortOption } from '@/lib/types';
-
-const RESULTS_PER_PAGE = 10;
+import { ResultsList } from '@/components/search/results-list';
+import { geocodeLocation } from '@/lib/geocoding/client';
+import { SORT_LABELS } from '@/lib/constants';
+import { DEFAULT_FILTERS } from '@/types/filters';
+import type { SearchFilters, SortOption } from '@/types/filters';
+import type { TrialResult } from '@/types/search';
 
 export default function TrialsPage() {
   return (
@@ -22,7 +22,7 @@ export default function TrialsPage() {
 
 function TrialsPageContent() {
   const searchParams = useSearchParams();
-  const initialLocation = searchParams?.get('location') || 'Ottawa, ON';
+  const initialLocation = searchParams?.get('location') || '';
 
   const [searchInput, setSearchInput] = useState(initialLocation);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -31,33 +31,87 @@ function TrialsPageContent() {
     location: initialLocation,
   });
   const [page, setPage] = useState(1);
+  const [trials, setTrials] = useState<TrialResult[]>([]);
+  const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  // Filter + sort trials
-  const filtered = useMemo(() => {
-    return MOCK_TRIALS
-      .filter((t) => filters.orgs.includes(t.org))
-      .filter((t) => !filters.distanceKm || (t.distanceKm ?? 999) <= filters.distanceKm)
-      .filter((t) => filters.statuses.includes(t.status))
-      .sort((a, b) => {
-        switch (filters.sortBy) {
-          case 'distance-asc':
-            return (a.distanceKm ?? 999) - (b.distanceKm ?? 999);
-          case 'date-asc':
-          default:
-            return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  const RESULTS_PER_PAGE = 25;
+
+  const doSearch = useCallback(async (f: SearchFilters, pageNum: number) => {
+    setIsLoading(true);
+    setHasSearched(true);
+
+    try {
+      const params = new URLSearchParams();
+
+      // Geocode location
+      if (f.location.trim()) {
+        const geo = await geocodeLocation(f.location);
+        if (geo) {
+          params.set('lat', String(geo.lat));
+          params.set('lng', String(geo.lng));
+          params.set('radius', String(f.distanceKm > 400 ? '' : Math.round(f.distanceKm * 0.621371)));
         }
-      });
-  }, [filters]);
+      }
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / RESULTS_PER_PAGE));
-  const paginated = filtered.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+      // Org filter
+      if (f.orgs.length > 0 && f.orgs.length < 9) {
+        params.set('orgs', f.orgs.join(','));
+      }
+
+      // Date filter
+      if (f.dateFrom) params.set('startDate', f.dateFrom);
+      if (f.dateTo) params.set('endDate', f.dateTo);
+
+      // Pagination
+      params.set('limit', String(RESULTS_PER_PAGE));
+      params.set('page', String(pageNum));
+
+      const res = await fetch(`/api/trials?${params.toString()}`);
+      const data = await res.json();
+
+      if (data.error) {
+        console.error('Search error:', data.error);
+        setTrials([]);
+        setTotal(0);
+      } else {
+        setTrials(data.trials || []);
+        setTotal(data.total || data.trials?.length || 0);
+      }
+    } catch (err) {
+      console.error('Search failed:', err);
+      setTrials([]);
+      setTotal(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleSearch = () => {
-    setFilters((f) => ({ ...f, location: searchInput }));
+    const newFilters = { ...filters, location: searchInput };
+    setFilters(newFilters);
     setPage(1);
+    doSearch(newFilters, 1);
   };
 
-  // Active filter chips for display
+  const handleFilterChange = (f: SearchFilters) => {
+    setFilters(f);
+    setPage(1);
+    if (hasSearched) {
+      doSearch(f, 1);
+    }
+  };
+
+  const handlePageChange = (p: number) => {
+    setPage(p);
+    doSearch(filters, p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const totalPages = Math.max(1, Math.ceil(total / RESULTS_PER_PAGE));
+
+  // Active filter chips
   const activeChips: string[] = [];
   if (filters.location) activeChips.push(filters.location);
   if (filters.distanceKm < 500) activeChips.push(`Within ${filters.distanceKm} km`);
@@ -65,7 +119,7 @@ function TrialsPageContent() {
     const fmt = (d: string) => new Date(d).toLocaleDateString('en-CA', { month: 'short', year: 'numeric' });
     activeChips.push(`${fmt(filters.dateFrom)} – ${fmt(filters.dateTo)}`);
   }
-  filters.orgs.slice(0, 2).forEach((o) => activeChips.push(o));
+  filters.orgs.slice(0, 2).forEach((o) => activeChips.push(o.toUpperCase()));
 
   return (
     <>
@@ -80,7 +134,7 @@ function TrialsPageContent() {
 
         {/* Sidebar — desktop only */}
         <div className="hidden md:block">
-          <FilterSidebar filters={filters} onChange={(f) => { setFilters(f); setPage(1); }} />
+          <FilterSidebar filters={filters} onChange={handleFilterChange} />
         </div>
 
         {/* Results */}
@@ -89,14 +143,20 @@ function TrialsPageContent() {
           {/* Header row */}
           <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
             <div className="text-[0.82rem] text-[var(--muted-text)]">
-              <strong className="text-cream font-medium">{filtered.length} trials</strong>{' '}
-              near {filters.location || 'your location'}
+              {hasSearched ? (
+                <>
+                  <strong className="text-cream font-medium">{total} trial{total !== 1 ? 's' : ''}</strong>{' '}
+                  {filters.location ? `near ${filters.location}` : 'found'}
+                </>
+              ) : (
+                'Enter a location to search for trials'
+              )}
             </div>
             <div className="flex items-center gap-3">
               <span className="text-[0.78rem] text-[var(--muted-text)] hidden sm:block">Sort</span>
               <select
                 value={filters.sortBy}
-                onChange={(e) => { setFilters((f) => ({ ...f, sortBy: e.target.value as SortOption })); setPage(1); }}
+                onChange={(e) => handleFilterChange({ ...filters, sortBy: e.target.value as SortOption })}
                 className="bg-[var(--surface-2)] border border-[var(--border-2)] rounded-[10px] text-cream font-sans text-[0.78rem] px-3 py-[0.4rem] outline-none cursor-pointer appearance-none"
               >
                 {Object.entries(SORT_LABELS).map(([val, label]) => (
@@ -112,14 +172,13 @@ function TrialsPageContent() {
               {activeChips.map((chip) => (
                 <div
                   key={chip}
-                  className="flex items-center gap-[0.4rem] text-[0.72rem] px-3 py-[0.3rem] bg-[var(--surface-2)] border border-[var(--border-2)] rounded-full text-cream cursor-pointer hover:border-[rgba(245,70,70,0.4)] transition-colors"
+                  className="flex items-center gap-[0.4rem] text-[0.72rem] px-3 py-[0.3rem] bg-[var(--surface-2)] border border-[var(--border-2)] rounded-full text-cream"
                 >
                   {chip}
-                  <span className="text-[0.65rem] text-[var(--muted-text)]">✕</span>
                 </div>
               ))}
               <button
-                onClick={() => setFilters(DEFAULT_FILTERS)}
+                onClick={() => handleFilterChange(DEFAULT_FILTERS)}
                 className="text-[0.72rem] text-[var(--muted-text)] bg-transparent border-none cursor-pointer hover:text-[var(--accent)] transition-colors px-2"
               >
                 Clear all
@@ -127,38 +186,27 @@ function TrialsPageContent() {
             </div>
           )}
 
-          {/* Trial cards */}
-          {paginated.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {paginated.map((trial) => (
-                <TrialCard key={trial.id} trial={trial} />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="font-display text-[2rem] tracking-[0.04em] text-cream mb-2">
-                No trials found
-              </div>
-              <p className="text-[0.9rem] text-[var(--muted-text)] max-w-xs">
-                Try expanding your search area or adjusting the filters.
-              </p>
-            </div>
-          )}
+          {/* Trial results */}
+          <ResultsList
+            trials={trials}
+            isLoading={isLoading}
+            hasSearched={hasSearched}
+          />
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {hasSearched && totalPages > 1 && (
             <div className="flex items-center justify-center gap-[0.4rem] py-8">
               <PageBtn
                 label="←"
                 disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
+                onClick={() => handlePageChange(page - 1)}
               />
               {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
                 <PageBtn
                   key={p}
                   label={String(p)}
                   active={p === page}
-                  onClick={() => setPage(p)}
+                  onClick={() => handlePageChange(p)}
                 />
               ))}
               {totalPages > 5 && <span className="text-[var(--muted-text)] text-[0.82rem] px-1">…</span>}
@@ -166,13 +214,13 @@ function TrialsPageContent() {
                 <PageBtn
                   label={String(totalPages)}
                   active={page === totalPages}
-                  onClick={() => setPage(totalPages)}
+                  onClick={() => handlePageChange(totalPages)}
                 />
               )}
               <PageBtn
                 label="→"
                 disabled={page === totalPages}
-                onClick={() => setPage((p) => p + 1)}
+                onClick={() => handlePageChange(page + 1)}
               />
             </div>
           )}
@@ -184,7 +232,7 @@ function TrialsPageContent() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen((v) => !v)}
         filters={filters}
-        onChange={(f) => { setFilters(f); setPage(1); }}
+        onChange={handleFilterChange}
       />
     </>
   );

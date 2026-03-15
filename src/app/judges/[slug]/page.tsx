@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { LoadingState } from "@/components/ui/loading-state";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import { CourseMapGallery } from "@/components/judges/course-map-gallery";
 import { CourseMapUpload } from "@/components/judges/course-map-upload";
 import { formatTrialDateRange } from "@/lib/utils";

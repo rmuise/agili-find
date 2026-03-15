@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
 import { PageHeader } from "@/components/layout/page-header";
-import { OrgBadge } from "@/components/ui/org-badge";
+import { OrgChip as OrgBadge } from "@/components/ui/OrgChip";
 import { LoadingState } from "@/components/ui/loading-state";
 import { STATUS_LABELS } from "@/lib/constants";
 import { formatTrialDateRange } from "@/lib/utils";

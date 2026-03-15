@@ -1,18 +1,9 @@
 'use client';
 
-import type { SearchFilters, OrgId, TrialStatus } from '@/lib/types';
-import { ALL_LEVELS } from '@/lib/types';
+import { ORG_HEX_COLORS, ALL_LEVELS } from '@/lib/constants';
+import type { SearchFilters } from '@/types/filters';
 
-const ORGS: OrgId[] = ['AKC', 'USDAA', 'CPE', 'NADAC', 'UKI', 'CKC'];
-
-const ORG_DOT_COLORS: Record<OrgId, string> = {
-  AKC: '#85b7eb',
-  USDAA: '#e8ff47',
-  CPE: '#5dcaa5',
-  UKI: '#ed93b1',
-  NADAC: '#fac775',
-  CKC: '#afa9ec',
-};
+const FILTER_ORGS = ['akc', 'usdaa', 'cpe', 'nadac', 'uki', 'ckc'] as const;
 
 interface FilterDrawerProps {
   isOpen: boolean;
@@ -22,7 +13,7 @@ interface FilterDrawerProps {
 }
 
 export function FilterDrawer({ isOpen, onClose, filters, onChange }: FilterDrawerProps) {
-  const toggleOrg = (org: OrgId) => {
+  const toggleOrg = (org: string) => {
     const orgs = filters.orgs.includes(org)
       ? filters.orgs.filter((o) => o !== org)
       : [...filters.orgs, org];
@@ -102,11 +93,11 @@ export function FilterDrawer({ isOpen, onClose, filters, onChange }: FilterDrawe
           {/* Orgs */}
           <div>
             <SectionLabel>Organization</SectionLabel>
-            {ORGS.map((org) => (
+            {FILTER_ORGS.map((org) => (
               <DrawerRow
                 key={org}
-                label={org}
-                dot={ORG_DOT_COLORS[org]}
+                label={org.toUpperCase()}
+                dot={ORG_HEX_COLORS[org]}
                 checked={filters.orgs.includes(org)}
                 onChange={() => toggleOrg(org)}
               />
