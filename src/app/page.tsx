@@ -7,8 +7,10 @@ import { TrialMap } from "@/components/map";
 import { UserMenu } from "@/components/auth/user-menu";
 import { NavLinks } from "@/components/nav/nav-links";
 import { geocodeLocation } from "@/lib/geocoding/client";
+import { JudgeProfileCard } from "@/components/search/judge-profile-card";
 import type { TrialResult } from "@/types/search";
 import type { SeminarResult } from "@/components/search/seminar-card";
+import type { JudgeSearchResult } from "@/types/judge";
 
 export default function Home() {
   const [trials, setTrials] = useState<TrialResult[]>([]);
@@ -19,11 +21,13 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [searchCenter, setSearchCenter] = useState<{ lat: number; lng: number } | undefined>();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeJudge, setActiveJudge] = useState<JudgeSearchResult | null>(null);
 
   const handleSearch = useCallback(async (values: SearchFormValues) => {
     setIsLoading(true);
     setHasSearched(true);
     setErrorMessage(null);
+    setActiveJudge(values.judgeResult ?? null);
 
     try {
       const params = new URLSearchParams();
@@ -187,6 +191,7 @@ export default function Home() {
           <div className="flex gap-1 bg-[var(--surface-2)] rounded-lg p-1 flex-shrink-0">
             <button
               onClick={() => setViewMode("list")}
+              aria-pressed={viewMode === "list"}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === "list"
                   ? "bg-[var(--agili-accent)] text-black"
@@ -197,6 +202,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setViewMode("map")}
+              aria-pressed={viewMode === "map"}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 text-sm font-medium rounded-md transition-colors ${
                 viewMode === "map"
                   ? "bg-[var(--agili-accent)] text-black"
@@ -207,6 +213,10 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {activeJudge && hasSearched && (
+          <JudgeProfileCard judge={activeJudge} />
+        )}
 
         {viewMode === "list" ? (
           <ResultsList

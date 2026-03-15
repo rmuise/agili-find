@@ -8,6 +8,24 @@
 
 import { jsPDF } from "jspdf";
 
+export interface ExportOptions {
+  /** PDF title shown in the header */
+  title?: string;
+  /** Handler / owner name shown in the info bar */
+  handlerName?: string;
+  showHostingClub?: boolean;
+  showClasses?: boolean;
+  showRegisterLink?: boolean;
+}
+
+const EXPORT_DEFAULTS: Required<ExportOptions> = {
+  title: "My Agility Trial Schedule",
+  handlerName: "",
+  showHostingClub: true,
+  showClasses: true,
+  showRegisterLink: true,
+};
+
 // Actual SavedTrial shape from the app (differs from original spec's unified schema)
 interface SavedTrial {
   id: string;
@@ -125,10 +143,12 @@ function getYear(trials: SavedTrial[]): string {
 export async function exportFunSchedule(
   scheduleData: SavedTrial[],
   dogPhotoBase64: string | null,
-  userName: string | null
+  userName: string | null,
+  options?: ExportOptions
 ): Promise<void> {
   if (!scheduleData || scheduleData.length === 0) return;
 
+  const opts: Required<ExportOptions> = { ...EXPORT_DEFAULTS, ...options };
   const trials = sortTrials(scheduleData);
   const year = getYear(trials);
   const doc = new jsPDF({ unit: "pt", format: "letter" });
@@ -153,11 +173,11 @@ export async function exportFunSchedule(
     if (isContinued) {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
-      doc.text("My Agility Trial Schedule - continued", margin, 26);
+      doc.text(`${opts.title} - continued`, margin, 26);
     } else {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(22);
-      doc.text("My Agility Trial Schedule [PAW]", margin, 34);
+      doc.text(opts.title, margin, 34);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
       doc.text(`${year} Season`, margin, 54);
@@ -177,7 +197,8 @@ export async function exportFunSchedule(
     doc.setFontSize(9);
 
     const items: string[] = [];
-    if (userName) items.push(`Handler: ${userName}`);
+    const handlerDisplay = opts.handlerName || userName;
+    if (handlerDisplay) items.push(`Handler: ${handlerDisplay}`);
     items.push(
       `Generated: ${new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
     );
@@ -229,8 +250,9 @@ export async function exportFunSchedule(
         : classes.join(", ");
     const lineH = 14;
     let cardLines = 5; // org+name row, club, location, classes, link
-    if (!trial.hosting_club) cardLines--;
-    if (classes.length === 0) cardLines--;
+    if (!trial.hosting_club || !opts.showHostingClub) cardLines--;
+    if (classes.length === 0 || !opts.showClasses) cardLines--;
+    if (!trial.source_url || !opts.showRegisterLink) cardLines--;
     const cardH = cardPadding * 2 + cardLines * lineH + 4;
 
     // Card background
@@ -289,7 +311,7 @@ export async function exportFunSchedule(
     y += lineH;
 
     // Hosting club
-    if (trial.hosting_club) {
+    if (trial.hosting_club && opts.showHostingClub) {
       setTextColor(doc, COLORS.mutedText);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
@@ -308,7 +330,7 @@ export async function exportFunSchedule(
     }
 
     // Classes
-    if (classes.length > 0) {
+    if (classes.length > 0 && opts.showClasses) {
       setTextColor(doc, COLORS.textDark);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
@@ -319,7 +341,7 @@ export async function exportFunSchedule(
     }
 
     // Register link
-    if (trial.source_url) {
+    if (trial.source_url && opts.showRegisterLink) {
       setTextColor(doc, COLORS.blue);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
@@ -392,9 +414,9 @@ export async function exportFunSchedule(
     // Estimate card height to check page break
     const classes = trial.classes || [];
     let estLines = 3;
-    if (trial.hosting_club) estLines++;
-    if (classes.length > 0) estLines++;
-    if (trial.source_url) estLines++;
+    if (trial.hosting_club && opts.showHostingClub) estLines++;
+    if (classes.length > 0 && opts.showClasses) estLines++;
+    if (trial.source_url && opts.showRegisterLink) estLines++;
     const estCardH = 20 + estLines * 14 + 6;
 
     if (currentY + estCardH > pageHeight - bottomMargin) {
@@ -435,10 +457,12 @@ export async function exportFunSchedule(
  */
 export function exportPlainSchedule(
   scheduleData: SavedTrial[],
-  userName: string | null
+  userName: string | null,
+  options?: ExportOptions
 ): void {
   if (!scheduleData || scheduleData.length === 0) return;
 
+  const opts: Required<ExportOptions> = { ...EXPORT_DEFAULTS, ...options };
   const trials = sortTrials(scheduleData);
   const year = getYear(trials);
 
@@ -487,13 +511,14 @@ export function exportPlainSchedule(
   setTextColor(doc, COLORS.textDark);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
-  doc.text("Agility Trial Schedule", margin, margin);
+  doc.text(opts.title, margin, margin);
 
   let currentY = margin + 20;
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
-  const subtitle = [userName, year].filter(Boolean).join(" — ");
+  const handlerDisplay = opts.handlerName || userName;
+  const subtitle = [handlerDisplay, year].filter(Boolean).join(" — ");
   if (subtitle) {
     doc.text(subtitle, margin, currentY);
     currentY += 18;
@@ -521,9 +546,9 @@ export function exportPlainSchedule(
 
     // Estimate space needed
     let needed = lineH * 2; // name + org|dates|location
-    if (trial.hosting_club) needed += lineH;
-    if (classes) needed += lineH;
-    if (trial.source_url) needed += lineH;
+    if (trial.hosting_club && opts.showHostingClub) needed += lineH;
+    if (classes && opts.showClasses) needed += lineH;
+    if (trial.source_url && opts.showRegisterLink) needed += lineH;
     needed += 16; // divider + padding
 
     currentY = ensureSpace(doc, currentY, needed);
@@ -551,13 +576,13 @@ export function exportPlainSchedule(
     currentY += lineH;
 
     // Hosting club
-    if (trial.hosting_club) {
+    if (trial.hosting_club && opts.showHostingClub) {
       doc.text(trial.hosting_club, margin, currentY);
       currentY += lineH;
     }
 
     // Classes
-    if (classes) {
+    if (classes && opts.showClasses) {
       doc.text(`Classes: ${classes}`, margin, currentY, {
         maxWidth: contentWidth,
       });
@@ -565,7 +590,7 @@ export function exportPlainSchedule(
     }
 
     // Register URL
-    if (trial.source_url) {
+    if (trial.source_url && opts.showRegisterLink) {
       setTextColor(doc, COLORS.mutedText);
       doc.setFontSize(9);
       doc.text(trial.source_url, margin, currentY, { maxWidth: contentWidth });

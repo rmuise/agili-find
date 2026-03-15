@@ -38,10 +38,14 @@ export async function getOrCreateVenue(input: VenueInput): Promise<string | null
   let lng: number | null = input.lng ?? null;
   let geocodeStatus: "success" | "failed" | "manual" = "failed";
 
-  if (lat !== null && lng !== null) {
+  if (lat !== null && lng !== null && (lat !== 0 || lng !== 0)) {
     // Coordinates provided by the source API (e.g., AKC)
+    // Reject (0,0) — that's Null Island (Gulf of Guinea), not a valid venue location
     geocodeStatus = "success";
   } else {
+    // Reset to null if we received (0,0) — fall through to geocoding
+    lat = null;
+    lng = null;
     // Need to geocode
     const geo = await geocodeAddress(input.addressRaw);
     if (geo) {

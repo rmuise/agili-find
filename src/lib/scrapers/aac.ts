@@ -300,6 +300,20 @@ export class AacScraper extends BaseScraper {
     const $ = cheerio.load(html);
     const text = $("body").text();
 
+    // Words that appear near judge names on AAC pages but are NOT judge names
+    const JUDGE_DENYLIST = ["Website", "Premium", "Entry", "Form", "Results", "Map", "Contact", "Info"];
+
+    function isValidJudgeName(name: string): boolean {
+      // Must have at least 2 words (first + last name)
+      const words = name.trim().split(/\s+/);
+      if (words.length < 2) return false;
+      // Reject if any word is in the denylist
+      if (words.some((w) => JUDGE_DENYLIST.includes(w))) return false;
+      // Reject names with embedded newlines or control characters
+      if (/[\r\n\t]/.test(name)) return false;
+      return true;
+    }
+
     // Extract judges — look for "LastName, FirstName" patterns after "Judge" headings
     const judges: string[] = [];
     const judgeMatches = text.matchAll(
@@ -309,10 +323,9 @@ export class AacScraper extends BaseScraper {
       const name = m[1].trim();
       // Convert "LastName, FirstName" to "FirstName LastName"
       const parts = name.split(",").map((p) => p.trim());
-      if (parts.length === 2) {
-        judges.push(`${parts[1]} ${parts[0]}`);
-      } else {
-        judges.push(name);
+      const normalized = parts.length === 2 ? `${parts[1]} ${parts[0]}` : name;
+      if (isValidJudgeName(normalized)) {
+        judges.push(normalized);
       }
     }
 
@@ -323,7 +336,7 @@ export class AacScraper extends BaseScraper {
       const m = cellText.match(/^([A-Z][a-z]+(?:[-'][A-Z][a-z]+)?),\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)$/);
       if (m) {
         const name = `${m[2]} ${m[1]}`;
-        if (!judges.includes(name) && name.length > 4 && name.length < 50) {
+        if (!judges.includes(name) && isValidJudgeName(name) && name.length > 4 && name.length < 50) {
           judges.push(name);
         }
       }

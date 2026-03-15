@@ -44,6 +44,15 @@ export class UkiScraper extends BaseScraper {
         // Skip header rows
         if (datesText === "Trial Dates" || !datesText) return;
 
+        // Skip virtual/video agility events — they have no real venue
+        if (
+          locationText.toLowerCase().includes("your place") ||
+          trialName.toLowerCase().includes("video agility") ||
+          trialName.toLowerCase().includes("virtual")
+        ) {
+          return;
+        }
+
         // Parse dates
         const { startDate, endDate } = this.parseDateRange(datesText);
         if (!startDate) return;

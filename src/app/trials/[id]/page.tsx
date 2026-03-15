@@ -109,7 +109,7 @@ export default function TrialDetailPage() {
               <div className="flex items-center gap-2 mb-1">
                 <OrgBadge orgId={trial.organization_id} />
                 <h1 className="text-lg font-bold text-[var(--cream)]">
-                  {trial.title}
+                  {trial.title || trial.hosting_club || `${trial.organization_id.toUpperCase()} Trial`}
                 </h1>
               </div>
               {trial.hosting_club && trial.hosting_club !== trial.title && (

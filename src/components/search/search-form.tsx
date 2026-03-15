@@ -21,6 +21,7 @@ export interface SearchFormValues {
   startDate: string;
   endDate: string;
   judge: string;
+  judgeResult: JudgeSearchResult | null;
   classes: string[];
 }
 
@@ -58,6 +59,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   const [judgeLoading, setJudgeLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [selectedJudgeResult, setSelectedJudgeResult] = useState<JudgeSearchResult | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const judgeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -164,12 +166,14 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
 
   const selectJudge = useCallback((result: JudgeSearchResult) => {
     setJudge(result.name);
+    setSelectedJudgeResult(result);
     setShowDropdown(false);
     setJudgeResults([]);
   }, []);
 
   const clearJudge = useCallback(() => {
     setJudge("");
+    setSelectedJudgeResult(null);
     setShowDropdown(false);
     setJudgeResults([]);
     inputRef.current?.focus();
@@ -232,6 +236,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
       startDate,
       endDate,
       judge,
+      judgeResult: selectedJudgeResult,
       classes: [...selectedClasses],
     });
   };
@@ -430,6 +435,7 @@ export function SearchForm({ onSearch, isLoading }: SearchFormProps) {
             value={judge}
             onChange={(e) => {
               setJudge(e.target.value);
+              setSelectedJudgeResult(null);
               setShowDropdown(true);
             }}
             onFocus={() => {

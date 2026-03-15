@@ -16,6 +16,7 @@ import {
   ImagePlus,
   X,
   Loader2,
+  Settings2,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -27,6 +28,7 @@ import { formatDistance } from "@/lib/utils";
 import {
   exportFunSchedule,
   exportPlainSchedule,
+  type ExportOptions,
 } from "@/lib/services/pdfExport";
 
 interface SavedTrial {
@@ -114,6 +116,15 @@ export default function ScheduleBuilderPage() {
   const [exportingPlain, setExportingPlain] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
+  // Export customization
+  const [showCustomize, setShowCustomize] = useState(false);
+  const [exportTitle, setExportTitle] = useState("My Agility Trial Schedule");
+  const [exportHandlerName, setExportHandlerName] = useState("");
+  const [showHostingClub, setShowHostingClub] = useState(true);
+  const [showClasses, setShowClasses] = useState(true);
+  const [showRegisterLink, setShowRegisterLink] = useState(true);
+  const [selectedTrialIds, setSelectedTrialIds] = useState<Set<string>>(new Set());
+
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -124,11 +135,36 @@ export default function ScheduleBuilderPage() {
     reader.readAsDataURL(file);
   }
 
+  function toggleTrialSelection(id: string) {
+    setSelectedTrialIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function getExportTrials() {
+    if (selectedTrialIds.size === 0) return upcomingTrials;
+    return upcomingTrials.filter((t) => selectedTrialIds.has(t.id));
+  }
+
+  function getExportOptions(): ExportOptions {
+    return {
+      title: exportTitle.trim() || "My Agility Trial Schedule",
+      handlerName: exportHandlerName.trim(),
+      showHostingClub,
+      showClasses,
+      showRegisterLink,
+    };
+  }
+
   async function handleExportFun() {
-    if (upcomingTrials.length === 0) return;
+    const exportTrials = getExportTrials();
+    if (exportTrials.length === 0) return;
     setExportingFun(true);
     try {
-      await exportFunSchedule(upcomingTrials, dogPhoto, user?.email ?? null);
+      await exportFunSchedule(exportTrials, dogPhoto, user?.email ?? null, getExportOptions());
       toast("Your schedule PDF is ready!", "success");
     } catch {
       toast("PDF export failed. Please try again.", "error");
@@ -138,10 +174,11 @@ export default function ScheduleBuilderPage() {
   }
 
   function handleExportPlain() {
-    if (upcomingTrials.length === 0) return;
+    const exportTrials = getExportTrials();
+    if (exportTrials.length === 0) return;
     setExportingPlain(true);
     try {
-      exportPlainSchedule(upcomingTrials, user?.email ?? null);
+      exportPlainSchedule(exportTrials, user?.email ?? null, getExportOptions());
       toast("Your schedule PDF is ready!", "success");
     } catch {
       toast("PDF export failed. Please try again.", "error");
@@ -563,6 +600,120 @@ export default function ScheduleBuilderPage() {
                 )}
               </div>
             </div>
+
+            {/* Customize toggle */}
+            <button
+              onClick={() => setShowCustomize((v) => !v)}
+              className="flex items-center gap-1.5 text-xs text-[var(--muted-text)] hover:text-[var(--cream)] transition-colors mb-3"
+            >
+              <Settings2 className="h-3.5 w-3.5" />
+              Customize PDF
+              {showCustomize ? (
+                <ChevronDown className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5" />
+              )}
+            </button>
+
+            {/* Customization panel */}
+            {showCustomize && (
+              <div className="mb-4 p-3 bg-[var(--surface-2)] rounded-lg border border-[var(--border)] space-y-4">
+                {/* Title & handler */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
+                      PDF Title
+                    </label>
+                    <input
+                      type="text"
+                      value={exportTitle}
+                      onChange={(e) => setExportTitle(e.target.value)}
+                      placeholder="My Agility Trial Schedule"
+                      className="w-full text-sm px-2.5 py-1.5 rounded-md bg-[var(--surface)] border border-[var(--border)] text-[var(--cream)] placeholder:text-[var(--muted-2)] focus:outline-none focus:border-[var(--accent)]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--muted-text)] mb-1">
+                      Handler Name
+                    </label>
+                    <input
+                      type="text"
+                      value={exportHandlerName}
+                      onChange={(e) => setExportHandlerName(e.target.value)}
+                      placeholder="Your name"
+                      className="w-full text-sm px-2.5 py-1.5 rounded-md bg-[var(--surface)] border border-[var(--border)] text-[var(--cream)] placeholder:text-[var(--muted-2)] focus:outline-none focus:border-[var(--accent)]"
+                    />
+                  </div>
+                </div>
+
+                {/* Show/hide fields */}
+                <div>
+                  <p className="text-xs font-medium text-[var(--muted-text)] mb-2">Include in PDF</p>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { label: "Hosting club", value: showHostingClub, set: setShowHostingClub },
+                      { label: "Classes", value: showClasses, set: setShowClasses },
+                      { label: "Register link", value: showRegisterLink, set: setShowRegisterLink },
+                    ].map(({ label, value, set }) => (
+                      <label key={label} className="flex items-center gap-1.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={value}
+                          onChange={(e) => set(e.target.checked)}
+                          className="w-3.5 h-3.5 accent-[var(--accent)]"
+                        />
+                        <span className="text-xs text-[var(--cream)]">{label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trial selection */}
+                {upcomingTrials.length > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs font-medium text-[var(--muted-text)]">
+                        Select trials to include{" "}
+                        <span className="text-[var(--muted-2)]">
+                          (leave all unchecked to include all)
+                        </span>
+                      </p>
+                      {selectedTrialIds.size > 0 && (
+                        <button
+                          onClick={() => setSelectedTrialIds(new Set())}
+                          className="text-xs text-[var(--muted-text)] hover:text-[var(--cream)] transition-colors"
+                        >
+                          Clear selection
+                        </button>
+                      )}
+                    </div>
+                    <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
+                      {upcomingTrials.map((trial) => (
+                        <label key={trial.id} className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={selectedTrialIds.has(trial.id)}
+                            onChange={() => toggleTrialSelection(trial.id)}
+                            className="w-3.5 h-3.5 flex-shrink-0 accent-[var(--accent)]"
+                          />
+                          <span className="text-xs text-[var(--cream)] truncate group-hover:text-[var(--accent)] transition-colors">
+                            {trial.title}
+                          </span>
+                          <span className="text-xs text-[var(--muted-2)] flex-shrink-0">
+                            {formatDateRange(trial.start_date, trial.end_date)}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                    {selectedTrialIds.size > 0 && (
+                      <p className="text-xs text-[var(--accent)] mt-1.5">
+                        {selectedTrialIds.size} of {upcomingTrials.length} selected
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-3">
               {/* Share My Schedule button */}

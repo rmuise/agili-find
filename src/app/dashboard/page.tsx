@@ -1,19 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar';
 import { OrgChip } from '@/components/ui/OrgChip';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { MOCK_TRIALS, formatDateRange } from '@/lib/data';
 import { MOCK_USER, MOCK_NOTIFICATIONS, formatRelativeTime } from '@/lib/user-data';
+import { useAuth } from '@/lib/supabase/auth-context';
 
 const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 const TRIAL_DAYS = new Set([5, 6, 12, 13, 26, 27, 3]); // April days with trials
 
 export default function DashboardPage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) return null;
 
   const savedTrials = MOCK_TRIALS.filter(
     (t) => MOCK_USER.savedTrialIds.includes(t.id) && !removedIds.has(t.id)

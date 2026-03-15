@@ -1,17 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
 import { DashboardSidebar } from '@/components/layout/DashboardSidebar';
 import { MOCK_NOTIFICATIONS, MOCK_SAVED_SEARCHES, groupNotificationsByDate, formatRelativeTime } from '@/lib/user-data';
 import { DEFAULT_ALERT_PREFS } from '@/lib/types';
 import type { Notification, AlertPreferences, SavedSearch } from '@/lib/types';
+import { useAuth } from '@/lib/supabase/auth-context';
 
 type Tab = 'notifications' | 'searches' | 'preferences';
 
 export default function AlertsPage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('notifications');
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) return null;
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>(MOCK_SAVED_SEARCHES);
   const [prefs, setPrefs] = useState<AlertPreferences>(DEFAULT_ALERT_PREFS);

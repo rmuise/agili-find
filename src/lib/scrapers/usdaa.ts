@@ -126,7 +126,13 @@ export class UsdaaScraper extends BaseScraper {
     // Format: "FL, Apopka" or "CA, Santa Rosa"
     const parts = text.split(",").map((p) => p.trim());
     if (parts.length >= 2) {
-      return { state: parts[0], city: parts.slice(1).join(", ") };
+      const candidate = parts[0];
+      // Validate: state should be a 2-letter uppercase code
+      if (/^[A-Z]{2}$/.test(candidate)) {
+        return { state: candidate, city: parts.slice(1).join(", ") };
+      }
+      // Fields may be swapped or malformed — log and skip coordinates
+      console.warn(`[usdaa] Unexpected location format: "${text}" — state candidate "${candidate}" is not a 2-letter code`);
     }
     return { state: "", city: text };
   }

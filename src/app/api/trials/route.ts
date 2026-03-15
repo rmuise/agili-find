@@ -50,29 +50,32 @@ export async function GET(request: NextRequest) {
 
   const supabase = createServerClient();
 
-  try {
-    const { data, error } = await supabase.rpc("nearby_trials", {
-      search_lat: hasLocation ? lat : null,
-      search_lng: hasLocation ? lng : null,
-      radius_meters: hasLocation ? radiusMeters : 999999999, // effectively no limit
-      org_filter: orgFilter,
-      judge_filter: judge,
-      class_filter: classFilter,
-      date_start: startDate,
-      date_end: endDate,
-      result_limit: limit,
-      result_offset: offset,
-    });
+  const rpcParams = {
+    search_lat: hasLocation ? lat : null,
+    search_lng: hasLocation ? lng : null,
+    radius_meters: hasLocation ? radiusMeters : 999999999,
+    org_filter: orgFilter,
+    judge_filter: judge,
+    class_filter: classFilter,
+    date_start: startDate,
+    date_end: endDate,
+  };
 
-    if (error) {
-      console.error("Search error:", error);
+  try {
+    const [searchResult, countResult] = await Promise.all([
+      supabase.rpc("nearby_trials", { ...rpcParams, result_limit: limit, result_offset: offset }),
+      supabase.rpc("count_trials", rpcParams),
+    ]);
+
+    if (searchResult.error) {
+      console.error("Search error:", searchResult.error);
       return NextResponse.json(
-        { error: "Search failed", details: error.message },
+        { error: "Search failed", details: searchResult.error.message },
         { status: 500 }
       );
     }
 
-    const trials: TrialResult[] = (data || []).map((row: Record<string, unknown>) => ({
+    const trials: TrialResult[] = (searchResult.data || []).map((row: Record<string, unknown>) => ({
       id: row.trial_id as string,
       title: row.title as string,
       hosting_club: row.hosting_club as string | null,
@@ -97,7 +100,7 @@ export async function GET(request: NextRequest) {
 
     const result: SearchResult = {
       trials,
-      total: trials.length, // Note: for accurate total count, we'd need a separate count query
+      total: (countResult.data as number) ?? trials.length,
       page,
       limit,
     };

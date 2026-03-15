@@ -43,7 +43,11 @@ export default function PublicSchedulePage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!shareId) return;
+    if (!shareId) {
+      setNotFound(true);
+      setIsLoading(false);
+      return;
+    }
 
     fetch(`/api/schedule/${shareId}`)
       .then((res) => {

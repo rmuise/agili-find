@@ -188,13 +188,17 @@ export class CkcScraper extends BaseScraper {
         // Extract source URL
         const sourceUrl = this.extractSourceUrl($, nextElements) || pageUrl;
 
+        // Skip UKI-sanctioned events — the UKI scraper covers them independently
+        // (CanuckDogs lists dual-sanctioned events under CKC, causing duplicates)
+        if (eventType === "UKI") return;
+
         // Build external ID
         const externalId = `canuckdogs-${startDate}-${clubName
           .replace(/\s+/g, "-")
           .toLowerCase()
           .substring(0, 40)}`;
 
-        // Build title
+        // Build title — only append event type tag for non-standard agility events
         const title = `${clubName}${eventType !== "AGILITY" ? ` [${eventType}]` : ""}`;
 
         trials.push({
